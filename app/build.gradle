@@ -1,0 +1,58 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
+apply plugin: 'com.jakewharton.butterknife'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.miaxis.faceid_cw"
+        minSdkVersion 19
+        targetSdkVersion 27
+        versionCode 7
+        versionName "1.0.6_adb_ST"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+greendao {
+    schemaVersion 3
+    daoPackage 'com.miaxis.face.greendao.gen'
+    targetGenDir 'src/main/java'
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile files('src/main/libs/AMap_Search_V4.0.0_20170111.jar')
+    compile files('src/main/libs/commons-codec-1.6.jar')
+    compile files('src/main/libs/MXFingerDriver.jar')
+    compile files('src/main/libs/smdt.jar')
+    //network - squareup
+    compile 'com.android.support:appcompat-v7:27.1.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    compile 'org.greenrobot:greendao:3.2.2'
+    compile 'org.greenrobot:greendao-generator:3.2.2'
+    compile 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v2.1.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.3'
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    compile 'com.squareup.okhttp3:okhttp:3.10.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.10.0'
+    testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    implementation files('src/main/libs/AMap_Location_V3.8.0_20180201.jar')
+    compile 'top.zibin:Luban:1.1.3'
+    implementation files('src/main/libs/MiaxisFaceApiV4.jar')
+}

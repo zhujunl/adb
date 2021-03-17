@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <TextView
+            android:paddingStart="10dp"
+            android:gravity="center_vertical"
+            android:textSize="40sp"
+            android:text="比对记录"
+            android:layout_weight="2.5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/tv_total"
+            style="@style/record_item"
+            android:layout_width="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_height="40dp" />
+
+        <Button
+            android:layout_gravity="center"
+            style="@style/setting_button"
+            android:id="@+id/btn_last"
+            android:text="上一页"
+            android:textSize="14sp"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="40dp" />
+
+        <LinearLayout
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_height="40dp">
+
+            <Spinner
+                android:id="@+id/s_page"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <Button
+            android:layout_gravity="center"
+            android:id="@+id/btn_next"
+            style="@style/setting_button"
+            android:text="下一页"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/blue_band_dark"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp">
+
+        <View
+            android:background="@color/blue_band_dark"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_from_time"
+            style="@style/record_item"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.25"
+            android:hint="起始时间"
+            android:textColorHint="@color/gray_light" />
+
+        <View
+            android:background="@color/blue_band_dark"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_to_time"
+            style="@style/record_item"
+            android:textColorHint="@color/gray_light"
+            android:hint="截止时间"
+            android:layout_weight="1.25"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="@color/blue_band_dark"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_height="match_parent">
+
+            <Spinner
+                android:id="@+id/s_sex"
+                android:layout_width="wrap_content"
+                android:entries="@array/sex"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+
+        <View
+            android:background="@color/blue_band_dark"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_height="match_parent">
+
+            <Spinner
+                android:id="@+id/s_result"
+                android:layout_width="wrap_content"
+                android:entries="@array/result"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <View
+            android:background="@color/blue_band_dark"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/btn_clear"
+            style="@style/setting_button"
+            android:text="清空"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_search"
+            style="@style/stroke_button"
+            android:text="检索"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/blue_band_dark"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:background="@color/blue_band_dark3"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:textStyle="bold"
+            android:text="姓名"
+            style="@style/record_item"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="@color/white"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:textStyle="bold"
+            android:text="身份证号码"
+            style="@style/record_item"
+            android:textColor="@color/white"
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="@color/white"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:textStyle="bold"
+            android:text="比对结果"
+            style="@style/record_item"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="@color/white"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:textStyle="bold"
+            android:text="机构名称"
+            style="@style/record_item"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="@color/white"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:textStyle="bold"
+            android:text="比对时间"
+            style="@style/record_item"
+            android:textColor="@color/white"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <ListView
+        android:background="@drawable/stroke_button_normal"
+        android:id="@+id/lv_record"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </ListView>
+
+    <Button
+        style="@style/stroke_button"
+        android:layout_gravity="right"
+        android:id="@+id/btn_back"
+        android:text="返回"
+        android:layout_marginTop="10dp"
+        android:layout_width="200dp"
+        android:layout_height="50dp" />
+
+</LinearLayout>
