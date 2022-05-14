@@ -1,13 +1,10 @@
 package com.miaxis.face.service;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.content.Intent;
 import android.util.Base64;
-import android.util.Log;
 
-import com.google.gson.Gson;
 import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.AjaxResponse;
 import com.miaxis.face.bean.Config;
@@ -16,7 +13,6 @@ import com.miaxis.face.greendao.gen.RecordDao;
 import com.miaxis.face.net.UpLoadRecord;
 import com.miaxis.face.util.DateUtil;
 import com.miaxis.face.util.FileUtil;
-import com.miaxis.face.util.LogUtil;
 
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -88,8 +84,8 @@ public class UpLoadRecordService extends IntentService {
                 record.getStatus(),
                 cardImg,
                 faceImg,
-                record.getFinger0(),
-                record.getFinger1(),
+                Base64.encodeToString(record.getFinger0(),Base64.DEFAULT),
+                Base64.encodeToString(record.getFinger1(),Base64.DEFAULT),
                 record.getPrintFinger(),
                 record.getLocation(),
                 record.getLongitude(),

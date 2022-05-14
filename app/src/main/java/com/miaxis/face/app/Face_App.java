@@ -1,15 +1,11 @@
 package com.miaxis.face.app;
 
 import android.app.Application;
-import android.app.smdt.SmdtManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.IBinder;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.miaxis.face.bean.Config;
@@ -22,28 +18,26 @@ import com.miaxis.face.greendao.gen.ConfigDao;
 import com.miaxis.face.greendao.gen.DaoMaster;
 import com.miaxis.face.greendao.gen.DaoSession;
 import com.miaxis.face.greendao.gen.RecordDao;
+import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.service.AdbCommService;
 import com.miaxis.face.service.ClearService;
-import com.miaxis.face.service.GPIOService;
 import com.miaxis.face.service.UpLoadRecordService;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.view.fragment.AdvertiseDialog;
-import com.miaxis.gpioaidl.IGPIOControl;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.zz.faceapi.MXFaceAPI;
+import org.zz.api.MXFaceAPI;
 import org.zz.mxhidfingerdriver.MXFingerDriver;
-
 
 import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.miaxis.face.constant.Constants.GPIO_INTERVAL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -52,7 +46,6 @@ import static com.miaxis.face.constant.Constants.GPIO_INTERVAL;
 public class Face_App extends Application implements ServiceConnection {
 
     private static MXFaceAPI mxAPI;
-    private SmdtManager smdtManager;
     private EventBus eventBus;
     private static Config config;
     private static Timer timer;
@@ -60,66 +53,51 @@ public class Face_App extends Application implements ServiceConnection {
     public static final int GROUP_SIZE = 100;
     private DaoSession mDaoSession;
     private static Face_App app;
-    private boolean feedFlag;
-    private Thread tFeedDog;
-//    public IGPIOControl igpioControlDemo;
-//    private ServiceConnection mConnection = new ServiceConnection() {
-//        @Override
-//        public void onServiceConnected(ComponentName name, IBinder service) {
-//            //连接后拿到 Binder，转换成 AIDL，在不同进程会返回个代理
-//            igpioControlDemo = IGPIOControl.Stub.asInterface(service);
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName name) {
-//            igpioControlDemo = null;
-//        }
-//    };
+    private ExecutorService threadExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
 
     @Override
     public void onCreate() {
         super.onCreate();
 //        Intent intent1 = new Intent(getApplicationContext(), GPIOService.class);
 //        bindService(intent1, mConnection, BIND_AUTO_CREATE);
+        app=this;
         bindService(new Intent(this, AdbCommService.class), this, BIND_AUTO_CREATE);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 initData();
-                initGPIO();
                 initDbHelp();
                 initConfig();
                 initDirectory();
                 initDefaultPicture();
                 initHsIdPhotoDecodeLib();
                 startTask();
-                initCW();
-                enableDog();
+                FileUtil.initDirectory(app);
+//                initCW();
+                int re=FaceManager.getInstance().init(app);
+                eventBus.postSticky(new InitCWEvent(re));
             }
         }).start();
 
     }
 
     private void initData() {
-        app = this;
         eventBus = EventBus.getDefault();
         eventBus.register(this);
-        mxAPI = new MXFaceAPI();
-        smdtManager = new SmdtManager(this);
     }
 
-    private void initCW() {
-        final String sLicence = FileUtil.readLicence();
-        if (TextUtils.isEmpty(sLicence)) {
-            eventBus.postSticky(new InitCWEvent(InitCWEvent.ERR_LICENCE));
-            return;
-        }
-        int re = initFaceModel();
-        if (re == 0) {
-            re = mxAPI.mxInitAlg(getApplicationContext(), FileUtil.getFaceModelPath(), sLicence);
-        }
-        eventBus.postSticky(new InitCWEvent(re));
-    }
+//    private void initCW() {
+//        final String sLicence = FileUtil.readLicence();
+//        if (TextUtils.isEmpty(sLicence)) {
+//            eventBus.postSticky(new InitCWEvent(InitCWEvent.INIT_SUCCESS));
+//            return;
+//        }
+//        int re = initFaceModel();
+//        if (re == 0) {
+//            re = mxAPI.mxInitAlg(getApplicationContext(), FileUtil.getFaceModelPath(), sLicence);
+//        }
+//        eventBus.postSticky(new InitCWEvent(re));
+//    }
 
     private void initDbHelp() {
 //        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(this), "FaceAdb_ST.db", null);
@@ -203,30 +181,7 @@ public class Face_App extends Application implements ServiceConnection {
         timer.schedule(timerTask, start, Constants.TASK_DELAY);
     }
 
-    private void initGPIO() {
-        Log.e("initGPIO", "initGPIO");
-        try {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                smdtManager.smdtSetGpioDirection(1, 0);         // value  0 读 1 写
-                Thread.sleep(GPIO_INTERVAL);
-                smdtManager.smdtSetGpioDirection(2, 1);
-                Thread.sleep(GPIO_INTERVAL);
-//                smdtManager.smdtSetGpioDirection(3, 1);
-//                Thread.sleep(GPIO_INTERVAL);
-            }
-//            smdtManager.smdtSetExtrnalGpioValue(2, false);
-//            smdtManager.smdtSetExtrnalGpioValue(3, false);
-            for (int i = 0; i < 3; i++) {
-                Thread.sleep(GPIO_INTERVAL);
-                int re = smdtManager.smdtSetGpioValue(2, true);
-                if (re == 0) {
-                    break;
-                }
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private void initTask() {
         timer = new Timer(true);
@@ -267,24 +222,24 @@ public class Face_App extends Application implements ServiceConnection {
     /**
      * @return
      */
-    private int initFaceModel() {
-        String hsLibDirName = "zzFaceModel";
-        String modelFile1 = "MIAXISFaceDetector5.1.2.m9d6.640x480.ats";
-        String modelFile2 = "MIAXISFaceDewave1.1.PA.raw.ats";
-        String modelFile3 = "MIAXISFaceRecognizer5.0.RN30.m5d14.ID.ats";
-        String modelFile4 = "MIAXISPointDetector5.0.pts5.ats";
-        File modelDir = new File(FileUtil.getFaceModelPath());
-        if (modelDir.exists()) {
-            FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + modelFile1, modelDir + File.separator + modelFile1);
-            FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + modelFile2, modelDir + File.separator + modelFile2);
-            FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + modelFile3, modelDir + File.separator + modelFile3);
-            FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + modelFile4, modelDir + File.separator + modelFile4);
-            return 0;
-        } else {
-            return -1;
-        }
-
-    }
+//    private int initFaceModel() {
+//        String hsLibDirName = "zzFaceModel";
+//        String modelFile1 = "MIAXISFaceDetector5.1.2.m9d6.640x480.ats";
+//        String modelFile2 = "MIAXISFaceDewave1.1.PA.raw.ats";
+//        String modelFile3 = "MIAXISFaceRecognizer5.0.RN30.m5d14.ID.ats";
+//        String modelFile4 = "MIAXISPointDetector5.0.pts5.ats";
+//        File modelDir = new File(FileUtil.getFaceModelPath());
+//        if (modelDir.exists()) {
+//            FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + modelFile1, modelDir + File.separator + modelFile1);
+//            FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + modelFile2, modelDir + File.separator + modelFile2);
+//            FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + modelFile3, modelDir + File.separator + modelFile3);
+//            FileUtil.copyAssetsFile(this, hsLibDirName + File.separator + modelFile4, modelDir + File.separator + modelFile4);
+//            return 0;
+//        } else {
+//            return -1;
+//        }
+//
+//    }
 
     private void initDefaultPicture() {
         String filename = "default_picture.jpg";
@@ -375,38 +330,9 @@ public class Face_App extends Application implements ServiceConnection {
         Toast.makeText(this, "ADB通信服务断开", Toast.LENGTH_LONG).show();
     }
 
-    class FeedDogThread extends Thread {
-        @Override
-        public void run() {
-            while (feedFlag) {
-                smdtManager.smdtWatchDogFeed();
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public ExecutorService getThreadExecutor() {
+        return threadExecutor;
     }
 
-    public void enableDog() {
-        char c = 1;
-        feedFlag = true;
-        smdtManager.smdtWatchDogEnable(c);
-        if (tFeedDog == null) {
-            tFeedDog = new FeedDogThread();
-            tFeedDog.start();
-        }
-    }
-
-    public void unableDog() {
-        char c = 0;
-        feedFlag = false;
-        smdtManager.smdtWatchDogEnable(c);
-        if (tFeedDog != null) {
-            tFeedDog.interrupt();
-            tFeedDog = null;
-        }
-    }
 
 }

@@ -1,6 +1,7 @@
 package com.miaxis.face.event;
 
-import org.zz.faceapi.MXFaceInfo;
+
+import org.zz.api.MXFaceInfoEx;
 
 /**
  * Created by xu.nan on 2017/5/23.
@@ -9,9 +10,9 @@ import org.zz.faceapi.MXFaceInfo;
 public class DrawRectEvent {
 
     private int faceNum;
-    private MXFaceInfo[] faceInfos;
+    private MXFaceInfoEx[] faceInfos;
 
-    public DrawRectEvent(int faceNum, MXFaceInfo[] faceInfos) {
+    public DrawRectEvent(int faceNum, MXFaceInfoEx[] faceInfos) {
         this.faceNum = faceNum;
         this.faceInfos = faceInfos;
     }
@@ -24,11 +25,11 @@ public class DrawRectEvent {
         this.faceNum = faceNum;
     }
 
-    public MXFaceInfo[] getFaceInfos() {
+    public MXFaceInfoEx[] getFaceInfos() {
         return faceInfos;
     }
 
-    public void setFaceInfos(MXFaceInfo[] faceInfos) {
+    public void setFaceInfos(MXFaceInfoEx[] faceInfos) {
         this.faceInfos = faceInfos;
     }
 }

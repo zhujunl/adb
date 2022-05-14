@@ -1,7 +1,6 @@
 package com.miaxis.face.view.activity;
 
 import android.app.TimePickerDialog;
-import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -106,7 +105,6 @@ public class SettingActivity extends BaseActivity {
 
     private Config config;
     private UpdateDialog updateDialog;
-    private SmdtManager smdtManager;
     private MXFingerDriver fingerDriver;
     private boolean hasFingerDevice;
 
@@ -120,7 +118,6 @@ public class SettingActivity extends BaseActivity {
         initData();
         initModeSpinner();
         initView();
-        smdtManager.smdtSetGpioValue(3, false);
     }
 
     void initModeSpinner() {
@@ -157,7 +154,6 @@ public class SettingActivity extends BaseActivity {
 
     private void initData() {
         config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
-        smdtManager = SmdtManager.create(this);
         int pid = 0x0202;
         int vid = 0x821B;
         fingerDriver = new MXFingerDriver(getApplicationContext(), pid, vid);
@@ -320,10 +316,6 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.btn_exit)
     void singOut() {
-        Face_App.getInstance().unableDog();
-        smdtManager.smdtSetStatusBar(this, true);
-        smdtManager.smdtSetGpioValue(2, false);
-        smdtManager.smdtSetGpioValue(3, false);
 //        finish();
 //        throw new RuntimeException();
         Intent intent = new Intent("com.miaxis.face.view.activity");

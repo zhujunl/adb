@@ -3,8 +3,6 @@ package com.miaxis.face.view.activity;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -14,7 +12,6 @@ import com.miaxis.face.R;
 import com.miaxis.face.adapter.LocalFeatureItemAdapter;
 import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.LocalFeature;
-import com.miaxis.face.bean.WhiteItem;
 import com.miaxis.face.event.LoadProgressEvent;
 import com.miaxis.face.greendao.gen.LocalFeatureDao;
 import com.miaxis.face.util.FileUtil;
@@ -25,30 +22,22 @@ import com.miaxis.face.view.fragment.AlertDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-import org.zz.faceapi.MXFaceAPI;
-import org.zz.faceapi.MXFaceInfo;
+import org.zz.api.MXFaceAPI;
 import org.zz.jni.mxImageLoad;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import top.zibin.luban.Luban;
 
 public class LocalFeatureActivity extends BaseActivity {
 
@@ -91,7 +80,7 @@ public class LocalFeatureActivity extends BaseActivity {
         adapter = new LocalFeatureItemAdapter(this);
         adapter.setLocalFeatureList(localFeatureList);
         EventBus.getDefault().register(this);
-        mxFaceAPI = Face_App.getMxAPI();
+//        mxFaceAPI = Face_App.getMxAPI();
         dtload = new mxImageLoad();
     }
 
@@ -114,7 +103,7 @@ public class LocalFeatureActivity extends BaseActivity {
 
     @OnClick(R.id.btn_import_img)
     void onImpImg() {
-        importImg();
+//        importImg();
     }
 
     @OnClick(R.id.btn_back)
@@ -122,124 +111,124 @@ public class LocalFeatureActivity extends BaseActivity {
         finish();
     }
 
-    private void importImg() {
-        Flowable
-                .create(new FlowableOnSubscribe<LocalFeature>() {
-                    @Override
-                    public void subscribe(FlowableEmitter<LocalFeature> e) throws Exception {
-                        File imgDir = new File(FileUtil.getUSBPath(LocalFeatureActivity.this), "白名单");
-                        if (!imgDir.exists() || !imgDir.isDirectory()) {
-                            imgDir = FileUtil.searchFileFromU(LocalFeatureActivity.this, "白名单");
-                        }
-                        if (imgDir == null || !imgDir.exists() || !imgDir.isDirectory()) {
-                            throw new Exception("加载图像失败！请检查U盘和文件是否存在");
-                        }
-                        File[] imgArr = imgDir.listFiles();
-                        max = imgArr.length;
-                        progress = 0;
-                        if (max > 0) {
-                            localFeatureList.clear();
-                            localFeatureDao.deleteAll();
-                            FileUtil.delDirectory(new File(FileUtil.getAvailableFeaturePath(getApplicationContext())));
-                            EventBus.getDefault().post(new LoadProgressEvent<LocalFeature>(max, progress));
-                            for (File anImgArr : imgArr) {
-                                e.onNext(new LocalFeature("", anImgArr.getName(), getFeatureFromFile(anImgArr)));
-                            }
-                        } else {
-                            throw new Exception("加载名单失败！白名单内容为空，或格式错误");
-                        }
-                    }
-                }, BackpressureStrategy.BUFFER)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<LocalFeature>() {
-                    @Override
-                    public void onSubscribe(Subscription s) {
-                        s.request(1);
-                        mSubscription = s;
-                    }
-
-                    @Override
-                    public void onNext(LocalFeature localFeature) {
-                        progress ++;
-                        EventBus.getDefault().post(new LoadProgressEvent<>(max, progress, localFeature));
-                        if (mSubscription != null) {
-                            mSubscription.request(1);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        AlertDialog a = new AlertDialog();
-                        a.setAdContent(t.getMessage());
-                        a.show(getFragmentManager(), "a");
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-
-    }
-
-    private String getFeatureFromFile(File file) {
-        /**压缩图像 */
-//        try {
-//            file = Luban.with(this).load(file).get(file.getPath());
-//        } catch (IOException e) {
+//    private void importImg() {
+//        Flowable
+//                .create(new FlowableOnSubscribe<LocalFeature>() {
+//                    @Override
+//                    public void subscribe(FlowableEmitter<LocalFeature> e) throws Exception {
+//                        File imgDir = new File(FileUtil.getUSBPath(LocalFeatureActivity.this), "白名单");
+//                        if (!imgDir.exists() || !imgDir.isDirectory()) {
+//                            imgDir = FileUtil.searchFileFromU(LocalFeatureActivity.this, "白名单");
+//                        }
+//                        if (imgDir == null || !imgDir.exists() || !imgDir.isDirectory()) {
+//                            throw new Exception("加载图像失败！请检查U盘和文件是否存在");
+//                        }
+//                        File[] imgArr = imgDir.listFiles();
+//                        max = imgArr.length;
+//                        progress = 0;
+//                        if (max > 0) {
+//                            localFeatureList.clear();
+//                            localFeatureDao.deleteAll();
+//                            FileUtil.delDirectory(new File(FileUtil.getAvailableFeaturePath(getApplicationContext())));
+//                            EventBus.getDefault().post(new LoadProgressEvent<LocalFeature>(max, progress));
+//                            for (File anImgArr : imgArr) {
+//                                e.onNext(new LocalFeature("", anImgArr.getName(), getFeatureFromFile(anImgArr)));
+//                            }
+//                        } else {
+//                            throw new Exception("加载名单失败！白名单内容为空，或格式错误");
+//                        }
+//                    }
+//                }, BackpressureStrategy.BUFFER)
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new Subscriber<LocalFeature>() {
+//                    @Override
+//                    public void onSubscribe(Subscription s) {
+//                        s.request(1);
+//                        mSubscription = s;
+//                    }
+//
+//                    @Override
+//                    public void onNext(LocalFeature localFeature) {
+//                        progress ++;
+//                        EventBus.getDefault().post(new LoadProgressEvent<>(max, progress, localFeature));
+//                        if (mSubscription != null) {
+//                            mSubscription.request(1);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable t) {
+//                        AlertDialog a = new AlertDialog();
+//                        a.setAdContent(t.getMessage());
+//                        a.show(getFragmentManager(), "a");
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+//
+//    }
+//
+//    private String getFeatureFromFile(File file) {
+//        /**压缩图像 */
+////        try {
+////            file = Luban.with(this).load(file).get(file.getPath());
+////        } catch (IOException e) {
+////            return null;
+////        }
+//
+//        int re = dtload.ImageZoom(file.getPath(), 320, file.getPath());
+//        if (re != 1) {
 //            return null;
 //        }
-
-        int re = dtload.ImageZoom(file.getPath(), 320, file.getPath());
-        if (re != 1) {
-            return null;
-        }
-//        int re = -1;
-        /** 加载图像 */
-        int[] oX = new int[1];
-        int[] oY = new int[1];
-        re = dtload.LoadFaceImage(file.getPath(), null, null, oX, oY);
-        if (re != 1) {
-            return null;
-        }
-        byte[] pGrayBuff = new byte[oX[0] * oY[0]];
-        byte[] pRGBBuff = new byte[oX[0] * oY[0] * 3];
-        re = dtload.LoadFaceImage(file.getPath(), pRGBBuff, pGrayBuff, oX, oY);
-        if (re != 1) {
-            return null;
-        }
-        /** 检测人脸 */
-        int[] pFaceNum = new int[1];
-        pFaceNum[0] = 1;                //身份证照片只可能检测到一张人脸
-        MXFaceInfo[] pFaceBuffer = new MXFaceInfo[1];
-        pFaceBuffer[0] = new MXFaceInfo();
-        int iX = oX[0];
-        int iY = oY[0];
-        re = mxFaceAPI.mxDetectFace(pGrayBuff, iX, iY, pFaceNum, pFaceBuffer);
-        if (re != 0) {
-            return null;
-        }
-        /** 提取特征 */
-        byte[] bFeature = new byte[mxFaceAPI.mxGetFeatureSize()];
-        re = mxFaceAPI.mxFeatureExtract(pRGBBuff, 102, 126, 1, pFaceBuffer, bFeature);
-        if (re != 0) {
-            return null;
-        }
-        /** 保存特征文件 */
-        String newFileName;
-        String[] strArr = file.getName().split("\\.");
-        if (strArr.length == 2) {
-            newFileName = strArr[0];
-        } else {
-            newFileName = file.getName();
-        }
-        File featureFile = new File(FileUtil.getAvailableFeaturePath(this), newFileName + ".dat");
-        if (featureFile.exists()) {
-            featureFile.delete();
-        }
-        FileUtil.writeBytesToFile(bFeature, featureFile.getParent(), featureFile.getName());
-        return featureFile.getAbsolutePath();
-    }
+////        int re = -1;
+//        /** 加载图像 */
+//        int[] oX = new int[1];
+//        int[] oY = new int[1];
+//        re = dtload.LoadFaceImage(file.getPath(), null, null, oX, oY);
+//        if (re != 1) {
+//            return null;
+//        }
+//        byte[] pGrayBuff = new byte[oX[0] * oY[0]];
+//        byte[] pRGBBuff = new byte[oX[0] * oY[0] * 3];
+//        re = dtload.LoadFaceImage(file.getPath(), pRGBBuff, pGrayBuff, oX, oY);
+//        if (re != 1) {
+//            return null;
+//        }
+//        /** 检测人脸 */
+//        int[] pFaceNum = new int[1];
+//        pFaceNum[0] = 1;                //身份证照片只可能检测到一张人脸
+//        MXFaceInfo[] pFaceBuffer = new MXFaceInfo[1];
+//        pFaceBuffer[0] = new MXFaceInfo();
+//        int iX = oX[0];
+//        int iY = oY[0];
+//        re = mxFaceAPI.mxDetectFace(pGrayBuff, iX, iY, pFaceNum, pFaceBuffer);
+//        if (re != 0) {
+//            return null;
+//        }
+//        /** 提取特征 */
+//        byte[] bFeature = new byte[mxFaceAPI.mxGetFeatureSize()];
+//        re = mxFaceAPI.mxFeatureExtract(pRGBBuff, 102, 126, 1, pFaceBuffer, bFeature);
+//        if (re != 0) {
+//            return null;
+//        }
+//        /** 保存特征文件 */
+//        String newFileName;
+//        String[] strArr = file.getName().split("\\.");
+//        if (strArr.length == 2) {
+//            newFileName = strArr[0];
+//        } else {
+//            newFileName = file.getName();
+//        }
+//        File featureFile = new File(FileUtil.getAvailableFeaturePath(this), newFileName + ".dat");
+//        if (featureFile.exists()) {
+//            featureFile.delete();
+//        }
+//        FileUtil.writeBytesToFile(bFeature, featureFile.getParent(), featureFile.getName());
+//        return featureFile.getAbsolutePath();
+//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoadProgressEvent(LoadProgressEvent<LocalFeature> e) {

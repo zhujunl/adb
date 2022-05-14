@@ -80,7 +80,7 @@ public class FingerService extends IntentService {
     private void handleActionVerifyFinger(Record record) {
         Log.e("====", "handleActionVerifyFinger");
         int re;
-        if (TextUtils.isEmpty(record.getFinger0()) || TextUtils.isEmpty(record.getFinger1())) {
+        if (TextUtils.isEmpty(Base64.encodeToString(record.getFinger0(),Base64.DEFAULT)) || TextUtils.isEmpty(Base64.encodeToString(record.getFinger1(),Base64.DEFAULT))) {
             EventBus.getDefault().post(new ResultEvent(ResultEvent.FINGER_FAIL, record));
             return;
         }

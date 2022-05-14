@@ -89,7 +89,7 @@ public class LoadingActivity extends BaseActivity {
             case InitCWEvent.INIT_SUCCESS:
                 tvLoading.setText("初始化算法成功");
                 LogUtil.writeLog("初始化算法成功");
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, MainActivity2.class));
 //                finish();
                 break;
             default:
@@ -109,7 +109,6 @@ public class LoadingActivity extends BaseActivity {
 
     @OnClick(R.id.tv_title)
     void onErrorExit() {
-        Face_App.getInstance().unableDog();
         SmdtManager smdtManager = SmdtManager.create(this);
         smdtManager.smdtSetStatusBar(this, true);
         smdtManager.smdtSetGpioValue(2, false);

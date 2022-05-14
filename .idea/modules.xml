@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FaceAdb_ST.iml" filepath="$PROJECT_DIR$/FaceAdb_ST.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FaceAdb_ST.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FaceAdb_ST.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/faceadb_st.iml" filepath="$PROJECT_DIR$/.idea/modules/faceadb_st.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.iml" />
     </modules>
   </component>
 </project>

@@ -1,9 +1,7 @@
 package com.miaxis.face.util;
 
-import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.util.Base64;
@@ -39,6 +37,26 @@ public class FileUtil {
     private static final String WLT_PATH_NAME = "wlt";
     private static final String MODEL_PATH_NAME = "zzFaceModel";
     private static final String ADVERTISEMENT_FILE_PATH_NAME = "adFile";
+
+
+    public static void initDirectory(Context context) {
+        File modelDir = new File(FileUtil.getFaceModelPath());
+        if (!modelDir.exists()) {
+            modelDir.mkdirs();
+        }
+        File zzFacesDir = new File(FileUtil.getAvailableImgPath(context));
+        if (!zzFacesDir.exists()) {
+            zzFacesDir.mkdirs();
+        }
+        File adFileDir = new File(FileUtil.getAdvertisementFilePath());
+        if (!adFileDir.exists()) {
+            adFileDir.mkdirs();
+        }
+        File wltlibDir = new File(FileUtil.getAvailableWltPath(context));
+        if (!wltlibDir.exists()) {
+            wltlibDir.mkdirs();
+        }
+    }
 
     public static String readLicence() {
         File lic = new File(FACE_MAIN_PATH, LICENCE_NAME);
@@ -157,7 +175,7 @@ public class FileUtil {
     }
 
     public static String getAvailablePath(Context context) {
-        File saveDir = new File(new SmdtManager(context).smdtGetSDcardPath(context));
+        File saveDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
         if (!saveDir.exists() || !saveDir.canWrite()) {
             return FACE_MAIN_PATH;
         } else {
@@ -175,7 +193,7 @@ public class FileUtil {
     }
 
     public static int getAvailablePathType(Context context) {
-        File saveDir = new File(new SmdtManager(context).smdtGetSDcardPath(context));
+        File saveDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
         if (!saveDir.exists() || !saveDir.canWrite()) {
             return Constants.PATH_LOCAL;
         } else {
@@ -192,7 +210,7 @@ public class FileUtil {
     }
 
     public static String getAvailableImgPath(Context context) {
-        return getAvailablePath(context) + File.separator + IMG_PATH_NAME;
+        return  FACE_MAIN_PATH+File.separator+IMG_PATH_NAME;
     }
 
     public static String getAvailableWltPath(Context context) {
@@ -455,16 +473,7 @@ public class FileUtil {
     }
 
     public static String getUSBPath(Context context) {
-        SmdtManager smdtManager = SmdtManager.create(context);
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
-            return smdtManager.smdtGetUSBPath(context, 1);
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            return smdtManager.smdtGetUSBPath(context, 2);
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1) {
-            return smdtManager.smdtGetUSBPath(context, 2);
-        } else {
-            return null;
-        }
+        return null;
     }
 
     public static File searchFileFromU(Context context, String fileName) {

@@ -2,7 +2,8 @@ package com.miaxis.face.event;
 
 import com.miaxis.face.bean.Record;
 
-import org.zz.faceapi.MXFaceInfo;
+import org.zz.api.MXFaceInfoEx;
+
 
 /**
  * Created by Administrator on 2017/5/22 0022.
@@ -22,14 +23,14 @@ public class ResultEvent {
 
     private int result;
     private Record record;
-    private MXFaceInfo faceInfo;
+    private MXFaceInfoEx faceInfo;
 
     public ResultEvent(int result, Record record) {
         this.result = result;
         this.record = record;
     }
 
-    public ResultEvent(int result, Record record, MXFaceInfo faceInfo) {
+    public ResultEvent(int result, Record record, MXFaceInfoEx faceInfo) {
         this.result = result;
         this.record = record;
         this.faceInfo = faceInfo;
@@ -51,11 +52,11 @@ public class ResultEvent {
         this.record = record;
     }
 
-    public MXFaceInfo getFaceInfo() {
+    public MXFaceInfoEx getFaceInfo() {
         return faceInfo;
     }
 
-    public void setFaceInfo(MXFaceInfo faceInfo) {
+    public void setFaceInfo(MXFaceInfoEx faceInfo) {
         this.faceInfo = faceInfo;
     }
 }

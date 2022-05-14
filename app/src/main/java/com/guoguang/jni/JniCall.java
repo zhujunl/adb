@@ -4,7 +4,7 @@ public class JniCall {
 	private static native int wlt2bmp(byte[] wlt, byte[] bmp, int bmpSave);
 	
 	static {
-		System.loadLibrary("dewlt2-jni");
+		System.loadLibrary("dewlt2-com.zz.jni");
 	}
 	
 	public static int Huaxu_Wlt2Bmp(byte[] wlt, byte[] bmp, int bmpSave) {

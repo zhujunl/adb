@@ -6,8 +6,8 @@ package com.miaxis.face.constant;
 
 public class Constants {
 
-    public static final int PRE_WIDTH = 640;
-    public static final int PRE_HEIGHT = 480;
+    public static final int PRE_WIDTH = 1280;
+    public static final int PRE_HEIGHT = 720;
 
     public static final int ZOOM_WIDTH = 320;
     public static final int ZOOM_HEIGHT = 240;

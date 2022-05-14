@@ -21,20 +21,16 @@ import com.miaxis.face.event.CmdIdCardDoneEvent;
 import com.miaxis.face.event.NoCardEvent;
 import com.miaxis.face.event.ResultEvent;
 import com.miaxis.face.service.FingerService;
-import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.LogUtil;
-import com.miaxis.face.view.activity.MainActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.zz.faceapi.MXFaceInfo;
+import org.zz.api.MXFaceInfoEx;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.miaxis.face.constant.Constants.PRE_WIDTH;
 
 /**
  * Created by Administrator on 2017/5/22 0022.
@@ -141,7 +137,7 @@ public class ResultLayout extends LinearLayout {
                 ivFingerResult.setImageResource(R.mipmap.finger_succes);
                 break;
             case ResultEvent.FINGER_FAIL:
-                if (TextUtils.isEmpty(record.getFinger0()) || TextUtils.isEmpty(record.getFinger1())) {
+                if (TextUtils.isEmpty(Base64.encodeToString(record.getFinger0(),Base64.DEFAULT)) || TextUtils.isEmpty(Base64.encodeToString(record.getFinger1(),Base64.DEFAULT))) {
                     tvResult.setVisibility(VISIBLE);
                     gifFinger.setVisibility(GONE);
                     ivFingerResult.setVisibility(GONE);
@@ -201,7 +197,7 @@ public class ResultLayout extends LinearLayout {
         setVisibility(INVISIBLE);
     }
 
-    private void getFaceRect(byte[] faceImgData, MXFaceInfo passFace) {
+    private void getFaceRect(byte[] faceImgData, MXFaceInfoEx passFace) {
         Bitmap b = BitmapFactory.decodeByteArray(faceImgData, 0, faceImgData.length);
         Bitmap rectBitmap = Bitmap.createBitmap(b, passFace.x, passFace.y, passFace.width, passFace.height);//截取
         ivCameraPhoto.setImageBitmap(rectBitmap);

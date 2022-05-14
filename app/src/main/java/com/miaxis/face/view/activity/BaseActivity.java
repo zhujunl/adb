@@ -1,27 +1,28 @@
 package com.miaxis.face.view.activity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.miaxis.face.R;
+import com.miaxis.face.controller.NvController;
+
 /**
  * Created by Administrator on 2017/5/16 0016.
  */
 
-public class BaseActivity extends Activity {
+public class BaseActivity extends AppCompatActivity {
 
     private MyBaseActiviyBroadcastReceiver myBaseActivityBroad;
+    protected NvController nvController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class BaseActivity extends Activity {
         myBaseActivityBroad = new MyBaseActiviyBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter("com.miaxis.face.view.activity");
         registerReceiver(myBaseActivityBroad, intentFilter);
+        nvController = new NvController(getSupportFragmentManager(), R.id.container);
     }
 
     @Override
@@ -38,6 +40,11 @@ public class BaseActivity extends Activity {
             hideNavigationBar();
         }
     }
+
+    public NvController getNvController() {
+        return nvController;
+    }
+
 
     protected void hideNavigationBar() {
         // TODO Auto-generated method stub
@@ -75,6 +82,13 @@ public class BaseActivity extends Activity {
             }
         }
         return super.onTouchEvent(event);
+    }
+
+    public void hideInputMethod() {
+        if (getCurrentFocus() != null && getCurrentFocus().getWindowToken() != null) {
+            InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     @Override
