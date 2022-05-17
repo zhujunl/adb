@@ -54,9 +54,6 @@ public class FaceManager {
     private HandlerThread asyncDetectThread;
     private Handler asyncDetectHandler;
     private volatile boolean detectLoop = true;
-    private HandlerThread asyncExtractThread;
-    private Handler asyncExtractHandler;
-    private volatile boolean extractLoop = true;
 
     private OnFaceHandleListener faceHandleListener;
 
@@ -107,27 +104,14 @@ public class FaceManager {
 
     public void startLoop() {
         detectLoop = true;
-        extractLoop = true;
-//        actionLiveResult = false;
-//        actionLiveImageQuality = 0;
-//        actionLiveImageData = null;
         lastVisiblePreviewData = null;
-//        intermediaryData = null;
-//        needNextFeature = true;
         asyncDetectHandler.sendEmptyMessage(0);
-//        asyncExtractHandler.sendEmptyMessage(0);
     }
 
     public void stopLoop() {
         detectLoop = false;
-        extractLoop = false;
-//        needNextFeature = false;
-//        actionLiveResult = false;
-//        actionLiveImageQuality = 0;
-//        actionLiveImageData = null;
         lastVisiblePreviewData = null;
         asyncDetectHandler.removeMessages(0);
-//        asyncExtractHandler.removeMessages(0);
     }
 
     public void setFaceHandleListener(OnFaceHandleListener faceHandleListener) {
@@ -148,24 +132,11 @@ public class FaceManager {
                 }
             }
         };
-//        asyncExtractThread = new HandlerThread("extract_thread");
-//        asyncExtractThread.start();
-//        asyncExtractHandler = new Handler(asyncExtractThread.getLooper()) {
-//            public void handleMessage(Message msg) {
-//                if (extractLoop) {
-//                    try {
-//                        intermediaryDataLoop();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        };
     }
 
     private void previewDataLoop() {
         try {
-            if (true){
+            if (false){
                 if (this.nirVisiblePreviewData!=null&&this.lastVisiblePreviewData!=null) {
                     livenessVerify(nirVisiblePreviewData,lastVisiblePreviewData);
                 }
@@ -185,7 +156,7 @@ public class FaceManager {
     private void verify(byte[] detectData) throws Exception {
         byte[] zoomedRgbData = cameraPreviewConvert(detectData,
                 Constants.PRE_WIDTH,
-                Constants.PRE_WIDTH,
+                Constants.PRE_HEIGHT,
                 0,
                 zoomWidth,
                 zoomHeight);
@@ -223,6 +194,12 @@ public class FaceManager {
                 0,
                 zoomWidth,
                 zoomHeight);
+        if (zoomedNirData == null||zoomPRGData==null) {
+            if (faceHandleListener != null) {
+                faceHandleListener.onFaceDetect(0, null);
+            }
+            return;
+        }
         int[] faceNum = new int[]{MAX_FACE_NUM};
         int[] nirNum = new int[]{MAX_FACE_NUM};
         MXFaceInfoEx[] nirBuffer = makeFaceContainer(nirNum[0]);

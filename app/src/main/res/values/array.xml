@@ -4,8 +4,6 @@
     <string-array name="verifyMode">
         <item>只验证人脸</item>
         <item>只验证指纹</item>
-        <item>单项验证，人脸优先</item>
-        <item>单项验证，指纹优先</item>
         <item>双重验证，人脸优先</item>
         <item>双重验证，指纹优先</item>
     </string-array>

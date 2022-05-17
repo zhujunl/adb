@@ -50,10 +50,9 @@ import com.miaxis.face.receiver.TimeReceiver;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.fragment.AlertDialog;
-import com.miaxis.face.view.fragment.FingerFragment;
 import com.miaxis.face.view.fragment.HomeFragment;
 import com.miaxis.face.view.fragment.PhotoFragment;
-import com.miaxis.face.view.fragment.PreviewFragment;
+import com.miaxis.face.view.fragment.VerifyFragment;
 import com.miaxis.sdt.bean.IdCard;
 
 import org.greenrobot.eventbus.EventBus;
@@ -225,7 +224,8 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     public void onBtReadCardEvent(BtReadCardEvent e) {
         onNoCardEvent(null);
         isActive=true;
-        nvController.nvTo(new PreviewFragment(),false);
+        final int verifyMode = config.getVerifyMode();
+        nvController.nvTo(VerifyFragment.getInstance(verifyMode),false);
         SoundManager.getInstance().playSound(Constants.SOUND_PUT_CARD);
         Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
             @Override
@@ -236,18 +236,13 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                     if (result.isSuccessful()) {
                         result.getData().idCardMsg.nation_str= TextUtils.isEmpty(result.getData().idCardMsg.nation_str)?"其他":result.getData().idCardMsg.nation_str;
                         final Record record=IdCardToRecord(result.getData(),location,latitude,longitude);
-                        eventBus.postSticky(new ReadCardEvent(record,result.getData().face));
+                        eventBus.postSticky(new ReadCardEvent(record,result.getData().face,verifyMode));
                         break;
                     }
                 }
             }
         });
         readSecond();
-        //        if (advertiseDialog.isAdded()) {
-        //            noActionSecond = 0;
-        //            restartCamera();
-        //            advertiseDialog.dismiss();
-        //        }
     }
 
     @SuppressLint("CheckResult")
@@ -291,7 +286,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
     public void onCmdGetFingerEvent(CmdGetFingerEvent e) {
         SoundManager.getInstance().playSound(Constants.SOUND_OTHER_FINGER);
-        nvController.nvTo(FingerFragment.getInstance(false),false);
+        nvController.nvTo(VerifyFragment.getInstance(false),false);
         readSecond();
     }
 

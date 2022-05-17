@@ -14,10 +14,11 @@ public class Config implements Serializable {
 
     public static final int MODE_FACE_ONLY          = 0;
     public static final int MODE_FINGER_ONLY        = 1;
-    public static final int MODE_ONE_FACE_FIRST     = 2;
-    public static final int MODE_ONE_FINGER_FIRST   = 3;
-    public static final int MODE_TWO_FACE_FIRST     = 4;
-    public static final int MODE_TWO_FINGER_FIRST   = 5;
+    public static final int MODE_TWO_FACE_FIRST     = 2;
+    public static final int MODE_TWO_FINGER_FIRST   = 3;
+    public static final int MODE_ONE_FACE_FIRST     = 4;
+    public static final int MODE_ONE_FINGER_FIRST   = 5;
+
     public static final int MODE_LOCAL_FEATURE      = 6;
 
     private static final long serialVersionUID = 1L;

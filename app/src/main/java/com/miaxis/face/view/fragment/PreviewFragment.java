@@ -17,6 +17,7 @@ import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
 import com.miaxis.face.bean.Record;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.ReadCardEvent;
 import com.miaxis.face.event.ResultEvent;
 import com.miaxis.face.greendao.gen.RecordDao;
@@ -98,6 +99,7 @@ public class PreviewFragment extends BaseFragment {
     protected void initView(@Nullable Bundle savedInstanceState) {
         eventbus=EventBus.getDefault();
         eventbus.register(this);
+
         FaceManager.getInstance().startLoop();
         FaceManager.getInstance().setFaceHandleListener(faceListener);
         recordDao = Face_App.getInstance().getDaoSession().getRecordDao();
@@ -119,9 +121,8 @@ public class PreviewFragment extends BaseFragment {
         record=event.getRecord();
 
         rsv_rect.bringToFront();
-
         rsv_rect.setRootSize(fl_camera_root.getWidth(), fl_camera_root.getHeight());
-        rsv_rect.setZoomRate((float) fl_camera_root.getWidth() / fl_camera_root.getHeight());
+        rsv_rect.setZoomRate((float) fl_camera_root.getWidth() / Constants.PRE_WIDTH);
 
         rv_result.bringToFront();
         rv_result.clear();

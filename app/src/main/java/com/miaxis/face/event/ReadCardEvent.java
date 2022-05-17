@@ -15,10 +15,12 @@ public class ReadCardEvent {
 
     private Record mRecord;
     private Bitmap face;
+    private int verifyMode;
 
-    public ReadCardEvent(Record record, Bitmap face) {
+    public ReadCardEvent(Record record, Bitmap face, int verifyMode) {
         mRecord = record;
         this.face = face;
+        this.verifyMode = verifyMode;
     }
 
     public Record getRecord() {
@@ -35,5 +37,22 @@ public class ReadCardEvent {
 
     public void setFace(Bitmap face) {
         this.face = face;
+    }
+
+    public int getVerifyMode() {
+        return verifyMode;
+    }
+
+    public void setVerifyMode(int verifyMode) {
+        this.verifyMode = verifyMode;
+    }
+
+    @Override
+    public String toString() {
+        return "ReadCardEvent{" +
+                "mRecord=" + mRecord +
+                ", face=" + face +
+                ", verifyMode=" + verifyMode +
+                '}';
     }
 }

@@ -98,4 +98,7 @@ public class Constants {
     public static final int SOUND_OTHER_FINGER  = 5;
     public static final int SOUND_VALIDATE_FAIL  = 6;
     public static final int SOUND_PUT_CARD  = 7;
+
+    public static final float pam=0.3f;//人脸图片截取扩大
+
 }

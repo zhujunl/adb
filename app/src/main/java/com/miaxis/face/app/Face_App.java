@@ -310,7 +310,7 @@ public class Face_App extends Application implements ServiceConnection {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
-    private boolean checkHasFingerDevice() {
+    public boolean checkHasFingerDevice() {
         int re;
         int pid = 0x0202;
         int vid = 0x821B;

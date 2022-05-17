@@ -156,8 +156,7 @@ public class SettingActivity extends BaseActivity {
         config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
         int pid = 0x0202;
         int vid = 0x821B;
-//        fingerDriver = new MXFingerDriver(getApplicationContext(), pid, vid);
-        hasFingerDevice = checkHasFingerDevice();
+        hasFingerDevice = Face_App.getInstance().checkHasFingerDevice();
     }
 
     private void initView() {
@@ -201,16 +200,6 @@ public class SettingActivity extends BaseActivity {
         updateDialog.setContext(this);
     }
 
-    private boolean checkHasFingerDevice() {
-        int re;
-        for (int i = 0; i < 20; i++) {
-//            re = fingerDriver.mxGetDevVersion(new byte[120]);
-//            if (re == 0) {
-//                return true;
-//            }
-        }
-        return false;
-    }
 
     @OnClick(R.id.tv_select_time)
     void onSelectTime(View view) {
