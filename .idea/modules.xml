@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/faceadb_st.iml" filepath="$PROJECT_DIR$/.idea/modules/faceadb_st.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/myapplication/faceadb_st.myapplication.iml" filepath="$PROJECT_DIR$/.idea/modules/myapplication/faceadb_st.myapplication.iml" />
     </modules>
   </component>
 </project>

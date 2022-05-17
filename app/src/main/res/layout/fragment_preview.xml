@@ -45,7 +45,8 @@
         </FrameLayout>
 
 
-        <com.miaxis.face.view.custom.ResultLayout
+
+        <com.miaxis.face.view.custom.ResultView
             android:id="@+id/rv_result"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"

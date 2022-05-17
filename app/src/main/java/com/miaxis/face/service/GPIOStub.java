@@ -1,15 +1,5 @@
 package com.miaxis.face.service;
 
-import android.app.smdt.SmdtManager;
-import android.content.Context;
-import android.os.RemoteException;
-import android.util.Base64;
-import android.util.Log;
-
-import com.ivsign.android.IDCReader.IDCReaderSDK;
-import com.miaxis.face.util.FileUtil;
-import com.miaxis.face.util.LogUtil;
-import com.miaxis.gpioaidl.IGPIOControl;
 
 public class GPIOStub /*extends IGPIOControl.Stub*/{
 //

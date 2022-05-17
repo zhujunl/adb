@@ -19,6 +19,8 @@ import com.miaxis.face.greendao.gen.DaoMaster;
 import com.miaxis.face.greendao.gen.DaoSession;
 import com.miaxis.face.greendao.gen.RecordDao;
 import com.miaxis.face.manager.FaceManager;
+import com.miaxis.face.manager.FingerManager;
+import com.miaxis.face.manager.FingerStrategy;
 import com.miaxis.face.service.AdbCommService;
 import com.miaxis.face.service.ClearService;
 import com.miaxis.face.service.UpLoadRecordService;
@@ -73,6 +75,8 @@ public class Face_App extends Application implements ServiceConnection {
                 initHsIdPhotoDecodeLib();
                 startTask();
                 FileUtil.initDirectory(app);
+                FingerStrategy fingerStrategy = new FingerStrategy(app);
+                FingerManager.getInstance().init(fingerStrategy);
 //                initCW();
                 int re=FaceManager.getInstance().init(app);
                 eventBus.postSticky(new InitCWEvent(re));

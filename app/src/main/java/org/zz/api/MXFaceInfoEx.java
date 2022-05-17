@@ -267,6 +267,44 @@ public class MXFaceInfoEx {
 		return 0;
 	}
 
+	public static MXFaceInfoEx Copy(MXFaceInfoEx pMXFaceInfoExs) {
+		MXFaceInfoEx out = new MXFaceInfoEx();
+		out.x = pMXFaceInfoExs.x;
+		out.y = pMXFaceInfoExs.y;
+		out.width = pMXFaceInfoExs.width;
+		out.height = pMXFaceInfoExs.height;
+		out.keypt_num = pMXFaceInfoExs.keypt_num;
+		//for (int j = 0; j < pMXFaceInfoExs.keypt_num; j++) {
+		//    out.keypt_x[j] = pMXFaceInfoExs.keypt_x[j];
+		//    out.keypt_y[j] = pMXFaceInfoExs.keypt_y[j];
+		//}
+		System.arraycopy(pMXFaceInfoExs.keypt_x, 0, out.keypt_x, 0, pMXFaceInfoExs.keypt_num);
+		System.arraycopy(pMXFaceInfoExs.keypt_y, 0, out.keypt_y, 0, pMXFaceInfoExs.keypt_num);
+		//for (int j = 0; j < 2; j++) {
+		//    out.keypt_x[j + 5] = pMXFaceInfoExs.keypt_x[j + 5];
+		//    out.keypt_y[j + 5] = pMXFaceInfoExs.keypt_y[j + 5];
+		//}
+		out.age = pMXFaceInfoExs.age;
+		out.gender = pMXFaceInfoExs.gender;
+		out.expression = pMXFaceInfoExs.expression;
+		out.quality = pMXFaceInfoExs.quality;
+		out.eyeDistance = pMXFaceInfoExs.eyeDistance;
+		out.liveness = pMXFaceInfoExs.liveness;
+		out.detected = pMXFaceInfoExs.detected;
+		out.trackId = pMXFaceInfoExs.trackId;
+		out.idmax = pMXFaceInfoExs.idmax;
+		out.reCog = pMXFaceInfoExs.reCog;
+		out.reCogId = pMXFaceInfoExs.reCogId;
+		out.reCogScore = pMXFaceInfoExs.reCogScore;
+		out.mask = pMXFaceInfoExs.mask;
+		out.stranger = pMXFaceInfoExs.stranger;
+		out.pitch = pMXFaceInfoExs.pitch;
+		out.yaw = pMXFaceInfoExs.yaw;
+		out.roll = pMXFaceInfoExs.roll;
+		return out;
+	}
+
+
 	@Override
 	public String toString() {
 		return "MXFaceInfoEx{" +

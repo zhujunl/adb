@@ -1,6 +1,6 @@
 package com.miaxis.face.view.activity;
 
-import android.app.smdt.SmdtManager;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -109,10 +109,10 @@ public class LoadingActivity extends BaseActivity {
 
     @OnClick(R.id.tv_title)
     void onErrorExit() {
-        SmdtManager smdtManager = SmdtManager.create(this);
-        smdtManager.smdtSetStatusBar(this, true);
-        smdtManager.smdtSetGpioValue(2, false);
-        smdtManager.smdtSetGpioValue(3, false);
-        throw new RuntimeException();
+//        SmdtManager smdtManager = SmdtManager.create(this);
+//        smdtManager.smdtSetStatusBar(this, true);
+//        smdtManager.smdtSetGpioValue(2, false);
+//        smdtManager.smdtSetGpioValue(3, false);
+//        throw new RuntimeException();
     }
 }

@@ -183,8 +183,8 @@ public class CardManager {
                 }else {
                     IdCardParser(pucCHMsg,msg);
                 }
-                DecodeByte(pucCHMsg, pucCHMsgStr);//将读取的身份证中的信息字节，解码成可阅读的文字
-                PareseItem(pucCHMsgStr, msg); //将信息解析到msg中
+//                DecodeByte(pucCHMsg, pucCHMsgStr);//将读取的身份证中的信息字节，解码成可阅读的文字
+//                PareseItem(pucCHMsgStr, msg); //将信息解析到msg中
             } catch (Exception e) {
                 e.printStackTrace();
             }

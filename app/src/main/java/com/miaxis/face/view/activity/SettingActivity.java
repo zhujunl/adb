@@ -33,7 +33,7 @@ import com.miaxis.face.view.fragment.UpdateDialog;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.zz.mxhidfingerdriver.MXFingerDriver;
+//import org.zz.mxhidfingerdriver.MXFingerDriver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,7 +105,7 @@ public class SettingActivity extends BaseActivity {
 
     private Config config;
     private UpdateDialog updateDialog;
-    private MXFingerDriver fingerDriver;
+//    private MXFingerDriver fingerDriver;
     private boolean hasFingerDevice;
 
     @Override
@@ -156,7 +156,7 @@ public class SettingActivity extends BaseActivity {
         config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
         int pid = 0x0202;
         int vid = 0x821B;
-        fingerDriver = new MXFingerDriver(getApplicationContext(), pid, vid);
+//        fingerDriver = new MXFingerDriver(getApplicationContext(), pid, vid);
         hasFingerDevice = checkHasFingerDevice();
     }
 
@@ -204,10 +204,10 @@ public class SettingActivity extends BaseActivity {
     private boolean checkHasFingerDevice() {
         int re;
         for (int i = 0; i < 20; i++) {
-            re = fingerDriver.mxGetDevVersion(new byte[120]);
-            if (re == 0) {
-                return true;
-            }
+//            re = fingerDriver.mxGetDevVersion(new byte[120]);
+//            if (re == 0) {
+//                return true;
+//            }
         }
         return false;
     }

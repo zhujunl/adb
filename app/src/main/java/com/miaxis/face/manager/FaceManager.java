@@ -3,6 +3,10 @@ package com.miaxis.face.manager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -10,6 +14,7 @@ import android.util.Log;
 
 import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.livedetect.jni.MXLiveDetectApi;
 
@@ -44,6 +49,7 @@ public class FaceManager {
     private final int zoomWidth=1280;
     private final int zoomHeight=720;
     private byte[] lastVisiblePreviewData;
+    private byte[] nirVisiblePreviewData;
 
     private HandlerThread asyncDetectThread;
     private Handler asyncDetectHandler;
@@ -94,6 +100,11 @@ public class FaceManager {
     public void setLastVisiblePreviewData(byte[] lastVisiblePreviewData) {
         this.lastVisiblePreviewData = lastVisiblePreviewData;
     }
+
+    public void setNirVisiblePreviewData(byte[] nirVisiblePreviewData) {
+        this.nirVisiblePreviewData = nirVisiblePreviewData;
+    }
+
     public void startLoop() {
         detectLoop = true;
         extractLoop = true;
@@ -154,9 +165,16 @@ public class FaceManager {
 
     private void previewDataLoop() {
         try {
-            if (this.lastVisiblePreviewData != null) {
-                verify(lastVisiblePreviewData);
+            if (true){
+                if (this.nirVisiblePreviewData!=null&&this.lastVisiblePreviewData!=null) {
+                    livenessVerify(nirVisiblePreviewData,lastVisiblePreviewData);
+                }
+            }else {
+                if (this.lastVisiblePreviewData != null) {
+                    verify(lastVisiblePreviewData);
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -166,8 +184,8 @@ public class FaceManager {
 
     private void verify(byte[] detectData) throws Exception {
         byte[] zoomedRgbData = cameraPreviewConvert(detectData,
-                1280,
-                720,
+                Constants.PRE_WIDTH,
+                Constants.PRE_WIDTH,
                 0,
                 zoomWidth,
                 zoomHeight);
@@ -191,6 +209,75 @@ public class FaceManager {
                 }
             }
     }
+
+    private void livenessVerify(byte[] nirdata,byte[] data) throws Exception {
+        byte[] zoomedNirData = cameraPreviewConvert(nirdata,
+                Constants.PIC_WIDTH,
+                Constants.PIC_HEIGHT,
+                0,
+                Constants.PIC_WIDTH,
+                Constants.PIC_HEIGHT);
+        byte[] zoomPRGData=cameraPreviewConvert(data,
+                Constants.PRE_WIDTH,
+                Constants.PRE_HEIGHT,
+                0,
+                zoomWidth,
+                zoomHeight);
+        int[] faceNum = new int[]{MAX_FACE_NUM};
+        int[] nirNum = new int[]{MAX_FACE_NUM};
+        MXFaceInfoEx[] nirBuffer = makeFaceContainer(nirNum[0]);
+        MXFaceInfoEx[] rgbBuffer = makeFaceContainer(faceNum[0]);
+        boolean nirResult = faceDetect(zoomedNirData, Constants.PIC_WIDTH, Constants.PIC_HEIGHT, nirNum, nirBuffer);
+        boolean rgbResult = faceDetect(zoomPRGData,zoomWidth,zoomHeight,faceNum,rgbBuffer);
+
+        if (rgbResult&&nirResult){
+            if (faceHandleListener != null) {
+                faceHandleListener.onFaceDetect(faceNum[0], rgbBuffer);
+            }
+            MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(rgbBuffer);
+            rgbResult = faceQuality(zoomPRGData, zoomWidth, zoomHeight, 1, new MXFaceInfoEx[]{mxFaceInfoEx});
+            if (rgbResult&&mxFaceInfoEx.quality>50) {
+                extract(mxFaceInfoEx,zoomPRGData);
+            }
+        }
+
+    }
+
+    /**
+     * 视频流转RGB
+     *
+     * @param yuv 视频流数据NV21
+     */
+    public byte[] yuv2Rgb(byte[] yuv, int width, int height) {
+        if (this.dtTool == null) {
+            return null;
+        }
+        byte[] pRGBImage = new byte[width * height * 3];
+        this.dtTool.YUV2RGB(yuv, width, height, pRGBImage);
+
+        return pRGBImage;
+    }
+
+
+    public Bitmap getPriviewPic(byte[] data) {//这里传入的data参数就是onpreviewFrame中需要传入的byte[]型数据
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        newOpts.inJustDecodeBounds = true;
+        YuvImage yuvimage = new YuvImage(
+                data,
+                ImageFormat.NV21,
+                1280,
+                720,
+                null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        yuvimage.compressToJpeg(new Rect(0, 0, 1280,720), 100, baos);// 80--JPG图片的质量[0-100],100最高
+        byte[] rawImage = baos.toByteArray();
+        //将rawImage转换成bitmap
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
+        return bitmap;
+    }
+
 
     private void extract(MXFaceInfoEx mxFaceInfoEx, byte[] data) throws Exception {
         Log.v("asd", "提特征中"+"_____人脸质量："+mxFaceInfoEx.quality);
@@ -467,7 +554,7 @@ public class FaceManager {
      * @return 10000-Live，10001-no live，others-image quality is not satisfied , negative Number is error code
      */
 //    public int liveDetect(byte[] rgbFrameData, int frameWidth, int frameHeight, byte[] nirFrameData) {
-//        if (this.mMXFaceAPI == null) {
+//        if (this.mxFaceAPI == null) {
 //            return -99;
 //        }
 //        if (rgbFrameData == null || rgbFrameData.length == 0) {
@@ -476,10 +563,10 @@ public class FaceManager {
 //        if (nirFrameData == null || nirFrameData.length == 0) {
 //            return -97;
 //        }
-//        if (this.mFaceNumberRgb == null || this.mFaceNumberRgb.length == 0) {
+//        if (this.lastVisiblePreviewData == null || this.lastVisiblePreviewData.length == 0) {
 //            return -96;
 //        }
-//        if (this.mFaceNumberNir == null || this.mFaceNumberNir.length == 0) {
+//        if (this.nirVisiblePreviewData == null || this.nirVisiblePreviewData.length == 0) {
 //            return -95;
 //        }
 //        if (this.mFaceInfoExesRgb == null || this.mFaceInfoExesRgb.length == 0) {
@@ -488,7 +575,20 @@ public class FaceManager {
 //        if (this.mFaceInfoExesNir == null || this.mFaceInfoExesNir.length == 0) {
 //            return -93;
 //        }
-//        return this.mMXFaceAPI.mxDetectLive(rgbFrameData, nirFrameData, frameWidth, frameHeight,
-//                this.mFaceNumberRgb, this.mFaceInfoExesRgb, this.mFaceNumberNir, this.mFaceInfoExesNir);
+////        if (this.mFaceNumberRgb == null || this.mFaceNumberRgb.length == 0) {
+////            return -96;
+////        }
+////        if (this.mFaceNumberNir == null || this.mFaceNumberNir.length == 0) {
+////            return -95;
+////        }
+////        if (this.mFaceInfoExesRgb == null || this.mFaceInfoExesRgb.length == 0) {
+////            return -94;
+////        }
+////        if (this.mFaceInfoExesNir == null || this.mFaceInfoExesNir.length == 0) {
+////            return -93;
+////        }
+////        return this.mxFaceAPI.mxDetectLive(rgbFrameData, nirFrameData, frameWidth, frameHeight,
+////                this.mFaceNumberRgb, this.mFaceInfoExesRgb, this.mFaceNumberNir, this.mFaceInfoExesNir);
+//        return
 //    }
 }

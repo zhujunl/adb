@@ -35,9 +35,11 @@ import com.miaxis.face.bean.WhiteItem;
 import com.miaxis.face.constant.ApiResult;
 import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.BtReadCardEvent;
-import com.miaxis.face.event.ReadCardEvent;
+import com.miaxis.face.event.CmdGetFingerEvent;
+import com.miaxis.face.event.CmdShutterEvent;
 import com.miaxis.face.event.LoadProgressEvent;
 import com.miaxis.face.event.NoCardEvent;
+import com.miaxis.face.event.ReadCardEvent;
 import com.miaxis.face.event.TimeChangeEvent;
 import com.miaxis.face.greendao.gen.ConfigDao;
 import com.miaxis.face.greendao.gen.RecordDao;
@@ -48,7 +50,9 @@ import com.miaxis.face.receiver.TimeReceiver;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.fragment.AlertDialog;
+import com.miaxis.face.view.fragment.FingerFragment;
 import com.miaxis.face.view.fragment.HomeFragment;
+import com.miaxis.face.view.fragment.PhotoFragment;
 import com.miaxis.face.view.fragment.PreviewFragment;
 import com.miaxis.sdt.bean.IdCard;
 
@@ -221,24 +225,24 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     public void onBtReadCardEvent(BtReadCardEvent e) {
         onNoCardEvent(null);
         isActive=true;
-        nvController.nvTo(PreviewFragment.newIntent(),false);
+        nvController.nvTo(new PreviewFragment(),false);
         SoundManager.getInstance().playSound(Constants.SOUND_PUT_CARD);
         Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 while (isActive){
-                    ApiResult<IdCard> result = CardManager.getInstance().read();
+                    final ApiResult<IdCard> result = CardManager.getInstance().read();
                     Log.i(TAG, "ReadCardThrea,ID Card=" +result );
                     if (result.isSuccessful()) {
                         result.getData().idCardMsg.nation_str= TextUtils.isEmpty(result.getData().idCardMsg.nation_str)?"其他":result.getData().idCardMsg.nation_str;
-                        Record record=IdCardToRecord(result.getData(),location,latitude,longitude);
+                        final Record record=IdCardToRecord(result.getData(),location,latitude,longitude);
                         eventBus.postSticky(new ReadCardEvent(record,result.getData().face));
                         break;
                     }
                 }
             }
         });
-        readSecond();;
+        readSecond();
         //        if (advertiseDialog.isAdded()) {
         //            noActionSecond = 0;
         //            restartCamera();
@@ -276,6 +280,19 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         Log.e("===", "onNoCardEvent");
         SoundManager.getInstance().close();
         //            soundPool.stop(mCurSoundId);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCmdShutterEvent(CmdShutterEvent e) {
+        nvController.nvTo(new PhotoFragment(),false);
+        readSecond();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
+    public void onCmdGetFingerEvent(CmdGetFingerEvent e) {
+        SoundManager.getInstance().playSound(Constants.SOUND_OTHER_FINGER);
+        nvController.nvTo(FingerFragment.getInstance(false),false);
+        readSecond();
     }
 
     @OnClick(R.id.iv_record)
@@ -415,7 +432,13 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         tvDate.setText(date);
     }
 
-    private Record IdCardToRecord(IdCard card,String location,double latitude,double longitude){
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(timeReceiver);
+    }
+
+    private Record IdCardToRecord(IdCard card, String location, double latitude, double longitude){
         Record record=new Record(card,location,String.valueOf(latitude),String.valueOf(longitude));
         String cardImgFilePath = FileUtil.getAvailableImgPath(MainActivity2.this) + File.separator +  card.idCardMsg.id_num + "_" + card.idCardMsg.name + System.currentTimeMillis() + ".bmp";
         MyUtil.saveBitmap(cardImgFilePath, card.face);

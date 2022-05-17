@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -20,6 +21,7 @@ public class RectSurfaceView extends SurfaceView {
     private float zoomRate = 1;
     private int rootWidth;
     private int rootHeight;
+    private final String TAG="RectSurfaceView";
 
     public RectSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -62,10 +64,12 @@ public class RectSurfaceView extends SurfaceView {
     }
 
     public void drawRect(MXFaceInfoEx[] faceInfos, int faceNum) {
+        Log.e(TAG, "Thread==" + Thread.currentThread().getName());
         Canvas canvas = shRect.lockCanvas(null);
         if (canvas == null) {
             return;
         }
+        Log.e(TAG, "drawRect"  );
         canvas.translate(canvas.getWidth(),0);
         canvas.scale(-1,1);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);

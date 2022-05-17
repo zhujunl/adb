@@ -53,7 +53,7 @@ public class CameraManager {
         private static final CameraManager instance = new CameraManager();
     }
 
-    byte[] mPreBuffer = null;
+
 
     public void open(SurfaceView surfaceView) {
             mCamera = Camera.open(1);
@@ -90,11 +90,11 @@ public class CameraManager {
 
     public void nir_open(SurfaceView surfaceView) {
             mirCamera = Camera.open(0);
-//            Camera.Parameters parameters = mirCamera.getParameters();
-//            parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
-//            parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
-//            mirCamera.setParameters(parameters);
-            nirbuffer=new byte[((PRE_WIDTH * PRE_HEIGHT) * ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
+            Camera.Parameters parameters = mirCamera.getParameters();
+            parameters.setPreviewSize(PIC_WIDTH, PIC_HEIGHT);
+            parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
+            mirCamera.setParameters(parameters);
+            nirbuffer=new byte[((PIC_WIDTH * PIC_HEIGHT) * ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
             mirCamera.addCallbackBuffer(nirbuffer);
             mirCamera.setPreviewCallback(nirPreView);
             mirCamera.startPreview();
@@ -115,6 +115,7 @@ public class CameraManager {
 
                 @Override
                 public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                    FaceManager.getInstance().stopLoop();
                     nirClose();
                 }
             });
@@ -143,11 +144,28 @@ public class CameraManager {
                 mirCamera.release();
                 mirCamera = null;
             } else {
-                Log.e(TAG, "mCamera == null");
+                Log.e(TAG, "mirCamera == null");
             }
         } catch (Exception e) {
             LogUtil.writeLog("关闭摄像头异常" + e.getMessage());
         }
+    }
+
+    public int takePicture(Camera.PictureCallback jpeg) {
+        if (this.mCamera == null) {
+            return -1;
+        }
+
+        this.mCamera.takePicture(new Camera.ShutterCallback() {
+            @Override
+            public void onShutter() {
+            }
+        }, new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, Camera camera) {
+            }
+        }, jpeg);
+        return 0;
     }
 
 
@@ -165,8 +183,14 @@ public class CameraManager {
         public void onPreviewFrame(byte[] bytes, Camera camera) {
             camera.addCallbackBuffer(nirbuffer);
 //            Log.v(TAG, "onPreviewFrame=近红外" );
+            FaceManager.getInstance().setNirVisiblePreviewData(bytes);
         }
     };
+
+    public Camera getCamera() {
+        return mCamera;
+    }
+
 
     /* 线程 监控视频流回调 onPreviewFrame  是否有数据返回，设置时间内无数据返回 重启摄像头 */
     private class MonitorThread extends Thread {
