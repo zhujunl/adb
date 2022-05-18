@@ -100,5 +100,7 @@ public class Constants {
     public static final int SOUND_PUT_CARD  = 7;
 
     public static final float pam=0.3f;//人脸图片截取扩大
-
+    public static final int ORIGINAL=0;
+    public static final int GETBLACK=1;
+    public static final int GETRED=2;
 }

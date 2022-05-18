@@ -32,7 +32,7 @@ public class FingerManager {
 
         String deviceInfo();
 
-        void readFinger();
+        void readFinger(int type);
 
         void release();
 
@@ -78,9 +78,9 @@ public class FingerManager {
         return "";
     }
 
-    public void readFinger() {
+    public void readFinger(int type) {
         if (fingerStrategy != null) {
-            fingerStrategy.readFinger();
+            fingerStrategy.readFinger(type);
         }
     }
     public void redFingerComparison(byte[] bytes,byte[] bytes2){

@@ -2,8 +2,11 @@ package com.miaxis.face.manager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.util.RawBitmapUtils;
 
 import org.zz.api.MXFingerAPI;
@@ -60,7 +63,7 @@ public class FingerStrategy implements FingerManager.FingerStrategy {
     }
 
     @Override
-    public void readFinger() {
+    public void readFinger(int type) {
         try {
             if (fingerStrategy != null) {
                 int iImageX = 256;
@@ -69,10 +72,28 @@ public class FingerStrategy implements FingerManager.FingerStrategy {
                 byte[] bFingerImage = new byte[iImageSize];
                 int ID_TZ_SIZE = 512;
                 byte[] m_bFingerMbId = new byte[ID_TZ_SIZE];
-                int ret = fingerStrategy.mxExtractFeatureID(bFingerImage, iTimeout, 0, m_bFingerMbId);
+//                int ret = fingerStrategy.mxExtractFeatureID(bFingerImage, iTimeout, 0, m_bFingerMbId);
+                int ret = fingerStrategy.mxExtractFeature(bFingerImage, iTimeout, 0, m_bFingerMbId);
                 if (ret == 0) {
-                  Bitmap m_bitmap = fingerStrategy.Raw2Bimap(bFingerImage, iImageX, iImageY);
-                    if (readListener != null) {
+                    bFinger=bFingerImage;
+                    iX=iImageX;
+                    iY=iImageY;
+                  Bitmap m_bitmap = null;
+                  switch (type) {
+                      case Constants.ORIGINAL:
+                        m_bitmap=fingerStrategy.Raw2Bimap(bFingerImage, iImageX, iImageY);
+                          break;
+                      case Constants.GETBLACK:
+                          m_bitmap=getBit(bFingerImage, iImageX, iImageY,true);
+                          break;
+                      case Constants.GETRED:
+                          m_bitmap=getBit(bFingerImage, iImageX, iImageY,false);
+                          break;
+                      default:
+                          m_bitmap=fingerStrategy.Raw2Bimap(bFingerImage, iImageX, iImageY);
+                          break;
+                  }
+                    if (readListener != null&&m_bitmap!=null) {
                         readListener.onFingerRead(m_bFingerMbId, m_bitmap);
                         return;
                     }
@@ -85,6 +106,32 @@ public class FingerStrategy implements FingerManager.FingerStrategy {
             readListener.onFingerRead(null, null);
         }
     }
+    private Bitmap trans;
+    /**
+     * 算法指纹信息指纹
+     * */
+    private Bitmap getBit(byte[] bFingerImage, int iImageX,int iImageY,boolean type){
+        byte[] pngData = new byte[iImageX * iImageY * 4];
+        int[] pngDataLength = {0};
+        int getPNG=-1;
+        if (type){
+            getPNG= fingerStrategy.mxRaw2PNG(bFingerImage, iImageX, iImageY, pngData, pngDataLength);
+        } else {
+            getPNG= fingerStrategy.mxRaw2RedPNG(bFingerImage, iImageX, iImageY, pngData, pngDataLength);
+        }
+        Log.e("OnClickGetImage", "getPNG:" + getPNG);
+        if (getPNG == 0) {
+            if (trans != null) {
+                if (!trans.isRecycled()) {
+                    trans.recycle();
+                }
+            }
+
+            trans = BitmapFactory.decodeByteArray(pngData, 0, pngDataLength[0]);
+            return trans;
+        }
+        return null;
+    }
 
     @Override
     public void release() {
@@ -92,7 +139,8 @@ public class FingerStrategy implements FingerManager.FingerStrategy {
         readListener = null;
         if (fingerStrategy!=null){
             try {
-                fingerStrategy.mxCancelCaptue();
+//                fingerStrategy.mxCancelCaptue();
+                fingerStrategy.mxCancelCapture();
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -117,18 +165,20 @@ public class FingerStrategy implements FingerManager.FingerStrategy {
                 int iImageX = 256;
                 int iImageY = 360;
                 int iImageSize = iImageX * iImageY;
-                //int iImageSize = iImageX * iImageY;
                 byte[] bFingerImage = new byte[iImageSize];
                 int ID_TZ_SIZE = 512;
                 byte[] m_bFingerMbId = new byte[ID_TZ_SIZE];
-                int ret = fingerStrategy.mxExtractFeatureID(bFingerImage, iTimeout, 0, m_bFingerMbId);
+                int ret = fingerStrategy.mxExtractFeature(bFingerImage, iTimeout, 0, m_bFingerMbId);
+//                int ret = fingerStrategy.mxExtractFeatureID(bFingerImage, iTimeout, 0, m_bFingerMbId);
                 if (ret == 0) {
-                    int match = fingerStrategy.mxMatchFeatureID(m_bFingerMbId, b,3);
+                    int match = fingerStrategy.mxMatchFeature(m_bFingerMbId, b,3);
+//                    int match = fingerStrategy.mxMatchFeatureID(m_bFingerMbId, b,3);
                     int m;
                     if (match== SUCCESS){
                         m =  SUCCESS;
                     }else {
-                        int match2 = fingerStrategy.mxMatchFeatureID(m_bFingerMbId, b2, 3);
+                        int match2 = fingerStrategy.mxMatchFeature(m_bFingerMbId, b2, 3);
+//                        int match2 = fingerStrategy.mxMatchFeatureID(m_bFingerMbId, b2, 3);
                         if (match2== SUCCESS) {
                             m =  SUCCESS;
                         } else {
@@ -160,9 +210,11 @@ public class FingerStrategy implements FingerManager.FingerStrategy {
                 byte[] bFingerImage = new byte[iImageSize];
                 int ID_TZ_SIZE = 512;
                 byte[] m_bFingerMbId = new byte[ID_TZ_SIZE];
-                int ret = fingerStrategy.mxExtractFeatureID(bFingerImage, iTimeout, 0, m_bFingerMbId);
+                int ret = fingerStrategy.mxExtractFeature(bFingerImage, iTimeout, 0, m_bFingerMbId);
+//                int ret = fingerStrategy.mxExtractFeatureID(bFingerImage, iTimeout, 0, m_bFingerMbId);
                 if (ret == 0) {
-                    int match = fingerStrategy.mxMatchFeatureID(m_bFingerMbId,b,3);
+                    int match = fingerStrategy.mxMatchFeature(m_bFingerMbId,b,3);
+//                    int match = fingerStrategy.mxMatchFeatureID(m_bFingerMbId,b,3);
                     int m;
                     if (match ==  SUCCESS){
                         m =  SUCCESS;
@@ -184,4 +236,20 @@ public class FingerStrategy implements FingerManager.FingerStrategy {
         }
     }
 
+
+    private byte[] bFinger;
+    private int iX = 256;
+    private int iY = 360;
+
+    public byte[] getbFinger() {
+        return bFinger;
+    }
+
+    public int getiX() {
+        return iX;
+    }
+
+    public int getiY() {
+        return iY;
+    }
 }

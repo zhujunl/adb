@@ -402,7 +402,7 @@ public class VerifyFragment extends BaseFragment{
                 @Override
                 public void run() {
                 if (!comparFlag) {
-                    FingerManager.getInstance().readFinger();//指纹采集
+                    FingerManager.getInstance().readFinger(2);//指纹采集
                 } else {
                     FingerManager.getInstance().redFingerComparison(bytes, bytes2);//指纹比对
                 }
