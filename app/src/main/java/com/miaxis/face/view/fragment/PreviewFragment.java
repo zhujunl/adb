@@ -18,6 +18,7 @@ import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
 import com.miaxis.face.bean.Record;
 import com.miaxis.face.constant.Constants;
+import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.event.ReadCardEvent;
 import com.miaxis.face.event.ResultEvent;
 import com.miaxis.face.greendao.gen.RecordDao;
@@ -105,7 +106,7 @@ public class PreviewFragment extends BaseFragment {
         recordDao = Face_App.getInstance().getDaoSession().getRecordDao();
         CameraManager.getInstance().open(sv_main);
         CameraManager.getInstance().nir_open(sv_preview_nir);
-
+        tv_second.bringToFront();
     }
 
     @Override
@@ -155,6 +156,12 @@ public class PreviewFragment extends BaseFragment {
                     ((BaseActivity) activity).getNvController().back();
                 }
             }
+    }
+
+    @Subscribe(threadMode=ThreadMode.MAIN)
+    public void onCutDownEvent(CutDownEvent event){
+        tv_second.setVisibility(View.VISIBLE);
+        tv_second.setText(String.valueOf(event.getTime()));
     }
 
 }

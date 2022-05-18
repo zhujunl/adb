@@ -4,9 +4,6 @@ package com.miaxis.face.manager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -220,42 +217,6 @@ public class FaceManager {
 
     }
 
-    /**
-     * 视频流转RGB
-     *
-     * @param yuv 视频流数据NV21
-     */
-    public byte[] yuv2Rgb(byte[] yuv, int width, int height) {
-        if (this.dtTool == null) {
-            return null;
-        }
-        byte[] pRGBImage = new byte[width * height * 3];
-        this.dtTool.YUV2RGB(yuv, width, height, pRGBImage);
-
-        return pRGBImage;
-    }
-
-
-    public Bitmap getPriviewPic(byte[] data) {//这里传入的data参数就是onpreviewFrame中需要传入的byte[]型数据
-        BitmapFactory.Options newOpts = new BitmapFactory.Options();
-        newOpts.inJustDecodeBounds = true;
-        YuvImage yuvimage = new YuvImage(
-                data,
-                ImageFormat.NV21,
-                1280,
-                720,
-                null);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        yuvimage.compressToJpeg(new Rect(0, 0, 1280,720), 100, baos);// 80--JPG图片的质量[0-100],100最高
-        byte[] rawImage = baos.toByteArray();
-        //将rawImage转换成bitmap
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
-        Bitmap bitmap = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options);
-        return bitmap;
-    }
-
-
     private void extract(MXFaceInfoEx mxFaceInfoEx, byte[] data) throws Exception {
         Log.v("asd", "提特征中"+"_____人脸质量："+mxFaceInfoEx.quality);
         byte[] feature = extractFeature(data, zoomWidth, zoomHeight, mxFaceInfoEx);
@@ -266,6 +227,24 @@ public class FaceManager {
         }
     }
 
+
+    public Bitmap takePicture(byte[] data){
+        byte[] zoomedRgbData = cameraPreviewConvert(data,
+                Constants.PRE_WIDTH,
+                Constants.PRE_HEIGHT,
+                0,
+                zoomWidth,
+                zoomHeight);
+        int[] faceNum = new int[]{MAX_FACE_NUM};
+        MXFaceInfoEx[] faceBuffer = makeFaceContainer(faceNum[0]);
+        boolean result = faceDetect(zoomedRgbData, zoomWidth, zoomHeight, faceNum, faceBuffer);
+        if (result){
+            byte[] fileImage = FaceManager.getInstance().imageEncode(zoomedRgbData, zoomWidth, zoomHeight);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
+            return bitmap;
+        }
+        return null;
+    }
 
     /**
      * 摄像头预览数据转换

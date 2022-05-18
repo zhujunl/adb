@@ -37,6 +37,7 @@ import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.BtReadCardEvent;
 import com.miaxis.face.event.CmdGetFingerEvent;
 import com.miaxis.face.event.CmdShutterEvent;
+import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.event.LoadProgressEvent;
 import com.miaxis.face.event.NoCardEvent;
 import com.miaxis.face.event.ReadCardEvent;
@@ -247,6 +248,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
 
     @SuppressLint("CheckResult")
     private void readSecond() {
+        final CutDownEvent cutDownEvent=new CutDownEvent();
         Observable.interval(0, 1, TimeUnit.SECONDS)
                 .take(count+1 )
                 .map(new Function<Long, Long>() {
@@ -262,6 +264,8 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                         Log.e(TAG, "倒计时==" +aLong);
                         //                        tvSecond.setVisibility(View.VISIBLE);
                         //                        tvSecond.setText("" + aLong);
+                        cutDownEvent.setTime(aLong);
+                        eventBus.post(cutDownEvent);
                         if (aLong==0){
                             isActive=false;
                             nvController.back();
@@ -274,7 +278,6 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     public void onNoCardEvent(NoCardEvent e) {
         Log.e("===", "onNoCardEvent");
         SoundManager.getInstance().close();
-        //            soundPool.stop(mCurSoundId);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

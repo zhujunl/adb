@@ -121,6 +121,39 @@ public class CameraManager {
             });
     }
 
+    public void open(SurfaceView surfaceView,Camera.PreviewCallback previewCallback) {
+        mCamera = Camera.open(1);
+        Camera.Parameters parameters = mCamera.getParameters();
+        parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
+        parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
+        buffer=new byte[((PRE_WIDTH * PRE_HEIGHT) * ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
+        mCamera.addCallbackBuffer(buffer);
+        mCamera.setParameters(parameters);
+        mCamera.setPreviewCallbackWithBuffer(previewCallback);
+        mCamera.startPreview();
+        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                try {
+                    mCamera.setPreviewDisplay(surfaceHolder);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                FaceManager.getInstance().stopLoop();
+                close();
+            }
+        });
+    }
+
     public void close() {
         try {
             if (mCamera != null) {
@@ -173,7 +206,6 @@ public class CameraManager {
         @Override
         public void onPreviewFrame(byte[] bytes, Camera camera) {
             camera.addCallbackBuffer(buffer);
-//            Log.e(TAG, "onPreviewFrame=可见光" );
             FaceManager.getInstance().setLastVisiblePreviewData(bytes);
         }
     };
@@ -182,7 +214,6 @@ public class CameraManager {
         @Override
         public void onPreviewFrame(byte[] bytes, Camera camera) {
             camera.addCallbackBuffer(nirbuffer);
-//            Log.v(TAG, "onPreviewFrame=近红外" );
             FaceManager.getInstance().setNirVisiblePreviewData(bytes);
         }
     };
@@ -191,6 +222,9 @@ public class CameraManager {
         return mCamera;
     }
 
+    public byte[] getBuffer() {
+        return buffer;
+    }
 
     /* 线程 监控视频流回调 onPreviewFrame  是否有数据返回，设置时间内无数据返回 重启摄像头 */
     private class MonitorThread extends Thread {

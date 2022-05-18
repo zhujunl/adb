@@ -1,17 +1,22 @@
 package com.miaxis.face.view.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.miaxis.face.R;
+import com.miaxis.face.adapter.PreviewPageAdapter;
 import com.miaxis.face.app.Face_App;
 import com.miaxis.face.constant.CameraConfig;
 import com.miaxis.face.constant.CameraPreviewCallback;
@@ -21,6 +26,7 @@ import com.miaxis.face.constant.ZZResponse;
 import com.miaxis.face.manager.CameraHelper;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.view.custom.PreviewPictureEntity;
+import com.miaxis.face.view.custom.ZoomImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,12 +57,12 @@ public class HightFragment extends BaseFragment{
     Button btnScreen;
     @BindView(R.id.btn_try_again)
     Button btnTryAgain;
-//    @BindView(R.id.rv_content)
-//    RecyclerView rvContent;
+    @BindView(R.id.rv_content)
+    ListView rvContent;
 
     private final String TAG="HightFragment";
     private List<PreviewPictureEntity> pathList = new ArrayList<>();
-//    private PreviewPageAdapter mAdapter;
+    private PreviewPageAdapter mAdapter;
     private File mFilePath;
     private final static Handler mHandler = new Handler();
     private Disposable subscribe;
@@ -111,44 +117,41 @@ public class HightFragment extends BaseFragment{
             }
         });
 
-//        mAdapter=new PreviewPageAdapter(getActivity(), pathList, new PreviewPageAdapter.PreViewPageClick() {
-//            @Override
-//            public void Click(int position) {
-//                PreviewPictureEntity str = mAdapter.getPathList().get(position);
-//                showBigPicture(str.getPath());
-//            }
-//
-//            @Override
-//            public void LongClck(final int position){
-//                new AlertDialog.Builder(getContext())
-//                        .setTitle("注意")
-//                        .setMessage("是否删除此图片")
-//                        .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                pathList.remove(position);
-//                                mAdapter.setList(pathList);
-//                            }
-//                        })
-//                        .show();
-//            }
-//        });
-//        rvContent.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-//        rvContent.setAdapter(mAdapter);
+        mAdapter=new PreviewPageAdapter(getActivity(), pathList, new PreviewPageAdapter.PreViewListner() {
+            @Override
+            public void onClick(int position) {
+                PreviewPictureEntity str = mAdapter.getPathList().get(position);
+                showBigPicture(str.getPath());
+            }
 
+            @Override
+            public void onLongClick(final int position){
+                new android.app.AlertDialog.Builder(getContext())
+                        .setTitle("注意")
+                        .setMessage("是否删除此图片")
+                        .setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PreviewPictureEntity entity=pathList.get(position);
+                                pathList.remove(entity);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .show();
+            }
+        });
+        rvContent.setAdapter(mAdapter);
     }
 
 
     private void showBigPicture(String path) {
-//        android.support.v7.app.AlertDialog.Builder builder=new android.support.v7.app.AlertDialog.Builder(getActivity());
-//        View v= LayoutInflater.from(getActivity()).inflate(R.layout.dialog_to_view_big_picture,null,false);
-////        ZoomImageView img=v.findViewById(R.id.img);
-////        Glide.with(getContext()).load(new File(path)).into(img);
-//        builder.setView(v);
-//        android.support.v7.app.AlertDialog alert=builder.create();
-//        alert.show();
-//        new ToViewBigPictureDialog(getContext(), new ToViewBigPictureDialog.ClickListener() {
-//        }, new ToViewBigPictureDialog.Builder().setPathFile(path)).show();
+        android.support.v7.app.AlertDialog.Builder builder=new android.support.v7.app.AlertDialog.Builder(getActivity());
+        View v= LayoutInflater.from(getActivity()).inflate(R.layout.dialog_to_view_big_picture,null,false);
+        ZoomImageView img=v.findViewById(R.id.img);
+        Glide.with(getContext()).load(new File(path)).into(img);
+        builder.setView(v);
+        android.support.v7.app.AlertDialog alert=builder.create();
+        alert.show();
     }
 
     private final SurfaceHolder.Callback callback= new SurfaceHolder.Callback(){
@@ -193,11 +196,10 @@ public class HightFragment extends BaseFragment{
                                                                         return;
                                                                     }
                                                                     Log.e(TAG, "获取图片 %s" + absolutePath);
-                                                                    PreviewPictureEntity entity = new PreviewPictureEntity();
-                                                                    entity.setBase64(base64Path);
-                                                                    entity.setPath(absolutePath);
+                                                                    PreviewPictureEntity entity = new PreviewPictureEntity(absolutePath,absolutePath);
                                                                     pathList.add(entity);
-//                                                                    mAdapter.setList(pathList);
+//                                                                    mAdapter.addPathList(entity);
+                                                                    mAdapter.notifyDataSetChanged();
                                                                 }
                                                             });
                                                         }
@@ -226,5 +228,10 @@ public class HightFragment extends BaseFragment{
         }
     };
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        CameraHelper.getInstance().free();
+        pathList.clear();
+    }
 }

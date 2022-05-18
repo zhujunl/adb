@@ -23,6 +23,7 @@ import com.miaxis.face.bean.PhotoFaceFeature;
 import com.miaxis.face.bean.Record;
 import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.CmdGetFingerDoneEvent;
+import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.event.ReadCardEvent;
 import com.miaxis.face.event.ResultEvent;
 import com.miaxis.face.greendao.gen.RecordDao;
@@ -89,7 +90,6 @@ public class VerifyFragment extends BaseFragment{
     }
 
 
-
     public VerifyFragment() {
 
     }
@@ -102,10 +102,9 @@ public class VerifyFragment extends BaseFragment{
         eventbus=EventBus.getDefault();
         eventbus.register(this);
         recordDao = Face_App.getInstance().getDaoSession().getRecordDao();
+        tv_second.bringToFront();
         CameraManager.getInstance().open(sv_main);
         powerControl(true);
-        Log.e(TAG, "comparFlag==" + comparFlag);
-        CameraManager.getInstance().open(sv_main);
         if (!comparFlag){
             rv_result.bringToFront();
             rv_result.clear();
@@ -131,36 +130,6 @@ public class VerifyFragment extends BaseFragment{
     public void setVerifyMode(int verifyMode) {
         this.verifyMode = verifyMode;
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN,priority = 1)
-    public void onCardImgEvent(ReadCardEvent event){
-        Log.e(TAG, "onCardImgEvent" +event.toString());
-        cardimg=event.getFace();
-        record=event.getRecord();
-        int v=event.getVerifyMode();
-        switch (v) {
-            case Config.MODE_FACE_ONLY:
-            case Config.MODE_ONE_FACE_FIRST:
-            case Config.MODE_TWO_FACE_FIRST:
-                CameraManager.getInstance().nir_open(sv_preview_nir);
-                FaceManager.getInstance().startLoop();
-                FaceManager.getInstance().setFaceHandleListener(faceListener);
-
-                setFaceView(true);
-                break;
-            case Config.MODE_FINGER_ONLY:;
-            case Config.MODE_ONE_FINGER_FIRST:
-            case Config.MODE_TWO_FINGER_FIRST:
-                initFingerDevice();
-
-                setFingerView(true);
-                break;
-
-            default:
-                break;
-        }
-    }
-
 
     private void setFaceView(final boolean clear){
         getActivity().runOnUiThread(new Runnable() {
@@ -193,6 +162,41 @@ public class VerifyFragment extends BaseFragment{
                 rv_result.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN,priority = 1)
+    public void onCardImgEvent(ReadCardEvent event){
+        Log.e(TAG, "onCardImgEvent" +event.toString());
+        cardimg=event.getFace();
+        record=event.getRecord();
+        int v=event.getVerifyMode();
+        switch (v) {
+            case Config.MODE_FACE_ONLY:
+            case Config.MODE_ONE_FACE_FIRST:
+            case Config.MODE_TWO_FACE_FIRST:
+                CameraManager.getInstance().nir_open(sv_preview_nir);
+                FaceManager.getInstance().startLoop();
+                FaceManager.getInstance().setFaceHandleListener(faceListener);
+
+                setFaceView(true);
+                break;
+            case Config.MODE_FINGER_ONLY:;
+            case Config.MODE_ONE_FINGER_FIRST:
+            case Config.MODE_TWO_FINGER_FIRST:
+                initFingerDevice();
+
+                setFingerView(true);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    @Subscribe(threadMode=ThreadMode.MAIN,priority = 2)
+    public void onCutDownEvent(CutDownEvent event){
+        tv_second.setVisibility(View.VISIBLE);
+        tv_second.setText(String.valueOf(event.getTime()));
     }
 
     /**
@@ -305,7 +309,6 @@ public class VerifyFragment extends BaseFragment{
     private final FingerManager.OnFingerReadListener fingerReadListener = new FingerManager.OnFingerReadListener() {
         @Override
         public void onFingerRead(byte[] feature, Bitmap image) {
-            //            Timber.e("FingerRead:" + (feature == null) + "   " + (image == null));
             Log.e(TAG, "fingerReadListener:  onFingerRead,采集"  );
             if (image==null) {
                 SystemClock.sleep(1000);
@@ -398,11 +401,11 @@ public class VerifyFragment extends BaseFragment{
             Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
-                    if (!comparFlag) {
-                        FingerManager.getInstance().readFinger();//指纹采集
-                    } else {
-                        FingerManager.getInstance().redFingerComparison(bytes, bytes2);//指纹比对
-                    }
+                if (!comparFlag) {
+                    FingerManager.getInstance().readFinger();//指纹采集
+                } else {
+                    FingerManager.getInstance().redFingerComparison(bytes, bytes2);//指纹比对
+                }
                 }
             });
             return true;
