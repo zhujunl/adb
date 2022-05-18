@@ -75,6 +75,23 @@ public class MXCamera implements Camera.AutoFocusCallback, Camera.PreviewCallbac
         }
         try {
             Camera.Parameters parameters = this.mCamera.getParameters();
+            if (cameraId == CameraConfig.Camera_SM.CameraId) {
+                Camera.Parameters params = mCamera.getParameters();
+                List<Camera.Size> pictureSizes = params.getSupportedPictureSizes();
+                int length = pictureSizes.size();
+                int w = 0;
+                int h = 0;
+                for (int i = 0; i < length; i++) {
+                    if (pictureSizes.get(i).width > w) {
+                        w = pictureSizes.get(i).width;
+                        h = pictureSizes.get(i).height;
+                    }
+                }
+                if (w != 0 && h != 0) {
+                    width = w;
+                    height = h;
+                }
+            }
             parameters.setPreviewSize(width, height);
             parameters.setPictureSize(width, height);
             this.mCamera.setParameters(parameters);

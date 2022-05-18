@@ -431,6 +431,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(timeReceiver);
+        CardManager.getInstance().free(this);
     }
 
     private Record IdCardToRecord(IdCard card, String location, double latitude, double longitude){

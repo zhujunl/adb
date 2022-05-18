@@ -90,7 +90,7 @@ public class LoadingActivity extends BaseActivity {
                 tvLoading.setText("初始化算法成功");
                 LogUtil.writeLog("初始化算法成功");
                 startActivity(new Intent(this, MainActivity2.class));
-//                finish();
+                finish();
                 break;
             default:
                 tvLoading.setText("初始化算法失败");
@@ -104,7 +104,7 @@ public class LoadingActivity extends BaseActivity {
         super.onDestroy();
         eventBus.unregister(this);
         Face_App.getInstance().onTerminate();
-        System.exit(0);
+//        System.exit(0);
     }
 
     @OnClick(R.id.tv_title)

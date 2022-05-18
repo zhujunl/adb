@@ -149,7 +149,9 @@ public class Face_App extends Application implements ServiceConnection {
     @Override
     public void onTerminate() {
         eventBus.unregister(this);
-        mxAPI.mxFreeAlg();
+        if (mxAPI!=null) {
+            mxAPI.mxFreeAlg();
+        }
         super.onTerminate();
     }
 
