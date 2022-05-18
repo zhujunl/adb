@@ -100,7 +100,14 @@ public class Constants {
     public static final int SOUND_PUT_CARD  = 7;
 
     public static final float pam=0.3f;//人脸图片截取扩大
-    public static final int ORIGINAL=0;
-    public static final int GETBLACK=1;
-    public static final int GETRED=2;
+    public static final int ORIGINAL=0;//原始图像
+    public static final int GETBLACK=1;//黑色低图
+    public static final int GETRED=2;//红色低图
+
+    public static final boolean DEFAULTSCENE=true;//默认现场图片
+    public static final boolean DEFAULTLIVE=true;//默认开启活体监测
+    public static final int DEFAULTRGB=1;//默认可见光摄像头
+    public static final int DEFAULTNIR=0;//默认近红外摄像头
+    public static final int DEFAULTSM=2;//默认高拍仪摄像头
+    public static final float QUALITY=50;
 }

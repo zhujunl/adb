@@ -9,6 +9,8 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.util.Log;
 
+import com.miaxis.face.app.Face_App;
+import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
 import com.miaxis.face.constant.Constants;
@@ -54,6 +56,8 @@ public class FaceManager {
 
     private OnFaceHandleListener faceHandleListener;
 
+    private Config config;
+
     private FaceManager() {
     }
 
@@ -88,6 +92,7 @@ public class FaceManager {
         }
         Log.e("Facemanager:","算法版本："+mxFaceAPI.mxAlgVersion());
         initThread();
+        config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
         return re;
     }
 
@@ -133,7 +138,7 @@ public class FaceManager {
 
     private void previewDataLoop() {
         try {
-            if (false){
+            if (config.getLiveness()){
                 if (this.nirVisiblePreviewData!=null&&this.lastVisiblePreviewData!=null) {
                     livenessVerify(nirVisiblePreviewData,lastVisiblePreviewData);
                 }
@@ -172,7 +177,7 @@ public class FaceManager {
             }
             MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);
             result = faceQuality(zoomedRgbData, zoomWidth, zoomHeight, 1, new MXFaceInfoEx[]{mxFaceInfoEx});
-                if (result&&mxFaceInfoEx.quality>50) {
+                if (result&&mxFaceInfoEx.quality>config.getQuality()) {
                     extract(mxFaceInfoEx,zoomedRgbData);
                 }
             }

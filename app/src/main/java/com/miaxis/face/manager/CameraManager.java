@@ -55,8 +55,9 @@ public class CameraManager {
 
 
 
-    public void open(SurfaceView surfaceView) {
-            mCamera = Camera.open(1);
+    public void open(SurfaceView surfaceView,int cameraId) {
+        try {
+            mCamera = Camera.open(cameraId);
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
             parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
@@ -86,10 +87,18 @@ public class CameraManager {
                     close();
                 }
             });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
-    public void nir_open(SurfaceView surfaceView) {
-            mirCamera = Camera.open(0);
+    public void nir_open(SurfaceView surfaceView,int cameraId,boolean nirFlag) {
+        if (!nirFlag){
+            return;
+        }
+        try {
+            mirCamera = Camera.open(cameraId);
             Camera.Parameters parameters = mirCamera.getParameters();
             parameters.setPreviewSize(PIC_WIDTH, PIC_HEIGHT);
             parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
@@ -119,39 +128,48 @@ public class CameraManager {
                     nirClose();
                 }
             });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
-    public void open(SurfaceView surfaceView,Camera.PreviewCallback previewCallback) {
-        mCamera = Camera.open(1);
-        Camera.Parameters parameters = mCamera.getParameters();
-        parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
-        parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
-        buffer=new byte[((PRE_WIDTH * PRE_HEIGHT) * ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
-        mCamera.addCallbackBuffer(buffer);
-        mCamera.setParameters(parameters);
-        mCamera.setPreviewCallbackWithBuffer(previewCallback);
-        mCamera.startPreview();
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                try {
-                    mCamera.setPreviewDisplay(surfaceHolder);
-                } catch (IOException e) {
-                    e.printStackTrace();
+    public void open(SurfaceView surfaceView,Camera.PreviewCallback previewCallback,int cameraId) {
+        try {
+            mCamera = Camera.open(cameraId);
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
+            parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
+            buffer=new byte[((PRE_WIDTH * PRE_HEIGHT) * ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
+            mCamera.addCallbackBuffer(buffer);
+            mCamera.setParameters(parameters);
+            mCamera.setPreviewCallbackWithBuffer(previewCallback);
+            mCamera.startPreview();
+            surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                    try {
+                        mCamera.setPreviewDisplay(surfaceHolder);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+                @Override
+                public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
-            }
+                }
 
-            @Override
-            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                FaceManager.getInstance().stopLoop();
-                close();
-            }
-        });
+                @Override
+                public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                    FaceManager.getInstance().stopLoop();
+                    close();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public void close() {

@@ -76,6 +76,7 @@ public class VerifyFragment extends BaseFragment{
     private RecordDao recordDao;
     private boolean comparFlag=true;
     private int verifyMode;
+    private Config config;
 
     public static VerifyFragment getInstance(boolean comparFlag){
         VerifyFragment verifyFragment=new VerifyFragment();
@@ -102,8 +103,9 @@ public class VerifyFragment extends BaseFragment{
         eventbus=EventBus.getDefault();
         eventbus.register(this);
         recordDao = Face_App.getInstance().getDaoSession().getRecordDao();
+        config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
         tv_second.bringToFront();
-        CameraManager.getInstance().open(sv_main);
+        CameraManager.getInstance().open(sv_main,config.getRgb());
         powerControl(true);
         if (!comparFlag){
             rv_result.bringToFront();
@@ -174,7 +176,7 @@ public class VerifyFragment extends BaseFragment{
             case Config.MODE_FACE_ONLY:
             case Config.MODE_ONE_FACE_FIRST:
             case Config.MODE_TWO_FACE_FIRST:
-                CameraManager.getInstance().nir_open(sv_preview_nir);
+                CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),config.getLiveness());
                 FaceManager.getInstance().startLoop();
                 FaceManager.getInstance().setFaceHandleListener(faceListener);
 
@@ -226,7 +228,7 @@ public class VerifyFragment extends BaseFragment{
         PhotoFaceFeature cardFaceFeature = FaceManager.getInstance().getCardFaceFeatureByBitmapPosting(bitmap);
         float faceMatchScore = FaceManager.getInstance().matchFeature(feature, cardFaceFeature.getFaceFeature());
         Log.e(TAG, "onFaceVerify==" + faceMatchScore);
-        final boolean result=faceMatchScore>0.7;
+        final boolean result=faceMatchScore>config.getPassScore();
         Bitmap bit=null;
         byte[] fileImage = FaceManager.getInstance().imageEncode(mxRGBImage.getRgbImage(), mxRGBImage.getWidth(), mxRGBImage.getHeight());
         Bitmap faceBitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
@@ -239,7 +241,6 @@ public class VerifyFragment extends BaseFragment{
         Log.e("asd", "人脸比对中"+"_____人脸图片：x="+x+",y="+y+",width="+width+",height="+height);
         final Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, x, y,width, height);//截取
         FaceManager.getInstance().stopLoop();
-        CameraManager.getInstance().nirClose();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -249,7 +250,7 @@ public class VerifyFragment extends BaseFragment{
                 rv_result.setResultMessage( result ? "人脸通过" : "人脸失败");
             }
         });
-        if (true){
+        if (config.getScence()){
             Matrix matrix = new Matrix();
             matrix.setScale(0.5f, 0.5f);
             bit = Bitmap.createBitmap(faceBitmap, 0, 0, faceBitmap.getWidth(), faceBitmap.getHeight(), matrix, true);
@@ -264,6 +265,7 @@ public class VerifyFragment extends BaseFragment{
             recordDao.insert(record);
             eventbus.post(new ResultEvent(result?ResultEvent.FACE_SUCCESS:ResultEvent.FACE_FAIL, record));
         }else {
+            CameraManager.getInstance().nirClose();
             initFingerDevice();
             setFingerView(false);
         }
@@ -357,7 +359,7 @@ public class VerifyFragment extends BaseFragment{
                     recordDao.insert(record);
                     eventbus.post(new ResultEvent(state==0?ResultEvent.FINGER_SUCCESS:ResultEvent.FINGER_FAIL, record));
                 }else {
-                    CameraManager.getInstance().nir_open(sv_preview_nir);
+                    CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),config.getLiveness());
                     FaceManager.getInstance().startLoop();
                     FaceManager.getInstance().setFaceHandleListener(faceListener);
                     setFaceView(false);
@@ -402,7 +404,7 @@ public class VerifyFragment extends BaseFragment{
                 @Override
                 public void run() {
                 if (!comparFlag) {
-                    FingerManager.getInstance().readFinger(2);//指纹采集
+                    FingerManager.getInstance().readFinger(config.getFingerImg());//指纹采集
                 } else {
                     FingerManager.getInstance().redFingerComparison(bytes, bytes2);//指纹比对
                 }

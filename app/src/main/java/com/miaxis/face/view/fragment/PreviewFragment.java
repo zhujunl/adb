@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.miaxis.face.R;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
 import com.miaxis.face.bean.Record;
@@ -66,7 +67,7 @@ public class PreviewFragment extends BaseFragment {
     private Bitmap cardimg=null;
     private EventBus eventbus;
     private RecordDao recordDao;
-
+    private Config config;
 
 
     public static PreviewFragment newIntent(){
@@ -101,11 +102,12 @@ public class PreviewFragment extends BaseFragment {
         eventbus=EventBus.getDefault();
         eventbus.register(this);
 
+        config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
         FaceManager.getInstance().startLoop();
         FaceManager.getInstance().setFaceHandleListener(faceListener);
         recordDao = Face_App.getInstance().getDaoSession().getRecordDao();
-        CameraManager.getInstance().open(sv_main);
-        CameraManager.getInstance().nir_open(sv_preview_nir);
+        CameraManager.getInstance().open(sv_main,config.getRgb());
+        CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),true);
         tv_second.bringToFront();
     }
 

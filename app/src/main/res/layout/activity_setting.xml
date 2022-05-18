@@ -252,6 +252,261 @@
                         android:textColor="@color/dark"
                         android:gravity="center"
                         android:textSize="20sp"
+                        android:text="指纹图像"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_finger"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="原始图像"
+                            android:tag="0"
+                            android:id="@+id/rb_finger_ori"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="黑色底图"
+                            android:tag="1"
+                            android:id="@+id/rb_finger_dark"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="红色底图"
+                            android:tag="2"
+                            android:id="@+id/rb_finger_red"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="抓拍图像"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_img"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="现场图像"
+                            android:id="@+id/rb_scene"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="人脸图像"
+                            android:id="@+id/rb_face"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="活体监测"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_live"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="开启"
+                            android:id="@+id/rb_live_on"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="关闭"
+                            android:id="@+id/rb_live_off"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
                         android:text="比对阈值"
                         android:layout_weight="1"
                         android:layout_width="0dp"
@@ -281,6 +536,52 @@
 
                 </LinearLayout>
 
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="质量阈值"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:inputType="numberDecimal"
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:singleLine="true"
+                        android:id="@+id/et_quality_score"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
 
 
                 <View
@@ -581,6 +882,297 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"/>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="可见光摄像头"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_rgb"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="0"
+                            android:tag="0"
+                            android:id="@+id/rb_rgb0"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="1"
+                            android:tag="1"
+                            android:id="@+id/rb_rgb1"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="2"
+                            android:tag="2"
+                            android:id="@+id/rb_rgb2"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="近红外摄像头"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_nir"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="0"
+                            android:tag="0"
+                            android:id="@+id/rb_nir0"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="1"
+                            android:tag="1"
+                            android:id="@+id/rb_nir1"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="2"
+                            android:tag="2"
+                            android:id="@+id/rb_nir2"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="高拍仪摄像头"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_sm"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="0"
+                            android:tag="0"
+                            android:id="@+id/rb_sm0"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="1"
+                            android:tag="1"
+                            android:id="@+id/rb_sm1"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="2"
+                            android:tag="2"
+                            android:id="@+id/rb_sm2"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+
+                    </RadioGroup>
 
                     <View
                         android:background="@color/gray_dark"

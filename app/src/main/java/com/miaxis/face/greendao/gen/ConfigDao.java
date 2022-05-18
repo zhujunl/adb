@@ -29,18 +29,25 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         public final static Property Port = new Property(2, int.class, "port", false, "PORT");
         public final static Property UpTime = new Property(3, String.class, "upTime", false, "UP_TIME");
         public final static Property PassScore = new Property(4, float.class, "passScore", false, "PASS_SCORE");
-        public final static Property Banner = new Property(5, String.class, "banner", false, "BANNER");
-        public final static Property IntervalTime = new Property(6, int.class, "intervalTime", false, "INTERVAL_TIME");
-        public final static Property OrgId = new Property(7, String.class, "orgId", false, "ORG_ID");
-        public final static Property OrgName = new Property(8, String.class, "orgName", false, "ORG_NAME");
-        public final static Property NetFlag = new Property(9, boolean.class, "netFlag", false, "NET_FLAG");
-        public final static Property QueryFlag = new Property(10, boolean.class, "queryFlag", false, "QUERY_FLAG");
-        public final static Property Password = new Property(11, String.class, "password", false, "PASSWORD");
-        public final static Property VerifyMode = new Property(12, int.class, "verifyMode", false, "VERIFY_MODE");
-        public final static Property WhiteFlag = new Property(13, boolean.class, "whiteFlag", false, "WHITE_FLAG");
-        public final static Property BlackFlag = new Property(14, boolean.class, "blackFlag", false, "BLACK_FLAG");
-        public final static Property AdvertiseFlag = new Property(15, Boolean.class, "advertiseFlag", false, "ADVERTISE_FLAG");
-        public final static Property AdvertiseDelayTime = new Property(16, Integer.class, "advertiseDelayTime", false, "ADVERTISE_DELAY_TIME");
+        public final static Property Quality = new Property(5, float.class, "quality", false, "QUALITY");
+        public final static Property Banner = new Property(6, String.class, "banner", false, "BANNER");
+        public final static Property IntervalTime = new Property(7, int.class, "intervalTime", false, "INTERVAL_TIME");
+        public final static Property OrgId = new Property(8, String.class, "orgId", false, "ORG_ID");
+        public final static Property OrgName = new Property(9, String.class, "orgName", false, "ORG_NAME");
+        public final static Property NetFlag = new Property(10, boolean.class, "netFlag", false, "NET_FLAG");
+        public final static Property QueryFlag = new Property(11, boolean.class, "queryFlag", false, "QUERY_FLAG");
+        public final static Property Password = new Property(12, String.class, "password", false, "PASSWORD");
+        public final static Property VerifyMode = new Property(13, int.class, "verifyMode", false, "VERIFY_MODE");
+        public final static Property WhiteFlag = new Property(14, boolean.class, "whiteFlag", false, "WHITE_FLAG");
+        public final static Property BlackFlag = new Property(15, boolean.class, "blackFlag", false, "BLACK_FLAG");
+        public final static Property AdvertiseFlag = new Property(16, Boolean.class, "advertiseFlag", false, "ADVERTISE_FLAG");
+        public final static Property AdvertiseDelayTime = new Property(17, Integer.class, "advertiseDelayTime", false, "ADVERTISE_DELAY_TIME");
+        public final static Property FingerImg = new Property(18, Integer.class, "fingerImg", false, "FINGER_IMG");
+        public final static Property Scence = new Property(19, boolean.class, "scence", false, "SCENCE");
+        public final static Property Liveness = new Property(20, boolean.class, "liveness", false, "LIVENESS");
+        public final static Property Rgb = new Property(21, Integer.class, "rgb", false, "RGB");
+        public final static Property Nir = new Property(22, Integer.class, "nir", false, "NIR");
+        public final static Property Sm = new Property(23, Integer.class, "sm", false, "SM");
     }
 
 
@@ -61,18 +68,25 @@ public class ConfigDao extends AbstractDao<Config, Long> {
                 "\"PORT\" INTEGER NOT NULL ," + // 2: port
                 "\"UP_TIME\" TEXT," + // 3: upTime
                 "\"PASS_SCORE\" REAL NOT NULL ," + // 4: passScore
-                "\"BANNER\" TEXT," + // 5: banner
-                "\"INTERVAL_TIME\" INTEGER NOT NULL ," + // 6: intervalTime
-                "\"ORG_ID\" TEXT," + // 7: orgId
-                "\"ORG_NAME\" TEXT," + // 8: orgName
-                "\"NET_FLAG\" INTEGER NOT NULL ," + // 9: netFlag
-                "\"QUERY_FLAG\" INTEGER NOT NULL ," + // 10: queryFlag
-                "\"PASSWORD\" TEXT," + // 11: password
-                "\"VERIFY_MODE\" INTEGER NOT NULL ," + // 12: verifyMode
-                "\"WHITE_FLAG\" INTEGER NOT NULL ," + // 13: whiteFlag
-                "\"BLACK_FLAG\" INTEGER NOT NULL ," + // 14: blackFlag
-                "\"ADVERTISE_FLAG\" INTEGER," + // 15: advertiseFlag
-                "\"ADVERTISE_DELAY_TIME\" INTEGER);"); // 16: advertiseDelayTime
+                "\"QUALITY\" REAL NOT NULL ," + // 5: quality
+                "\"BANNER\" TEXT," + // 6: banner
+                "\"INTERVAL_TIME\" INTEGER NOT NULL ," + // 7: intervalTime
+                "\"ORG_ID\" TEXT," + // 8: orgId
+                "\"ORG_NAME\" TEXT," + // 9: orgName
+                "\"NET_FLAG\" INTEGER NOT NULL ," + // 10: netFlag
+                "\"QUERY_FLAG\" INTEGER NOT NULL ," + // 11: queryFlag
+                "\"PASSWORD\" TEXT," + // 12: password
+                "\"VERIFY_MODE\" INTEGER NOT NULL ," + // 13: verifyMode
+                "\"WHITE_FLAG\" INTEGER NOT NULL ," + // 14: whiteFlag
+                "\"BLACK_FLAG\" INTEGER NOT NULL ," + // 15: blackFlag
+                "\"ADVERTISE_FLAG\" INTEGER," + // 16: advertiseFlag
+                "\"ADVERTISE_DELAY_TIME\" INTEGER," + // 17: advertiseDelayTime
+                "\"FINGER_IMG\" INTEGER," + // 18: fingerImg
+                "\"SCENCE\" INTEGER NOT NULL ," + // 19: scence
+                "\"LIVENESS\" INTEGER NOT NULL ," + // 20: liveness
+                "\"RGB\" INTEGER," + // 21: rgb
+                "\"NIR\" INTEGER," + // 22: nir
+                "\"SM\" INTEGER);"); // 23: sm
     }
 
     /** Drops the underlying database table. */
@@ -97,41 +111,64 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             stmt.bindString(4, upTime);
         }
         stmt.bindDouble(5, entity.getPassScore());
+        stmt.bindDouble(6, entity.getQuality());
  
         String banner = entity.getBanner();
         if (banner != null) {
-            stmt.bindString(6, banner);
+            stmt.bindString(7, banner);
         }
-        stmt.bindLong(7, entity.getIntervalTime());
+        stmt.bindLong(8, entity.getIntervalTime());
  
         String orgId = entity.getOrgId();
         if (orgId != null) {
-            stmt.bindString(8, orgId);
+            stmt.bindString(9, orgId);
         }
  
         String orgName = entity.getOrgName();
         if (orgName != null) {
-            stmt.bindString(9, orgName);
+            stmt.bindString(10, orgName);
         }
-        stmt.bindLong(10, entity.getNetFlag() ? 1L: 0L);
-        stmt.bindLong(11, entity.getQueryFlag() ? 1L: 0L);
+        stmt.bindLong(11, entity.getNetFlag() ? 1L: 0L);
+        stmt.bindLong(12, entity.getQueryFlag() ? 1L: 0L);
  
         String password = entity.getPassword();
         if (password != null) {
-            stmt.bindString(12, password);
+            stmt.bindString(13, password);
         }
-        stmt.bindLong(13, entity.getVerifyMode());
-        stmt.bindLong(14, entity.getWhiteFlag() ? 1L: 0L);
-        stmt.bindLong(15, entity.getBlackFlag() ? 1L: 0L);
+        stmt.bindLong(14, entity.getVerifyMode());
+        stmt.bindLong(15, entity.getWhiteFlag() ? 1L: 0L);
+        stmt.bindLong(16, entity.getBlackFlag() ? 1L: 0L);
  
         Boolean advertiseFlag = entity.getAdvertiseFlag();
         if (advertiseFlag != null) {
-            stmt.bindLong(16, advertiseFlag ? 1L: 0L);
+            stmt.bindLong(17, advertiseFlag ? 1L: 0L);
         }
  
         Integer advertiseDelayTime = entity.getAdvertiseDelayTime();
         if (advertiseDelayTime != null) {
-            stmt.bindLong(17, advertiseDelayTime);
+            stmt.bindLong(18, advertiseDelayTime);
+        }
+ 
+        Integer fingerImg = entity.getFingerImg();
+        if (fingerImg != null) {
+            stmt.bindLong(19, fingerImg);
+        }
+        stmt.bindLong(20, entity.getScence() ? 1L: 0L);
+        stmt.bindLong(21, entity.getLiveness() ? 1L: 0L);
+ 
+        Integer rgb = entity.getRgb();
+        if (rgb != null) {
+            stmt.bindLong(22, rgb);
+        }
+ 
+        Integer nir = entity.getNir();
+        if (nir != null) {
+            stmt.bindLong(23, nir);
+        }
+ 
+        Integer sm = entity.getSm();
+        if (sm != null) {
+            stmt.bindLong(24, sm);
         }
     }
 
@@ -151,41 +188,64 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             stmt.bindString(4, upTime);
         }
         stmt.bindDouble(5, entity.getPassScore());
+        stmt.bindDouble(6, entity.getQuality());
  
         String banner = entity.getBanner();
         if (banner != null) {
-            stmt.bindString(6, banner);
+            stmt.bindString(7, banner);
         }
-        stmt.bindLong(7, entity.getIntervalTime());
+        stmt.bindLong(8, entity.getIntervalTime());
  
         String orgId = entity.getOrgId();
         if (orgId != null) {
-            stmt.bindString(8, orgId);
+            stmt.bindString(9, orgId);
         }
  
         String orgName = entity.getOrgName();
         if (orgName != null) {
-            stmt.bindString(9, orgName);
+            stmt.bindString(10, orgName);
         }
-        stmt.bindLong(10, entity.getNetFlag() ? 1L: 0L);
-        stmt.bindLong(11, entity.getQueryFlag() ? 1L: 0L);
+        stmt.bindLong(11, entity.getNetFlag() ? 1L: 0L);
+        stmt.bindLong(12, entity.getQueryFlag() ? 1L: 0L);
  
         String password = entity.getPassword();
         if (password != null) {
-            stmt.bindString(12, password);
+            stmt.bindString(13, password);
         }
-        stmt.bindLong(13, entity.getVerifyMode());
-        stmt.bindLong(14, entity.getWhiteFlag() ? 1L: 0L);
-        stmt.bindLong(15, entity.getBlackFlag() ? 1L: 0L);
+        stmt.bindLong(14, entity.getVerifyMode());
+        stmt.bindLong(15, entity.getWhiteFlag() ? 1L: 0L);
+        stmt.bindLong(16, entity.getBlackFlag() ? 1L: 0L);
  
         Boolean advertiseFlag = entity.getAdvertiseFlag();
         if (advertiseFlag != null) {
-            stmt.bindLong(16, advertiseFlag ? 1L: 0L);
+            stmt.bindLong(17, advertiseFlag ? 1L: 0L);
         }
  
         Integer advertiseDelayTime = entity.getAdvertiseDelayTime();
         if (advertiseDelayTime != null) {
-            stmt.bindLong(17, advertiseDelayTime);
+            stmt.bindLong(18, advertiseDelayTime);
+        }
+ 
+        Integer fingerImg = entity.getFingerImg();
+        if (fingerImg != null) {
+            stmt.bindLong(19, fingerImg);
+        }
+        stmt.bindLong(20, entity.getScence() ? 1L: 0L);
+        stmt.bindLong(21, entity.getLiveness() ? 1L: 0L);
+ 
+        Integer rgb = entity.getRgb();
+        if (rgb != null) {
+            stmt.bindLong(22, rgb);
+        }
+ 
+        Integer nir = entity.getNir();
+        if (nir != null) {
+            stmt.bindLong(23, nir);
+        }
+ 
+        Integer sm = entity.getSm();
+        if (sm != null) {
+            stmt.bindLong(24, sm);
         }
     }
 
@@ -202,18 +262,25 @@ public class ConfigDao extends AbstractDao<Config, Long> {
             cursor.getInt(offset + 2), // port
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // upTime
             cursor.getFloat(offset + 4), // passScore
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // banner
-            cursor.getInt(offset + 6), // intervalTime
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // orgId
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // orgName
-            cursor.getShort(offset + 9) != 0, // netFlag
-            cursor.getShort(offset + 10) != 0, // queryFlag
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // password
-            cursor.getInt(offset + 12), // verifyMode
-            cursor.getShort(offset + 13) != 0, // whiteFlag
-            cursor.getShort(offset + 14) != 0, // blackFlag
-            cursor.isNull(offset + 15) ? null : cursor.getShort(offset + 15) != 0, // advertiseFlag
-            cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16) // advertiseDelayTime
+            cursor.getFloat(offset + 5), // quality
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // banner
+            cursor.getInt(offset + 7), // intervalTime
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // orgId
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // orgName
+            cursor.getShort(offset + 10) != 0, // netFlag
+            cursor.getShort(offset + 11) != 0, // queryFlag
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // password
+            cursor.getInt(offset + 13), // verifyMode
+            cursor.getShort(offset + 14) != 0, // whiteFlag
+            cursor.getShort(offset + 15) != 0, // blackFlag
+            cursor.isNull(offset + 16) ? null : cursor.getShort(offset + 16) != 0, // advertiseFlag
+            cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17), // advertiseDelayTime
+            cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18), // fingerImg
+            cursor.getShort(offset + 19) != 0, // scence
+            cursor.getShort(offset + 20) != 0, // liveness
+            cursor.isNull(offset + 21) ? null : cursor.getInt(offset + 21), // rgb
+            cursor.isNull(offset + 22) ? null : cursor.getInt(offset + 22), // nir
+            cursor.isNull(offset + 23) ? null : cursor.getInt(offset + 23) // sm
         );
         return entity;
     }
@@ -225,18 +292,25 @@ public class ConfigDao extends AbstractDao<Config, Long> {
         entity.setPort(cursor.getInt(offset + 2));
         entity.setUpTime(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setPassScore(cursor.getFloat(offset + 4));
-        entity.setBanner(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setIntervalTime(cursor.getInt(offset + 6));
-        entity.setOrgId(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setOrgName(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setNetFlag(cursor.getShort(offset + 9) != 0);
-        entity.setQueryFlag(cursor.getShort(offset + 10) != 0);
-        entity.setPassword(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setVerifyMode(cursor.getInt(offset + 12));
-        entity.setWhiteFlag(cursor.getShort(offset + 13) != 0);
-        entity.setBlackFlag(cursor.getShort(offset + 14) != 0);
-        entity.setAdvertiseFlag(cursor.isNull(offset + 15) ? null : cursor.getShort(offset + 15) != 0);
-        entity.setAdvertiseDelayTime(cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16));
+        entity.setQuality(cursor.getFloat(offset + 5));
+        entity.setBanner(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setIntervalTime(cursor.getInt(offset + 7));
+        entity.setOrgId(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setOrgName(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setNetFlag(cursor.getShort(offset + 10) != 0);
+        entity.setQueryFlag(cursor.getShort(offset + 11) != 0);
+        entity.setPassword(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setVerifyMode(cursor.getInt(offset + 13));
+        entity.setWhiteFlag(cursor.getShort(offset + 14) != 0);
+        entity.setBlackFlag(cursor.getShort(offset + 15) != 0);
+        entity.setAdvertiseFlag(cursor.isNull(offset + 16) ? null : cursor.getShort(offset + 16) != 0);
+        entity.setAdvertiseDelayTime(cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17));
+        entity.setFingerImg(cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18));
+        entity.setScence(cursor.getShort(offset + 19) != 0);
+        entity.setLiveness(cursor.getShort(offset + 20) != 0);
+        entity.setRgb(cursor.isNull(offset + 21) ? null : cursor.getInt(offset + 21));
+        entity.setNir(cursor.isNull(offset + 22) ? null : cursor.getInt(offset + 22));
+        entity.setSm(cursor.isNull(offset + 23) ? null : cursor.getInt(offset + 23));
      }
     
     @Override

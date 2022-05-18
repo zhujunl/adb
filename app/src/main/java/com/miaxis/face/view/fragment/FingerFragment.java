@@ -67,7 +67,7 @@ public class FingerFragment extends BaseFragment{
     protected void initView(@Nullable Bundle savedInstanceState) {
         eventbus=EventBus.getDefault();
         eventbus.register(this);
-        CameraManager.getInstance().open(sv_main);
+        CameraManager.getInstance().open(sv_main,1);
         powerControl(true);
         Log.e(TAG, "comparFlag==" + comparFlag);
         if (!comparFlag){

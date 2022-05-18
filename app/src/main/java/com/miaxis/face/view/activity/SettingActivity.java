@@ -3,6 +3,7 @@ package com.miaxis.face.view.activity;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -102,11 +103,60 @@ public class SettingActivity extends BaseActivity {
     RadioGroup rgAdvertise;
     @BindView(R.id.et_advertise_delay_time)
     EditText etAdvertiseDelayTime;
+    @BindView(R.id.et_quality_score)
+    EditText etQualityScore;
+    @BindView(R.id.rg_img)
+    RadioGroup rgImg;
+    @BindView(R.id.rb_scene)
+    RadioButton rbScene;
+    @BindView(R.id.rb_face)
+    RadioButton rbFace;
+    @BindView(R.id.rb_live_on)
+    RadioButton rbLiveOn;
+    @BindView(R.id.rb_live_off)
+    RadioButton rbLiveOff;
+    @BindView(R.id.rg_live)
+    RadioGroup rgLive;
+    @BindView(R.id.rb_finger_ori)
+    RadioButton rbFingerOri;
+    @BindView(R.id.rb_finger_dark)
+    RadioButton rbFingerDark;
+    @BindView(R.id.rb_finger_red)
+    RadioButton rbFingerRed;
+    @BindView(R.id.rg_finger)
+    RadioGroup rgFinger;
+    @BindView(R.id.rb_rgb0)
+    RadioButton rbRgb0;
+    @BindView(R.id.rb_rgb1)
+    RadioButton rbRgb1;
+    @BindView(R.id.rb_rgb2)
+    RadioButton rbRgb2;
+    @BindView(R.id.rg_rgb)
+    RadioGroup rgRgb;
+    @BindView(R.id.rb_nir0)
+    RadioButton rbNir0;
+    @BindView(R.id.rb_nir1)
+    RadioButton rbNir1;
+    @BindView(R.id.rb_nir2)
+    RadioButton rbNir2;
+    @BindView(R.id.rg_nir)
+    RadioGroup rgNir;
+    @BindView(R.id.rb_sm0)
+    RadioButton rbSm0;
+    @BindView(R.id.rb_sm1)
+    RadioButton rbSm1;
+    @BindView(R.id.rb_sm2)
+    RadioButton rbSm2;
+    @BindView(R.id.rg_sm)
+    RadioGroup rgSm;
 
     private Config config;
     private UpdateDialog updateDialog;
-//    private MXFingerDriver fingerDriver;
     private boolean hasFingerDevice;
+    private int fingerImg=0;
+    private int rgb=0;
+    private int nir=0;
+    private int sm=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,9 +204,11 @@ public class SettingActivity extends BaseActivity {
 
     private void initData() {
         config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
-        int pid = 0x0202;
-        int vid = 0x821B;
         hasFingerDevice = Face_App.getInstance().checkHasFingerDevice();
+        fingerImg=config.getFingerImg();
+        rgb=config.getRgb();
+        nir=config.getNir();
+        sm=config.getSm();
     }
 
     private void initView() {
@@ -175,6 +227,79 @@ public class SettingActivity extends BaseActivity {
         rbAdvertiseOn.setChecked(config.getAdvertiseFlag());
         rbAdvertiseOff.setChecked(!config.getAdvertiseFlag());
         etAdvertiseDelayTime.setText(config.getAdvertiseDelayTime() + "");
+        etQualityScore.setText(String.valueOf(config.getQuality()));
+        switch (config.getFingerImg()) {
+            case 1:
+                rbFingerOri.setChecked(false);
+                rbFingerDark.setChecked(true);
+                rbFingerRed.setChecked(false);
+                break;
+            case 2:
+                rbFingerOri.setChecked(false);
+                rbFingerDark.setChecked(false);
+                rbFingerRed.setChecked(true);
+                break;
+            default:
+                rbFingerOri.setChecked(true);
+                rbFingerDark.setChecked(false);
+                rbFingerRed.setChecked(false);
+                break;
+        }
+        rbScene.setChecked(config.isScence());
+        rbFace.setChecked(!config.isScence());
+        rbLiveOn.setChecked(config.isLiveness());
+        rbLiveOff.setChecked(!config.isLiveness());
+        switch (config.getRgb()) {
+            case 1:
+                rbRgb0.setChecked(false);
+                rbRgb1.setChecked(true);
+                rbRgb2.setChecked(false);
+                break;
+            case 2:
+                rbRgb0.setChecked(false);
+                rbRgb1.setChecked(false);
+                rbRgb2.setChecked(true);
+                break;
+            default:
+                rbRgb0.setChecked(true);
+                rbRgb1.setChecked(false);
+                rbRgb2.setChecked(false);
+                break;
+        }
+        switch (config.getNir()) {
+            case 1:
+                rbNir0.setChecked(false);
+                rbNir1.setChecked(true);
+                rbNir2.setChecked(false);
+                break;
+            case 2:
+                rbNir0.setChecked(false);
+                rbNir1.setChecked(false);
+                rbNir2.setChecked(true);
+                break;
+            default:
+                rbNir0.setChecked(true);
+                rbNir1.setChecked(false);
+                rbNir2.setChecked(false);
+                break;
+        }
+        switch (config.getSm()) {
+            case 1:
+                rbSm0.setChecked(false);
+                rbSm1.setChecked(true);
+                rbSm2.setChecked(false);
+                break;
+            case 2:
+                rbSm0.setChecked(false);
+                rbSm1.setChecked(false);
+                rbSm2.setChecked(true);
+                break;
+            default:
+                rbSm0.setChecked(true);
+                rbSm1.setChecked(false);
+                rbSm2.setChecked(false);
+                break;
+        }
         if (hasFingerDevice) {
             sVerifyMode.setSelection(config.getVerifyMode());
         } else {
@@ -198,6 +323,55 @@ public class SettingActivity extends BaseActivity {
 
         updateDialog = new UpdateDialog();
         updateDialog.setContext(this);
+
+        rgFinger.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                for (int i = 1; i < radioGroup.getChildCount(); i=i+2) {
+                    RadioButton rb = (RadioButton)radioGroup.getChildAt(i);
+                    if (rb.isChecked()){
+                        fingerImg=Integer.parseInt(radioGroup.getChildAt(i).getTag().toString());
+                        break;
+                    }
+                }
+            }
+        });
+        rgRgb.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                for (int i = 1; i < radioGroup.getChildCount(); i=i+2) {
+                    RadioButton rb = (RadioButton)radioGroup.getChildAt(i);
+                    if (rb.isChecked()){
+                        rgb=Integer.parseInt(radioGroup.getChildAt(i).getTag().toString());
+                        break;
+                    }
+                }
+            }
+        });
+        rgNir.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                for (int i = 1; i < radioGroup.getChildCount(); i=i+2) {
+                    RadioButton rb = (RadioButton)radioGroup.getChildAt(i);
+                    if (rb.isChecked()){
+                        nir=Integer.parseInt(radioGroup.getChildAt(i).getTag().toString());
+                        break;
+                    }
+                }
+            }
+        });
+        rgSm.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                for (int i = 1; i < radioGroup.getChildCount(); i=i+2) {
+                    RadioButton rb = (RadioButton)radioGroup.getChildAt(i);
+                    if (rb.isChecked()){
+                        sm=Integer.parseInt(radioGroup.getChildAt(i).getTag().toString());
+                        break;
+                    }
+                }
+            }
+        });
     }
 
 
@@ -225,17 +399,40 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.btn_save_config)
     void save() {
+        if (TextUtils.isEmpty(etPassScore.getText().toString().trim())){{
+            Toast.makeText(this,"比对阈值不能为空",Toast.LENGTH_SHORT).show();
+            return;
+        }}
+        if (TextUtils.isEmpty(etQualityScore.getText().toString().trim())){{
+            Toast.makeText(this,"质量阈值不能为空",Toast.LENGTH_SHORT).show();
+            return;
+        }}
+        if (Float.parseFloat(etPassScore.getText().toString().trim())<0||Float.parseFloat(etPassScore.getText().toString().trim())>1){{
+            Toast.makeText(this,"比对阈值设置错误",Toast.LENGTH_SHORT).show();
+            return;
+        }}
+        if (Float.parseFloat(etQualityScore.getText().toString().trim())<0||Float.parseFloat(etQualityScore.getText().toString().trim())>100){{
+            Toast.makeText(this,"质量阈值设置错误",Toast.LENGTH_SHORT).show();
+            return;
+        }}
         config.setIp(etIp.getText().toString());
-        config.setPort(Integer.valueOf(etPort.getText().toString()));
+        config.setPort(Integer.parseInt(etPort.getText().toString().trim()));
         config.setOrgName(etOrg.getText().toString());
-        config.setPassScore(Float.valueOf(etPassScore.getText().toString()));
+        config.setPassScore(Float.parseFloat(etPassScore.getText().toString().trim()));
         config.setNetFlag(rbNetOn.isChecked());
         config.setQueryFlag(rbQueryOn.isChecked());
         config.setUpTime(tvSelectTime.getText().toString());
-        config.setIntervalTime(Integer.valueOf(etMonitorInterval.getText().toString()));
+        config.setIntervalTime(Integer.parseInt(etMonitorInterval.getText().toString().trim()));
         config.setBanner(etBanner.getText().toString());
         config.setAdvertiseFlag(rbAdvertiseOn.isChecked());
         config.setAdvertiseDelayTime(Integer.parseInt(etAdvertiseDelayTime.getText().toString()));
+        config.setQuality(Float.parseFloat(etQualityScore.getText().toString().trim()));
+        config.setSm(sm);
+        config.setNir(nir);
+        config.setRgb(rgb);
+        config.setLiveness(rbLiveOn.isChecked());
+        config.setScence(rbScene.isChecked());
+        config.setFingerImg(fingerImg);
         if (etPwd.getText().length() != 6) {
             Toast.makeText(this, "请填写6位数字密码", Toast.LENGTH_SHORT).show();
             return;

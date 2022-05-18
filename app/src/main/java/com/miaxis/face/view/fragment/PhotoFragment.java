@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.miaxis.face.R;
+import com.miaxis.face.app.Face_App;
+import com.miaxis.face.bean.Config;
 import com.miaxis.face.event.CmdShutterPhotoEvent;
 import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.manager.CameraManager;
@@ -39,6 +41,7 @@ public class PhotoFragment extends BaseFragment{
     Camera mCamera;
     EventBus eventBus;
     private byte[] buffer;
+    private Config config;
 
     public PhotoFragment() {
     }
@@ -50,7 +53,8 @@ public class PhotoFragment extends BaseFragment{
     protected void initView(@Nullable Bundle savedInstanceState) {
         eventBus=EventBus.getDefault();
         eventBus.register(this);
-        CameraManager.getInstance().open(sv_main,mPreviewCallback);
+        config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
+        CameraManager.getInstance().open(sv_main,mPreviewCallback,config.getRgb());
         mCamera=CameraManager.getInstance().getCamera();
         buffer=CameraManager.getInstance().getBuffer();
         tv_second.bringToFront();

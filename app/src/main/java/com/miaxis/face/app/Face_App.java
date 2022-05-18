@@ -130,6 +130,13 @@ public class Face_App extends Application implements ServiceConnection {
                 config.setPassword(Constants.DEFAULT_PASSWORD);
                 config.setAdvertiseFlag(Constants.DEFAULT_ADVERTISE_FLAG);
                 config.setAdvertiseDelayTime(Constants.DEFAULT_ADVERTISE_DELAY_TIME);
+                config.setQuality(Constants.QUALITY);
+                config.setFingerImg(Constants.ORIGINAL);
+                config.setScence(Constants.DEFAULTSCENE);
+                config.setLiveness(Constants.DEFAULTLIVE);
+                config.setRgb(Constants.DEFAULTRGB);
+                config.setNir(Constants.DEFAULTNIR);
+                config.setSm(Constants.DEFAULTSM);
                 configDao.insert(config);
             } else if (config.getAdvertiseFlag() == null || config.getAdvertiseDelayTime() == null) {
                 config.setAdvertiseFlag(Constants.DEFAULT_ADVERTISE_FLAG);
