@@ -10,7 +10,6 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -699,8 +698,6 @@ public class Record implements Serializable {
                 ", issueNum='" + issueNum + '\'' +
                 ", fingerPosition0=" + fingerPosition0 +
                 ", fingerPosition1=" + fingerPosition1 +
-                ", faceImgData=" + Arrays.toString(faceImgData) +
-                ", cardImgData=" + Arrays.toString(cardImgData) +
                 '}';
     }
 }

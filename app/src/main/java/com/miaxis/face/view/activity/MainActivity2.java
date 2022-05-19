@@ -7,9 +7,12 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,6 +67,8 @@ import org.reactivestreams.Subscription;
 import org.zz.api.MXFaceAPI;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -79,6 +84,7 @@ import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -243,14 +249,18 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                 }
             }
         });
-        readSecond();
+        readSecond(count);
     }
-
+    Disposable subscribe=null;
     @SuppressLint("CheckResult")
-    private void readSecond() {
+    private void readSecond(final int count) {
         final CutDownEvent cutDownEvent=new CutDownEvent();
-        Observable.interval(0, 1, TimeUnit.SECONDS)
-                .take(count+1 )
+        if(subscribe != null && !subscribe.isDisposed()){
+            subscribe.dispose();
+            subscribe=null;
+        }
+        subscribe= Observable.interval(0, 1, TimeUnit.SECONDS)
+                .take(count + 1)
                 .map(new Function<Long, Long>() {
                     @Override
                     public Long apply(Long aLong) throws Exception {
@@ -261,17 +271,18 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
-                        Log.e(TAG, "倒计时==" +aLong);
+                        Log.e(TAG, "倒计时==" + aLong);
                         //                        tvSecond.setVisibility(View.VISIBLE);
                         //                        tvSecond.setText("" + aLong);
                         cutDownEvent.setTime(aLong);
                         eventBus.post(cutDownEvent);
-                        if (aLong==0){
-                            isActive=false;
+                        if (aLong == 0) {
+                            isActive = false;
                             nvController.back();
                         }
                     }
                 });
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -282,15 +293,17 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCmdShutterEvent(CmdShutterEvent e) {
+        Fragment top = nvController.top();
+
         nvController.nvTo(new PhotoFragment(),false);
-        readSecond();
+        readSecond(count);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
     public void onCmdGetFingerEvent(CmdGetFingerEvent e) {
         SoundManager.getInstance().playSound(Constants.SOUND_OTHER_FINGER);
         nvController.nvTo(VerifyFragment.getInstance(false),false);
-        readSecond();
+        readSecond(count);
     }
 
     @OnClick(R.id.iv_record)
@@ -444,4 +457,72 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         record.setFaceImg(cardImgFilePath);
         return record;
     }
+
+
+    private StringBuilder sb = new StringBuilder();
+
+    boolean isScaning = false;
+    int len = 0;
+    int oldLen = 0;
+
+    //二维码扫码
+    @SuppressLint("RestrictedApi")
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        switch (action) {
+
+            case KeyEvent.ACTION_DOWN:
+                if (event.getKeyCode() == KeyEvent.KEYCODE_SHIFT_RIGHT) {
+                    return super.dispatchKeyEvent(event);
+                }
+                char unicodeChar = (char)event.getUnicodeChar();
+                sb.append( unicodeChar);
+                len++;
+                startScan();
+                return true;
+            default:
+                break;
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+
+    private void startScan() {
+        if (isScaning) {
+            return;
+        }
+        isScaning = true;
+        timerScanCal();
+    }
+
+    private void timerScanCal() {
+        oldLen = len;
+        Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
+            @Override
+            public void run() {
+                SystemClock.sleep(1000);
+                if (oldLen != len) {
+                    timerScanCal();
+                    return;
+                }
+                isScaning = false;
+                if (sb.length() > 0) {
+                    String str=sb.toString();
+                    String str1 = null;
+                    try {
+                        str1 = new String(str.getBytes(StandardCharsets.ISO_8859_1), "utf-8");
+                        System.out.println(str1);
+                        Log.e(TAG,"扫码:" + str);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    sb.setLength(0);
+                }
+            }
+        });
+    }
+
 }
