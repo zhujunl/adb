@@ -88,7 +88,7 @@ public class CameraHelper {
         return find(cameraConfig.CameraId);
     }
 
-    private synchronized ZZResponse<MXCamera> find(int cameraId) {
+    public synchronized ZZResponse<MXCamera> find(int cameraId) {
         if (cameraId < 0) {
             return ZZResponse.CreateFail(MXCameraErrorCode.CODE_FAIL_CAMERA_ID, null);
         }

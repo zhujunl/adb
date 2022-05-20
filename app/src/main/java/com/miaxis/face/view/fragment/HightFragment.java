@@ -1,6 +1,7 @@
 package com.miaxis.face.view.fragment;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -12,21 +13,30 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.miaxis.face.R;
 import com.miaxis.face.adapter.PreviewPageAdapter;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.bean.Config;
 import com.miaxis.face.constant.CameraConfig;
 import com.miaxis.face.constant.CameraPreviewCallback;
 import com.miaxis.face.constant.MXCamera;
 import com.miaxis.face.constant.MXFrame;
 import com.miaxis.face.constant.ZZResponse;
+import com.miaxis.face.event.CmdSmDoneEvent;
+import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.manager.CameraHelper;
 import com.miaxis.face.util.FileUtil;
+import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.custom.PreviewPictureEntity;
 import com.miaxis.face.view.custom.ZoomImageView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,6 +69,8 @@ public class HightFragment extends BaseFragment{
     Button btnTryAgain;
     @BindView(R.id.rv_content)
     ListView rvContent;
+    @BindView(R.id.tv_second)
+    TextView tv_second;
 
     private final String TAG="HightFragment";
     private List<PreviewPictureEntity> pathList = new ArrayList<>();
@@ -66,6 +78,8 @@ public class HightFragment extends BaseFragment{
     private File mFilePath;
     private final static Handler mHandler = new Handler();
     private Disposable subscribe;
+    private Config config;
+    private EventBus eventbus;
 
     public HightFragment() {
     }
@@ -76,11 +90,14 @@ public class HightFragment extends BaseFragment{
     @Override
     protected void initView(@Nullable Bundle savedInstanceState) {
         mFilePath=new File(FileUtil.FACE_MAIN_PATH+ File.separator+"height_camera");
+        eventbus=EventBus.getDefault();
+        eventbus.register(this);
+        config=Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
         sv.getHolder().addCallback(callback);
         sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                ZZResponse<MXCamera> mxCamera = CameraHelper.getInstance().find(CameraConfig.Camera_SM);
+                ZZResponse<MXCamera> mxCamera = CameraHelper.getInstance().find(config.getSm());
                 if (ZZResponse.isSuccess(mxCamera)) {
                     mxCamera.getData().setZoom(progress);
                 }
@@ -113,6 +130,9 @@ public class HightFragment extends BaseFragment{
         btnTryAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (pathList.size()>0){
+                    eventbus.post(new CmdSmDoneEvent(MyUtil.bitmapTo64(pathList.get(0).getBase64())));
+                }
                 CameraHelper.getInstance().free();
             }
         });
@@ -141,6 +161,7 @@ public class HightFragment extends BaseFragment{
             }
         });
         rvContent.setAdapter(mAdapter);
+        tv_second.bringToFront();
     }
 
 
@@ -187,7 +208,7 @@ public class HightFragment extends BaseFragment{
                                                         List<File> files = Luban.with(getContext()).load(f).setTargetDir(mFilePath.getAbsolutePath()).get();
                                                         if (files != null && files.size() != 0) {
                                                             final String absolutePath = files.get(0).getAbsolutePath();
-                                                            final String base64Path = FileUtil.pathToBase64(absolutePath);
+                                                            final Bitmap base64Path = FileUtil.pathToBit(absolutePath);
                                                             mHandler.post(new Runnable() {
                                                                 @Override
                                                                 public void run() {
@@ -196,7 +217,7 @@ public class HightFragment extends BaseFragment{
                                                                         return;
                                                                     }
                                                                     Log.e(TAG, "获取图片 %s" + absolutePath);
-                                                                    PreviewPictureEntity entity = new PreviewPictureEntity(absolutePath,absolutePath);
+                                                                    PreviewPictureEntity entity = new PreviewPictureEntity(absolutePath,base64Path);
                                                                     pathList.add(entity);
 //                                                                    mAdapter.addPathList(entity);
                                                                     mAdapter.notifyDataSetChanged();
@@ -231,7 +252,14 @@ public class HightFragment extends BaseFragment{
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        eventbus.unregister(this);
         CameraHelper.getInstance().free();
         pathList.clear();
+    }
+
+    @Subscribe(threadMode= ThreadMode.MAIN)
+    public void onCutDownEvent(CutDownEvent event){
+        tv_second.setVisibility(View.VISIBLE);
+        tv_second.setText(String.valueOf(event.getTime()));
     }
 }

@@ -70,7 +70,9 @@ public class CameraManager {
                 @Override
                 public void surfaceCreated(SurfaceHolder surfaceHolder) {
                     try {
-                        mCamera.setPreviewDisplay(surfaceHolder);
+                        if (mCamera!=null) {
+                            mCamera.setPreviewDisplay(surfaceHolder);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -111,7 +113,9 @@ public class CameraManager {
                 @Override
                 public void surfaceCreated(SurfaceHolder surfaceHolder) {
                     try {
-                        mirCamera.setPreviewDisplay(surfaceHolder);
+                        if (mirCamera!=null){
+                            mirCamera.setPreviewDisplay(surfaceHolder);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -2,6 +2,7 @@ package com.miaxis.face.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.StatFs;
 import android.util.Base64;
@@ -37,6 +38,7 @@ public class FileUtil {
     private static final String WLT_PATH_NAME = "wlt";
     private static final String MODEL_PATH_NAME = "zzFaceModel";
     private static final String ADVERTISEMENT_FILE_PATH_NAME = "adFile";
+    public static final String FINGERIMG="fingerimg";
 
 
     public static void initDirectory(Context context) {
@@ -232,6 +234,24 @@ public class FileUtil {
         out.close();
     }
 
+    public static boolean saveBitmap(Bitmap bitmap,String path) {
+        try {
+            File filePic = new File(path);
+            if (!filePic.exists()) {
+                filePic.getParentFile().mkdirs();
+                filePic.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(filePic);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+
     public static void writeBytesToFile(byte[] bfile, String filePath, String fileName) {
         BufferedOutputStream bos = null;
         FileOutputStream fos = null;
@@ -397,6 +417,20 @@ public class FileUtil {
 
     }
 
+    public static Bitmap pathToBit(String path) {
+        try {
+            byte[] bytes = toByteArray(path);
+            Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+            bytes = null;
+            System.gc();
+            return bitmap;
+        } catch (Exception e) {
+            LogUtil.writeLog("pathToBase64" + e.getMessage());
+            return null;
+        }
+
+    }
+
     public static byte[] toByteArray(String filename) throws Exception {
 
         File f = new File(filename);
@@ -510,5 +544,7 @@ public class FileUtil {
         }
         return null;
     }
+
+
 
 }

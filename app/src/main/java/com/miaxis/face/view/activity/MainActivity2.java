@@ -2,6 +2,7 @@ package com.miaxis.face.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -9,7 +10,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -38,8 +38,13 @@ import com.miaxis.face.bean.WhiteItem;
 import com.miaxis.face.constant.ApiResult;
 import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.BtReadCardEvent;
+import com.miaxis.face.event.CmdFingerImgEvent;
 import com.miaxis.face.event.CmdGetFingerEvent;
+import com.miaxis.face.event.CmdScanDoneEvent;
+import com.miaxis.face.event.CmdScanEvent;
 import com.miaxis.face.event.CmdShutterEvent;
+import com.miaxis.face.event.CmdSignEvent;
+import com.miaxis.face.event.CmdSmEvent;
 import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.event.LoadProgressEvent;
 import com.miaxis.face.event.NoCardEvent;
@@ -48,14 +53,17 @@ import com.miaxis.face.event.TimeChangeEvent;
 import com.miaxis.face.greendao.gen.ConfigDao;
 import com.miaxis.face.greendao.gen.RecordDao;
 import com.miaxis.face.greendao.gen.WhiteItemDao;
+import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.CardManager;
 import com.miaxis.face.manager.SoundManager;
 import com.miaxis.face.receiver.TimeReceiver;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.fragment.AlertDialog;
+import com.miaxis.face.view.fragment.HightFragment;
 import com.miaxis.face.view.fragment.HomeFragment;
 import com.miaxis.face.view.fragment.PhotoFragment;
+import com.miaxis.face.view.fragment.SignFragment;
 import com.miaxis.face.view.fragment.VerifyFragment;
 import com.miaxis.sdt.bean.IdCard;
 
@@ -133,6 +141,8 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     private final String TAG="MainActivity2";
     private boolean isActive = true;
     private final int count=15;
+    private boolean imStateSaved=false;
+    private boolean ScanFlag=false;
 
 
     @Override
@@ -145,7 +155,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         initData();
         MXFaceAPI mxFaceAPI=new MXFaceAPI();
         Log.e(TAG, "人脸算法版本=" +mxFaceAPI.mxAlgVersion() );
-
+        imStateSaved=false;
     }
 
     private void initData() {
@@ -232,6 +242,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         onNoCardEvent(null);
         isActive=true;
         final int verifyMode = config.getVerifyMode();
+        nvController.back();
         nvController.nvTo(VerifyFragment.getInstance(verifyMode),false);
         SoundManager.getInstance().playSound(Constants.SOUND_PUT_CARD);
         Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
@@ -272,13 +283,12 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                     @Override
                     public void accept(Long aLong) throws Exception {
                         Log.e(TAG, "倒计时==" + aLong);
-                        //                        tvSecond.setVisibility(View.VISIBLE);
-                        //                        tvSecond.setText("" + aLong);
                         cutDownEvent.setTime(aLong);
                         eventBus.post(cutDownEvent);
                         if (aLong == 0) {
                             isActive = false;
-                            nvController.back();
+                            if (!imStateSaved)
+                                nvController.back();
                         }
                     }
                 });
@@ -293,17 +303,54 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCmdShutterEvent(CmdShutterEvent e) {
-        Fragment top = nvController.top();
-
+        nvController.back();
         nvController.nvTo(new PhotoFragment(),false);
         readSecond(count);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
     public void onCmdGetFingerEvent(CmdGetFingerEvent e) {
+        nvController.back();
         SoundManager.getInstance().playSound(Constants.SOUND_OTHER_FINGER);
-        nvController.nvTo(VerifyFragment.getInstance(false),false);
+        nvController.nvTo(VerifyFragment.getInstance(false,false),false);
         readSecond(count);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCmdFingerImgEvent(CmdFingerImgEvent e){
+        nvController.back();
+        nvController.nvTo(VerifyFragment.getInstance(true,true),false);
+        readSecond(count);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCmdSmEvent(CmdSmEvent e){
+        nvController.back();
+        nvController.nvTo(new HightFragment(),false);
+        readSecond(count);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCmdSignEvent(CmdSignEvent e){
+        nvController.back();
+        nvController.nvTo(new SignFragment(),false);
+        readSecond(count);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCmdScanEvent(CmdScanEvent e){
+        ScanFlag=true;
+        android.app.AlertDialog.Builder builder=new android.app.AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("请扫码");
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ScanFlag=false;
+                dialogInterface.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     @OnClick(R.id.iv_record)
@@ -444,6 +491,40 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        imStateSaved=true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        imStateSaved = false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        imStateSaved = true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        imStateSaved = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause"  );
+        CameraManager.getInstance().nirClose();
+        CameraManager.getInstance().close();
+        nvController.back();
+        readSecond(0);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(timeReceiver);
@@ -470,25 +551,25 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int action = event.getAction();
-        switch (action) {
-
-            case KeyEvent.ACTION_DOWN:
+        if (ScanFlag) {
+            if (action == KeyEvent.ACTION_DOWN) {
+                Log.e(TAG, "     getKeyCode==="+event.getKeyCode()+"    getCharacters==="+event.getCharacters() );
                 if (event.getKeyCode() == KeyEvent.KEYCODE_SHIFT_RIGHT) {
                     return super.dispatchKeyEvent(event);
                 }
-                char unicodeChar = (char)event.getUnicodeChar();
-                sb.append( unicodeChar);
+                char unicodeChar = (char) event.getUnicodeChar();
+                sb.append(unicodeChar);
                 len++;
                 startScan();
                 return true;
-            default:
-                break;
+            }
         }
         return super.dispatchKeyEvent(event);
     }
 
 
     private void startScan() {
+        Log.e(TAG, "startScan"  );
         if (isScaning) {
             return;
         }
@@ -497,6 +578,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     }
 
     private void timerScanCal() {
+        Log.e(TAG, "timerScanCal"  );
         oldLen = len;
         Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
             @Override
@@ -511,9 +593,13 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                     String str=sb.toString();
                     String str1 = null;
                     try {
-                        str1 = new String(str.getBytes(StandardCharsets.ISO_8859_1), "utf-8");
+//                        str1 = new String(str.getBytes(StandardCharsets.ISO_8859_1), "utf-8");
+                        byte[] ii=str.getBytes("gb2312");
+                        str1 = new String(str.getBytes(StandardCharsets.ISO_8859_1), "gb2312");
                         System.out.println(str1);
                         Log.e(TAG,"扫码:" + str);
+                        eventBus.post(new CmdScanDoneEvent(str));
+                        ScanFlag=false;
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }

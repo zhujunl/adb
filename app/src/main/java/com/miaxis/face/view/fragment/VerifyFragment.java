@@ -3,6 +3,8 @@ package com.miaxis.face.view.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -22,6 +24,7 @@ import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
 import com.miaxis.face.bean.Record;
 import com.miaxis.face.constant.Constants;
+import com.miaxis.face.event.CmdFingerImgDoneEvent;
 import com.miaxis.face.event.CmdGetFingerDoneEvent;
 import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.event.ReadCardEvent;
@@ -40,7 +43,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.zz.api.MXFaceInfoEx;
 
+import java.io.File;
 import java.util.Date;
+import java.util.Objects;
 
 import butterknife.BindView;
 
@@ -75,12 +80,14 @@ public class VerifyFragment extends BaseFragment{
     private EventBus eventbus;
     private RecordDao recordDao;
     private boolean comparFlag=true;
+    private boolean FingerImgFlag=false;
     private int verifyMode;
     private Config config;
 
-    public static VerifyFragment getInstance(boolean comparFlag){
+    public static VerifyFragment getInstance(boolean comparFlag,boolean FingerImgFlag){
         VerifyFragment verifyFragment=new VerifyFragment();
         verifyFragment.setComparFlag(comparFlag);
+        verifyFragment.setFingerImgFlag(FingerImgFlag);
         return verifyFragment;
     }
 
@@ -107,7 +114,7 @@ public class VerifyFragment extends BaseFragment{
         tv_second.bringToFront();
         CameraManager.getInstance().open(sv_main,config.getRgb());
         powerControl(true);
-        if (!comparFlag){
+        if (!comparFlag||FingerImgFlag){
             rv_result.bringToFront();
             rv_result.clear();
             rv_result.setFingerMode(true);
@@ -122,11 +129,15 @@ public class VerifyFragment extends BaseFragment{
         Intent intent = new Intent("com.miaxis.power");
         intent.putExtra("type", 0x12);
         intent.putExtra("value", enable);
-        getActivity().sendBroadcast(intent);
+        Objects.requireNonNull(getActivity()).sendBroadcast(intent);
     }
 
     public void setComparFlag(boolean comparFlag) {
         this.comparFlag = comparFlag;
+    }
+
+    public void setFingerImgFlag(boolean fingerImgFlag) {
+        FingerImgFlag = fingerImgFlag;
     }
 
     public void setVerifyMode(int verifyMode) {
@@ -134,7 +145,7 @@ public class VerifyFragment extends BaseFragment{
     }
 
     private void setFaceView(final boolean clear){
-        getActivity().runOnUiThread(new Runnable() {
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 rsv_rect.bringToFront();
@@ -152,7 +163,7 @@ public class VerifyFragment extends BaseFragment{
     }
 
     private void setFingerView(final boolean clear){
-        getActivity().runOnUiThread(new Runnable() {
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 rv_result.bringToFront();
@@ -241,7 +252,7 @@ public class VerifyFragment extends BaseFragment{
         Log.e("asd", "人脸比对中"+"_____人脸图片：x="+x+",y="+y+",width="+width+",height="+height);
         final Bitmap rectBitmap = Bitmap.createBitmap(faceBitmap, x, y,width, height);//截取
         FaceManager.getInstance().stopLoop();
-        getActivity().runOnUiThread(new Runnable() {
+        Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 rsv_rect.clearDraw();
@@ -346,7 +357,7 @@ public class VerifyFragment extends BaseFragment{
                         Log.e(TAG, "指纹比对失败"  );
                     }
                 }
-                getActivity().runOnUiThread(new Runnable() {
+                Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         rv_result.setFingerResult(state==0);
@@ -367,16 +378,34 @@ public class VerifyFragment extends BaseFragment{
             }
         }
 
-        private void setFingerReadFile(byte[] feature, Bitmap image) {
+        private void setFingerReadFile(byte[] feature, final Bitmap image) {
             if (image != null) {
                 if (!comparFlag){
                     EventBus.getDefault().post(new CmdGetFingerDoneEvent(Base64.encodeToString(feature, Base64.DEFAULT)));
-                    getActivity().runOnUiThread(new Runnable() {
+                    Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             rv_result.setVisibility(View.INVISIBLE);
                         }
                     });
+                }else if (FingerImgFlag){
+                    Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            rv_result.setVisibility(View.INVISIBLE);
+                            rv_result.showCameraImage(image);
+                        }
+                    });
+                    String path=FileUtil.FACE_MAIN_PATH+ File.separator+FileUtil.FINGERIMG+File.separator+"FingImg"+System.currentTimeMillis()+".png";
+                    boolean save=FileUtil.saveBitmap(image,path);
+                    if (save){
+                        Bitmap bit = BitmapFactory.decodeFile(path);
+                        Bitmap newBitmap = Bitmap.createBitmap(bit.getWidth(), bit.getHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas = new Canvas(newBitmap);
+                        canvas.drawColor(Color.WHITE);
+                        canvas.drawBitmap(bit, 0, 0, null);
+                        EventBus.getDefault().post(new CmdFingerImgDoneEvent(MyUtil.bitmapTo64(bit)));
+                    }
                 }
                 FingerManager.getInstance().releaseDevice();
                 FingerManager.getInstance().setFingerListener(null);
@@ -403,7 +432,7 @@ public class VerifyFragment extends BaseFragment{
             Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
-                if (!comparFlag) {
+                if (!comparFlag||FingerImgFlag) {
                     FingerManager.getInstance().readFinger(config.getFingerImg());//指纹采集
                 } else {
                     FingerManager.getInstance().redFingerComparison(bytes, bytes2);//指纹比对

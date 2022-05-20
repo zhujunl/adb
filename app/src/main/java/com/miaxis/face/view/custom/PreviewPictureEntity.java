@@ -1,11 +1,13 @@
 package com.miaxis.face.view.custom;
 
+import android.graphics.Bitmap;
+
 public class PreviewPictureEntity {
 
     private   String path;
-    private   String base64;
+    private Bitmap base64;
 
-    public PreviewPictureEntity(String path, String base64) {
+    public PreviewPictureEntity(String path, Bitmap base64) {
         this.path = path;
         this.base64 = base64;
     }
@@ -18,11 +20,11 @@ public class PreviewPictureEntity {
         this.path = path;
     }
 
-    public String getBase64() {
+    public Bitmap getBase64() {
         return base64;
     }
 
-    public void setBase64(String base64) {
+    public void setBase64(Bitmap base64) {
         this.base64 = base64;
     }
 

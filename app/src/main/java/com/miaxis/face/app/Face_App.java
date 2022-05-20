@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.miaxis.face.bean.Config;
@@ -63,6 +64,12 @@ public class Face_App extends Application implements ServiceConnection {
 //        Intent intent1 = new Intent(getApplicationContext(), GPIOService.class);
 //        bindService(intent1, mConnection, BIND_AUTO_CREATE);
         app=this;
+    }
+
+
+
+    public void initApplication(){
+        Log.e("Ap:p","initApplication");
         bindService(new Intent(this, AdbCommService.class), this, BIND_AUTO_CREATE);
         new Thread(new Runnable() {
             @Override
@@ -77,12 +84,11 @@ public class Face_App extends Application implements ServiceConnection {
                 FileUtil.initDirectory(app);
                 FingerStrategy fingerStrategy = new FingerStrategy(app);
                 FingerManager.getInstance().init(fingerStrategy);
-//                initCW();
-                int re=FaceManager.getInstance().init(app);
+                //                initCW();
+                int re= FaceManager.getInstance().init(app);
                 eventBus.postSticky(new InitCWEvent(re));
             }
         }).start();
-
     }
 
     private void initData() {
@@ -155,7 +161,9 @@ public class Face_App extends Application implements ServiceConnection {
 
     @Override
     public void onTerminate() {
-        eventBus.unregister(this);
+        if (eventBus.isRegistered(this)) {
+            eventBus.unregister(this);
+        }
         if (mxAPI!=null) {
             mxAPI.mxFreeAlg();
         }

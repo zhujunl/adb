@@ -13,12 +13,20 @@ import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.Record;
 import com.miaxis.face.event.BtReadCardEvent;
+import com.miaxis.face.event.CmdFingerImgDoneEvent;
+import com.miaxis.face.event.CmdFingerImgEvent;
 import com.miaxis.face.event.CmdGetFingerDoneEvent;
 import com.miaxis.face.event.CmdGetFingerEvent;
 import com.miaxis.face.event.CmdIdCardDoneEvent;
 import com.miaxis.face.event.CmdIdCardEvent;
+import com.miaxis.face.event.CmdScanDoneEvent;
+import com.miaxis.face.event.CmdScanEvent;
 import com.miaxis.face.event.CmdShutterEvent;
 import com.miaxis.face.event.CmdShutterPhotoEvent;
+import com.miaxis.face.event.CmdSignDoneEvent;
+import com.miaxis.face.event.CmdSignEvent;
+import com.miaxis.face.event.CmdSmDoneEvent;
+import com.miaxis.face.event.CmdSmEvent;
 import com.miaxis.face.event.ResultEvent;
 import com.miaxis.face.util.LogUtil;
 
@@ -148,6 +156,14 @@ public class AdbCommService extends Service {
                             EventBus.getDefault().post(new CmdGetFingerEvent());
                         } else if (TextUtils.equals(s, "$=IdCard")) {
                             EventBus.getDefault().post(new CmdIdCardEvent());
+                        }else if (TextUtils.equals(s, "$=GetFingerImg")) {
+                            EventBus.getDefault().post(new CmdFingerImgEvent());
+                        }else if (TextUtils.equals(s, "$=GetSm")) {
+                            EventBus.getDefault().post(new CmdSmEvent());
+                        }else if (TextUtils.equals(s, "$=GetSign")) {
+                            EventBus.getDefault().post(new CmdSignEvent());
+                        }else if (TextUtils.equals(s, "$=GetScan")) {
+                            EventBus.getDefault().post(new CmdScanEvent());
                         }
                     } else {
                         break;
@@ -303,6 +319,35 @@ public class AdbCommService extends Service {
         }
 
         @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
+        public void onCmdFingerImgDoneEvent(CmdFingerImgDoneEvent e) {
+            if (!TextUtils.isEmpty(e.getBase64())) {
+                sendMsg(String.format("$FingerImg=#=%s$end", e.getBase64()));
+            }
+        }
+
+        @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
+        public void onCmdScanDoneEvent(CmdScanDoneEvent e) {
+            if (!TextUtils.isEmpty(e.getContent())) {
+//                sendMsg(String.format("$Scan=#=%s$end", e.getContent()));
+                sendMsg(String.format("$finger=#=%s$end", e.getContent()));
+            }
+        }
+
+        @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
+        public void onCmdSignDoneEvent(CmdSignDoneEvent e) {
+            if (!TextUtils.isEmpty(e.getBase64())) {
+                sendMsg(String.format("$Sign=#=%s$end", e.getBase64()));
+            }
+        }
+
+        @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
+        public void onCmdSmDoneEvent(CmdSmDoneEvent e) {
+            if (!TextUtils.isEmpty(e.getBase64())) {
+                sendMsg(String.format("$Sm=#=%s$end", e.getBase64()));
+            }
+        }
+
+        @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
         public void onCmdGetFingerDoneEvent(CmdGetFingerDoneEvent e) {
             if (!TextUtils.isEmpty(e.getFinger64())) {
                 sendMsg(String.format("$finger=#=%s$end", e.getFinger64()));
@@ -350,10 +395,14 @@ public class AdbCommService extends Service {
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String s) throws Exception {
-                            if (socket != null) {
-                                OutputStream writer = socket.getOutputStream();
-                                if (writer != null)
-                                    writer.write(s.getBytes("GBK"));
+                            try {
+                                if (socket != null) {
+                                    OutputStream writer = socket.getOutputStream();
+                                    if (writer != null)
+                                        writer.write(s.getBytes("GBK"));
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
                         }
                     });
