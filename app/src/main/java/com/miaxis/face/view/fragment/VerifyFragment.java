@@ -44,7 +44,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.zz.api.MXFaceInfoEx;
 
 import java.io.File;
-import java.util.Date;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -270,10 +269,11 @@ public class VerifyFragment extends BaseFragment{
         }
         record.setFaceImgData(MyUtil.getBytesByBitmap(bit));
         FileUtil.saveRecordImg(record, getActivity());
-        record.setCreateDate(new Date());
-        record.setStatus( result ? "人脸通过" : "人脸失败");
+//        record.setCreateDate(new Date());
+//        record.setStatus( result ? "人脸通过" : "人脸失败");
         if (verifyMode==Config.MODE_FACE_ONLY||verifyMode==Config.MODE_TWO_FINGER_FIRST||verifyMode==Config.MODE_ONE_FACE_FIRST){
-            recordDao.insert(record);
+//            recordDao.insert(record);
+            record.setDevsn(MyUtil.getSerialNumber());
             eventbus.post(new ResultEvent(result?ResultEvent.FACE_SUCCESS:ResultEvent.FACE_FAIL, record));
         }else {
             CameraManager.getInstance().nirClose();
@@ -364,10 +364,11 @@ public class VerifyFragment extends BaseFragment{
                         rv_result.setResultMessage(state==0 ? "指纹通过" : "指纹失败");
                     }
                 });
-                record.setCreateDate(new Date());
-                record.setStatus( state==0 ? "指纹通过" : "指纹失败");
+//                record.setCreateDate(new Date());
+//                record.setStatus( state==0 ? "指纹通过" : "指纹失败");
                 if(verifyMode==Config.MODE_FINGER_ONLY||verifyMode==Config.MODE_ONE_FINGER_FIRST||verifyMode==Config.MODE_TWO_FACE_FIRST){
-                    recordDao.insert(record);
+//                    recordDao.insert(record);
+                    record.setDevsn(MyUtil.getSerialNumber());
                     eventbus.post(new ResultEvent(state==0?ResultEvent.FINGER_SUCCESS:ResultEvent.FINGER_FAIL, record));
                 }else {
                     CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),config.getLiveness());

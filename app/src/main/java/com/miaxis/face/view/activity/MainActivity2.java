@@ -49,6 +49,7 @@ import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.event.LoadProgressEvent;
 import com.miaxis.face.event.NoCardEvent;
 import com.miaxis.face.event.ReadCardEvent;
+import com.miaxis.face.event.ResultEvent;
 import com.miaxis.face.event.TimeChangeEvent;
 import com.miaxis.face.greendao.gen.ConfigDao;
 import com.miaxis.face.greendao.gen.RecordDao;
@@ -57,6 +58,7 @@ import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.CardManager;
 import com.miaxis.face.manager.SoundManager;
 import com.miaxis.face.receiver.TimeReceiver;
+import com.miaxis.face.service.UpLoadRecordService;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.fragment.AlertDialog;
@@ -479,7 +481,87 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                 });
     }
 
-    /* 处理 时间变化 事件， 实时更新时间*/
+
+    @SuppressLint("CheckResult")
+    @Subscribe(threadMode = ThreadMode.ASYNC, priority = 100)
+    public void onResultEvent(ResultEvent e) {
+        Record record = e.getRecord();
+        switch (e.getResult()) {
+            case ResultEvent.FACE_SUCCESS:
+                if (config.getVerifyMode() == Config.MODE_FACE_ONLY
+                        || config.getVerifyMode() == Config.MODE_ONE_FACE_FIRST
+                        || config.getVerifyMode() == Config.MODE_ONE_FINGER_FIRST) {
+                    record.setStatus("人脸通过");
+                } else if (config.getVerifyMode() == Config.MODE_TWO_FINGER_FIRST) {
+                    record.setStatus("人脸、指纹通过");
+                } else if (config.getVerifyMode() == Config.MODE_LOCAL_FEATURE) {
+                    record.setStatus("人脸通过");
+                } else {
+                    return;
+                }
+                SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
+                break;
+            case ResultEvent.FINGER_SUCCESS:
+                if (config.getVerifyMode() == Config.MODE_FINGER_ONLY
+                        || config.getVerifyMode() == Config.MODE_ONE_FINGER_FIRST
+                        || config.getVerifyMode() == Config.MODE_ONE_FACE_FIRST) {
+                    record.setStatus("指纹通过");
+                } else if (config.getVerifyMode() == Config.MODE_TWO_FACE_FIRST) {
+                    record.setStatus("人脸、指纹通过");
+                } else {
+                    return;
+                }
+                SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
+                break;
+            case ResultEvent.FACE_FAIL:
+                if (config.getVerifyMode() == Config.MODE_FACE_ONLY
+                        || config.getVerifyMode() == Config.MODE_ONE_FINGER_FIRST) {
+                    record.setStatus("人脸不通过");
+                } else if (config.getVerifyMode() == Config.MODE_TWO_FINGER_FIRST
+                        || config.getVerifyMode() == Config.MODE_TWO_FACE_FIRST) {
+                    record.setStatus("人脸不通过");
+                } else if (config.getVerifyMode() == Config.MODE_LOCAL_FEATURE) {
+                    record.setStatus("人脸不通过");
+                } else {
+                    return;
+                }
+                SoundManager.getInstance().playSound(Constants.SOUND_FAIL);
+                break;
+            case ResultEvent.FINGER_FAIL:
+                if (config.getVerifyMode() == Config.MODE_FINGER_ONLY
+                        || config.getVerifyMode() == Config.MODE_ONE_FACE_FIRST) {
+                    record.setStatus("指纹不通过");
+                    SoundManager.getInstance().playSound(Constants.SOUND_FAIL);
+                }
+                break;
+            case ResultEvent.WHITE_LIST_FAIL:
+                record.setStatus("白名单检验失败");
+                SoundManager.getInstance().playSound(Constants.SOUND_FAIL);
+                break;
+            case ResultEvent.BLACK_LIST_FAIL:
+                record.setStatus("黑名单检验失败");
+                SoundManager.getInstance().playSound(Constants.SOUND_FAIL);
+                break;
+            case ResultEvent.VALIDATE_FAIL:
+                SoundManager.getInstance().playSound(Constants.SOUND_VALIDATE_FAIL);
+                record.setStatus("身份证过期");
+                break;
+            default:
+                return;
+        }
+        record.setCreateDate(new Date());
+        record.setBusEntity(config.getOrgName());
+        record.setLocation(location);
+        record.setLatitude(latitude + "");
+        record.setLongitude(longitude + "");
+        FileUtil.saveRecordImg(record, this);
+        recordDao.insert(record);
+        if (config.getNetFlag()) {
+            UpLoadRecordService.startActionUpLoad(this, record, config);
+        }
+    }
+
+    /** 处理 时间变化 事件， 实时更新时间*/
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTimeEvent(TimeChangeEvent e) {
         DateFormat dateFormat = new SimpleDateFormat("E  yyyy-MM-dd");

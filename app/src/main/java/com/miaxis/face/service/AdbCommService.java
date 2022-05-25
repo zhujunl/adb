@@ -292,6 +292,9 @@ public class AdbCommService extends Service {
             sendMsgSb.append("$cardNo=#=").append(record.getCardNo());
             sendMsgSb.append("$address=#=").append(record.getAddress());
             sendMsgSb.append("$birthday=#=").append(record.getBirthday());
+//            if (!TextUtils.isEmpty(record.getDevsn())){
+//                sendMsgSb.append("$deviceName=#=").append(record.getDevsn());
+//            }
             sendMsgSb.append("$busEntity=#=").append(record.getBusEntity());
             if (null != record.getCardImgData()) {
                 sendMsgSb.append("$cardImg=#=").append(Base64.encodeToString(record.getCardImgData(), Base64.DEFAULT));
@@ -328,8 +331,7 @@ public class AdbCommService extends Service {
         @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
         public void onCmdScanDoneEvent(CmdScanDoneEvent e) {
             if (!TextUtils.isEmpty(e.getContent())) {
-//                sendMsg(String.format("$Scan=#=%s$end", e.getContent()));
-                sendMsg(String.format("$finger=#=%s$end", e.getContent()));
+                sendMsg(String.format("$Scan=#=%s$end", e.getContent()));
             }
         }
 

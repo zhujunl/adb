@@ -193,6 +193,7 @@ public class LoadingActivity extends BaseActivity {
 
     @OnClick(R.id.tv_title)
     void onErrorExit() {
+        finish();
 //        SmdtManager smdtManager = SmdtManager.create(this);
 //        smdtManager.smdtSetStatusBar(this, true);
 //        smdtManager.smdtSetGpioValue(2, false);

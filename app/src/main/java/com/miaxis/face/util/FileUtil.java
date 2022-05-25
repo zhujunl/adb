@@ -320,30 +320,30 @@ public class FileUtil {
     }
 
     public static void saveRecordImg(Record record, Context context) {
-//        byte[] cardImgBytes = record.getCardImgData();
-//        if (cardImgBytes != null && cardImgBytes.length > 0) {
-//            File cardImg = new File(getAvailableImgPath(context), record.getCardNo() + "_" + record.getName() + ".jpg");
-//            if (!cardImg.exists()) {
-//                FileOutputStream fos = null;
-//                try {
-//                    fos = new FileOutputStream(cardImg);
-//                    fos.write(cardImgBytes);
-//                    fos.flush();
-//                    record.setCardImg(cardImg.getPath());
-//                } catch (IOException e) {
-//                    LogUtil.writeLog("saveRecordImg" + e.getMessage());
-//                } finally {
-//                    try {
-//                        if (fos != null)
-//                            fos.close();
-//                    } catch (IOException e) {
-//                        LogUtil.writeLog("saveRecordImg" + e.getMessage());
-//                    }
-//                }
-//            } else {
-//                record.setCardImg(cardImg.getPath());
-//            }
-//        }
+        byte[] cardImgBytes = record.getCardImgData();
+        if (cardImgBytes != null && cardImgBytes.length > 0) {
+            File cardImg = new File(getAvailableImgPath(context), record.getCardNo() + "_" + record.getName() + ".jpg");
+            if (!cardImg.exists()) {
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(cardImg);
+                    fos.write(cardImgBytes);
+                    fos.flush();
+                    record.setCardImg(cardImg.getPath());
+                } catch (IOException e) {
+                    LogUtil.writeLog("saveRecordImg" + e.getMessage());
+                } finally {
+                    try {
+                        if (fos != null)
+                            fos.close();
+                    } catch (IOException e) {
+                        LogUtil.writeLog("saveRecordImg" + e.getMessage());
+                    }
+                }
+            } else {
+                record.setCardImg(cardImg.getPath());
+            }
+        }
 
         byte[] faceImgBytes = record.getFaceImgData();
         if (faceImgBytes != null && faceImgBytes.length > 0) {
