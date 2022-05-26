@@ -21,6 +21,7 @@ import com.miaxis.face.event.CmdIdCardDoneEvent;
 import com.miaxis.face.event.CmdIdCardEvent;
 import com.miaxis.face.event.CmdScanDoneEvent;
 import com.miaxis.face.event.CmdScanEvent;
+import com.miaxis.face.event.CmdShowEvent;
 import com.miaxis.face.event.CmdShutterEvent;
 import com.miaxis.face.event.CmdShutterPhotoEvent;
 import com.miaxis.face.event.CmdSignDoneEvent;
@@ -129,6 +130,8 @@ public class AdbCommService extends Service {
     public class ServerReceiveThread extends Thread {
 
         Socket socket;
+        boolean imgFlag=false;
+        StringBuffer sb=new StringBuffer();
 
         ServerReceiveThread(Socket socket) {
             EventBus.getDefault().register(this);
@@ -148,22 +151,39 @@ public class AdbCommService extends Service {
                         System.arraycopy(buffer, 0, text, 0, n);
                         String s = new String(text);    //接收到的数据
                         Log.e("receive", "s = " + s);
-                        if (TextUtils.equals(s, "$=Action")) {
-                            EventBus.getDefault().post(new BtReadCardEvent());
-                        } else if (TextUtils.equals(s, "$=Shutter")) {
-                            EventBus.getDefault().post(new CmdShutterEvent());
-                        } else if (TextUtils.equals(s, "$=GetFinger")) {
-                            EventBus.getDefault().post(new CmdGetFingerEvent());
-                        } else if (TextUtils.equals(s, "$=IdCard")) {
-                            EventBus.getDefault().post(new CmdIdCardEvent());
-                        }else if (TextUtils.equals(s, "$=GetFingerImg")) {
-                            EventBus.getDefault().post(new CmdFingerImgEvent());
-                        }else if (TextUtils.equals(s, "$=GetSm")) {
-                            EventBus.getDefault().post(new CmdSmEvent());
-                        }else if (TextUtils.equals(s, "$=GetSign")) {
-                            EventBus.getDefault().post(new CmdSignEvent());
-                        }else if (TextUtils.equals(s, "$=GetScan")) {
-                            EventBus.getDefault().post(new CmdScanEvent());
+                        if(s.length()>9){
+                            String start = s.substring(0, 9);
+                            String end = s.substring(s.length() - 4);
+                            if (TextUtils.equals(start,"$=ImgShow")){
+                                imgFlag=true;
+                            }
+                            if (TextUtils.equals(end,"$end")){
+                                imgFlag=false;
+                                sb.append(s);
+                                Log.e(TAG, "sb===" +sb.toString() );
+                                EventBus.getDefault().post(new CmdShowEvent(sb.toString()));
+                            }
+                        }
+                        if (!imgFlag){
+                            if (TextUtils.equals(s, "$=Action")) {
+                                EventBus.getDefault().post(new BtReadCardEvent());
+                            } else if (TextUtils.equals(s, "$=Shutter")) {
+                                EventBus.getDefault().post(new CmdShutterEvent());
+                            } else if (TextUtils.equals(s, "$=GetFinger")) {
+                                EventBus.getDefault().post(new CmdGetFingerEvent());
+                            } else if (TextUtils.equals(s, "$=IdCard")) {
+                                EventBus.getDefault().post(new CmdIdCardEvent());
+                            }else if (TextUtils.equals(s, "$=GetFingerImg")) {
+                                EventBus.getDefault().post(new CmdFingerImgEvent());
+                            }else if (TextUtils.equals(s, "$=GetSm")) {
+                                EventBus.getDefault().post(new CmdSmEvent());
+                            }else if (TextUtils.equals(s, "$=GetSign")) {
+                                EventBus.getDefault().post(new CmdSignEvent());
+                            }else if (TextUtils.equals(s, "$=GetScan")) {
+                                EventBus.getDefault().post(new CmdScanEvent());
+                            }
+                        }else {
+                            sb.append(s);
                         }
                     } else {
                         break;
@@ -292,9 +312,9 @@ public class AdbCommService extends Service {
             sendMsgSb.append("$cardNo=#=").append(record.getCardNo());
             sendMsgSb.append("$address=#=").append(record.getAddress());
             sendMsgSb.append("$birthday=#=").append(record.getBirthday());
-//            if (!TextUtils.isEmpty(record.getDevsn())){
-//                sendMsgSb.append("$deviceName=#=").append(record.getDevsn());
-//            }
+            if (!TextUtils.isEmpty(record.getDevsn())){
+                sendMsgSb.append("$deviceName=#=").append(record.getDevsn());
+            }
             sendMsgSb.append("$busEntity=#=").append(record.getBusEntity());
             if (null != record.getCardImgData()) {
                 sendMsgSb.append("$cardImg=#=").append(Base64.encodeToString(record.getCardImgData(), Base64.DEFAULT));
@@ -399,6 +419,7 @@ public class AdbCommService extends Service {
                         public void accept(String s) throws Exception {
                             try {
                                 if (socket != null) {
+                                    Log.e(TAG, "sssss=" +s );
                                     OutputStream writer = socket.getOutputStream();
                                     if (writer != null)
                                         writer.write(s.getBytes("GBK"));

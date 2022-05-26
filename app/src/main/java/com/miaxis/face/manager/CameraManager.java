@@ -59,8 +59,17 @@ public class CameraManager {
         try {
             mCamera = Camera.open(cameraId);
             Camera.Parameters parameters = mCamera.getParameters();
+//            List<Camera.Size> supportedPictureSizes = parameters.getSupportedPictureSizes();
+//            for (Camera.Size size  : supportedPictureSizes) {
+//            	Log.e(TAG, "supportedPictureSizes.width==" + size.width+"     h=="+size.height);
+//            }
+//            Log.e(TAG, "====================================");
+//            List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
+//            for (Camera.Size size  : supportedPreviewSizes) {
+//                Log.e(TAG, "supportedPreviewSizes.width==" + size.width+"     h=="+size.height);
+//            }
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
-            parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
+            parameters.setPictureSize(PRE_WIDTH, PRE_HEIGHT);
             buffer=new byte[((PRE_WIDTH * PRE_HEIGHT) * ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
             mCamera.addCallbackBuffer(buffer);
             mCamera.setParameters(parameters);
@@ -102,6 +111,15 @@ public class CameraManager {
         try {
             mirCamera = Camera.open(cameraId);
             Camera.Parameters parameters = mirCamera.getParameters();
+//            List<Camera.Size> supportedPictureSizes = parameters.getSupportedPictureSizes();
+//            for (Camera.Size size  : supportedPictureSizes) {
+//                Log.e(TAG, "supportedPictureSizes.width==" + size.width+"     h=="+size.height);
+//            }
+//            Log.e(TAG, "====================================");
+//            List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
+//            for (Camera.Size size  : supportedPreviewSizes) {
+//                Log.e(TAG, "supportedPreviewSizes.width==" + size.width+"     h=="+size.height);
+//            }
             parameters.setPreviewSize(PIC_WIDTH, PIC_HEIGHT);
             parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
             mirCamera.setParameters(parameters);

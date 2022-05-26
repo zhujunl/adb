@@ -386,14 +386,15 @@ public class VerifyFragment extends BaseFragment{
                     Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            rv_result.setVisibility(View.INVISIBLE);
+                            rv_result.setVisibility(View.VISIBLE);
+                            rv_result.showCameraImage(image);
                         }
                     });
                 }else if (FingerImgFlag){
                     Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            rv_result.setVisibility(View.INVISIBLE);
+                            rv_result.setVisibility(View.VISIBLE);
                             rv_result.showCameraImage(image);
                         }
                     });

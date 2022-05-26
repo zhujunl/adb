@@ -35,7 +35,7 @@ public class NvController {
     }
 
     public void back() {
-        if (fragmentManager.getBackStackEntryCount() > 1) {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
             fragmentManager.popBackStack();
         }
     }

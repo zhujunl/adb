@@ -2,7 +2,6 @@ package com.miaxis.face.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -42,6 +41,7 @@ import com.miaxis.face.event.CmdFingerImgEvent;
 import com.miaxis.face.event.CmdGetFingerEvent;
 import com.miaxis.face.event.CmdScanDoneEvent;
 import com.miaxis.face.event.CmdScanEvent;
+import com.miaxis.face.event.CmdShowEvent;
 import com.miaxis.face.event.CmdShutterEvent;
 import com.miaxis.face.event.CmdSignEvent;
 import com.miaxis.face.event.CmdSmEvent;
@@ -63,8 +63,9 @@ import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.fragment.AlertDialog;
 import com.miaxis.face.view.fragment.HightFragment;
-import com.miaxis.face.view.fragment.HomeFragment;
 import com.miaxis.face.view.fragment.PhotoFragment;
+import com.miaxis.face.view.fragment.ScanFragment;
+import com.miaxis.face.view.fragment.ShowImgFragment;
 import com.miaxis.face.view.fragment.SignFragment;
 import com.miaxis.face.view.fragment.VerifyFragment;
 import com.miaxis.sdt.bean.IdCard;
@@ -169,7 +170,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         SoundManager.getInstance().init(this);
         ConfigDao configDao = Face_App.getInstance().getDaoSession().getConfigDao();
         config = configDao.loadByRowId(1);
-        nvController.nvTo(HomeFragment.getInstance(),false);
+//        nvController.nvTo(HomeFragment.getInstance(),false);
     }
 
     private void initAMapSDK() {
@@ -318,6 +319,20 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         readSecond(count);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
+    public void onCmdShowEvent(CmdShowEvent e) {
+        nvController.back();
+        Log.e(TAG, "onCmdShowEvent" );
+//        String data = FileUtil.readFileToString(new File("/sdcard/imgShowData.txt"));
+        String data=e.getData();
+        String[] splits = data.split("\\$");
+        String[] times = splits[2].split("=#=");
+        String[] datas = splits[3].split("=#=");
+        //        Bitmap bitmap = MyUtil.base64ToBitmap(datas[1]);
+        nvController.nvTo(ShowImgFragment.getIntent(datas[1]),false);
+        readSecond(Integer.parseInt(times[1]));
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCmdFingerImgEvent(CmdFingerImgEvent e){
         nvController.back();
@@ -341,18 +356,22 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCmdScanEvent(CmdScanEvent e){
+        nvController.back();
+        nvController.nvTo(new ScanFragment(),false);
         ScanFlag=true;
-        android.app.AlertDialog.Builder builder=new android.app.AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setTitle("请扫码");
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ScanFlag=false;
-                dialogInterface.dismiss();
-            }
-        });
-        builder.create().show();
+        readSecond(count);
+//        ScanFlag=true;
+//        android.app.AlertDialog.Builder builder=new android.app.AlertDialog.Builder(this);
+//        builder.setCancelable(false);
+//        builder.setTitle("请扫码");
+//        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                ScanFlag=false;
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        builder.create().show();
     }
 
     @OnClick(R.id.iv_record)
@@ -685,8 +704,6 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-
-
                     sb.setLength(0);
                 }
             }
