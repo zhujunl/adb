@@ -1,8 +1,10 @@
 package com.miaxis.face.view.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +12,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.miaxis.face.R;
+import com.miaxis.face.app.Face_App;
+import com.miaxis.face.app.OnFragmentInteractionListener;
 import com.miaxis.face.event.CmdSignDoneEvent;
 import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.util.BitmapUtils;
@@ -49,6 +53,17 @@ public class SignFragment extends BaseFragment{
     private String BasePath = FileUtil.FACE_MAIN_PATH + File.separator + "Sign";
     private String savePath;
     private EventBus eventBus;
+    private OnFragmentInteractionListener mListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnFragmentInteractionListener){
+            mListener=(OnFragmentInteractionListener) context;
+        }else {
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
     
     @Override
     protected int initLayout() { return R.layout.fragment_sign; }
@@ -70,6 +85,15 @@ public class SignFragment extends BaseFragment{
                 if(saveBitmap){
                     Bitmap bit = BitmapFactory.decodeFile(savePath);
                     eventBus.post(new CmdSignDoneEvent(MyUtil.bitmapTo64(bit)));
+                    Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mListener.showWaitDialog("正在上传中，请稍后");
+                            SystemClock.sleep(1000);
+                            mListener.dismissWaitDialog("上传成功");
+                            mListener.backToStack(null);
+                        }
+                    });
                 }
 //                AlertDialog.Builder builder = new AlertDialog.Builder(getContext()).setMessage("保存：" + (saveBitmap ? "成功" : "失败") + "  ，路径：" + savePath);
 //                if (saveBitmap) {

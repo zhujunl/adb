@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -31,6 +33,7 @@ import com.amap.api.services.weather.WeatherSearch;
 import com.amap.api.services.weather.WeatherSearchQuery;
 import com.miaxis.face.R;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.app.OnFragmentInteractionListener;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.Record;
 import com.miaxis.face.bean.WhiteItem;
@@ -41,6 +44,7 @@ import com.miaxis.face.event.CmdFingerImgEvent;
 import com.miaxis.face.event.CmdGetFingerEvent;
 import com.miaxis.face.event.CmdScanDoneEvent;
 import com.miaxis.face.event.CmdScanEvent;
+import com.miaxis.face.event.CmdShowDoneEvent;
 import com.miaxis.face.event.CmdShowEvent;
 import com.miaxis.face.event.CmdShutterEvent;
 import com.miaxis.face.event.CmdSignEvent;
@@ -100,7 +104,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity2  extends BaseActivity implements AMapLocationListener, WeatherSearch.OnWeatherSearchListener, ServiceConnection {
+public class MainActivity2  extends BaseActivity implements AMapLocationListener, WeatherSearch.OnWeatherSearchListener, ServiceConnection , OnFragmentInteractionListener {
 
     @BindView(R.id.tv_title)
     TextView tvTitle;
@@ -143,9 +147,10 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     private Subscription mSubscription;
     private final String TAG="MainActivity2";
     private boolean isActive = true;
-    private final int count=15;
+    private int count=15;
     private boolean imStateSaved=false;
     private boolean ScanFlag=false;
+    private MaterialDialog waitDialog;
 
 
     @Override
@@ -170,6 +175,13 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         SoundManager.getInstance().init(this);
         ConfigDao configDao = Face_App.getInstance().getDaoSession().getConfigDao();
         config = configDao.loadByRowId(1);
+        count=config.getAdvertiseDelayTime();
+        waitDialog = new MaterialDialog.Builder(this)
+                .progress(true, 100)
+                .content("请稍后")
+                .cancelable(false)
+                .autoDismiss(false)
+                .build();
 //        nvController.nvTo(HomeFragment.getInstance(),false);
     }
 
@@ -324,18 +336,24 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         nvController.back();
         Log.e(TAG, "onCmdShowEvent" );
 //        String data = FileUtil.readFileToString(new File("/sdcard/imgShowData.txt"));
-        String data=e.getData();
-        String[] splits = data.split("\\$");
-        String[] times = splits[2].split("=#=");
-        String[] datas = splits[3].split("=#=");
-        //        Bitmap bitmap = MyUtil.base64ToBitmap(datas[1]);
-        nvController.nvTo(ShowImgFragment.getIntent(datas[1]),false);
-        readSecond(Integer.parseInt(times[1]));
+        try {
+            String data=e.getData();
+            String[] splits = data.split("\\$");
+            String[] times = splits[2].split("=#=");
+            String[] datas = splits[3].split("=#=");
+            //        Bitmap bitmap = MyUtil.base64ToBitmap(datas[1]);
+            nvController.nvTo(ShowImgFragment.getIntent(datas[1]),false);
+            readSecond(Integer.parseInt(times[1]));
+            eventBus.post(new CmdShowDoneEvent("OK",""));
+        }catch (Exception ex){
+            eventBus.post(new CmdShowDoneEvent("ERROR",ex.getMessage()));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCmdFingerImgEvent(CmdFingerImgEvent e){
         nvController.back();
+        SoundManager.getInstance().playSound(Constants.SOUND_OTHER_FINGER);
         nvController.nvTo(VerifyFragment.getInstance(true,true),false);
         readSecond(count);
     }
@@ -360,18 +378,6 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         nvController.nvTo(new ScanFragment(),false);
         ScanFlag=true;
         readSecond(count);
-//        ScanFlag=true;
-//        android.app.AlertDialog.Builder builder=new android.app.AlertDialog.Builder(this);
-//        builder.setCancelable(false);
-//        builder.setTitle("请扫码");
-//        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                ScanFlag=false;
-//                dialogInterface.dismiss();
-//            }
-//        });
-//        builder.create().show();
     }
 
     @OnClick(R.id.iv_record)
@@ -646,6 +652,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     boolean isScaning = false;
     int len = 0;
     int oldLen = 0;
+    int counts=0;
 
     //二维码扫码
     @SuppressLint("RestrictedApi")
@@ -654,8 +661,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         int action = event.getAction();
         if (ScanFlag) {
             if (action == KeyEvent.ACTION_DOWN) {
-                Log.e(TAG, "     getKeyCode==="+event.getKeyCode()+"    getCharacters==="+event.getCharacters() );
-                if (event.getKeyCode() == KeyEvent.KEYCODE_SHIFT_RIGHT) {
+                if (event.getKeyCode()==KeyEvent.KEYCODE_SHIFT_LEFT||event.getKeyCode()==KeyEvent.KEYCODE_SHIFT_RIGHT){
                     return super.dispatchKeyEvent(event);
                 }
                 char unicodeChar = (char) event.getUnicodeChar();
@@ -668,9 +674,8 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         return super.dispatchKeyEvent(event);
     }
 
-
     private void startScan() {
-        Log.e(TAG, "startScan"  );
+        counts++;
         if (isScaning) {
             return;
         }
@@ -695,12 +700,17 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                     String str1 = null;
                     try {
 //                        str1 = new String(str.getBytes(StandardCharsets.ISO_8859_1), "utf-8");
-                        byte[] ii=str.getBytes("gb2312");
+                        byte[] ii=str.trim().getBytes("gb2312");
                         str1 = new String(str.getBytes(StandardCharsets.ISO_8859_1), "gb2312");
                         System.out.println(str1);
                         Log.e(TAG,"扫码:" + str);
-                        eventBus.post(new CmdScanDoneEvent(str));
+                        eventBus.post(new CmdScanDoneEvent(str.trim()));
+                        counts=0;
                         ScanFlag=false;
+                        showWaitDialog("正在上传中，请稍后");
+                        SystemClock.sleep(1000);
+                        dismissWaitDialog("上传成功");
+                        backToStack(null);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -710,4 +720,32 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         });
     }
 
+    @Override
+    public void backToStack(Class<? extends Fragment> fragment) {
+        nvController.back();
+    }
+
+    @Override
+    public void showWaitDialog(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                waitDialog.getContentView().setText(message);
+                waitDialog.show();
+            }
+        });
+    }
+
+    @Override
+    public void dismissWaitDialog(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (waitDialog.isShowing()) {
+                    waitDialog.dismiss();
+                    Toast.makeText(MainActivity2.this, message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }

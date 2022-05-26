@@ -415,6 +415,10 @@ public class SettingActivity extends BaseActivity {
             Toast.makeText(this,"质量阈值设置错误",Toast.LENGTH_SHORT).show();
             return;
         }}
+        if (Integer.parseInt(etAdvertiseDelayTime.getText().toString())<0||TextUtils.isEmpty(etAdvertiseDelayTime.getText().toString())){
+            Toast.makeText(this,"显示时间设置错误",Toast.LENGTH_SHORT).show();
+            return;
+        }
         config.setIp(etIp.getText().toString());
         config.setPort(Integer.parseInt(etPort.getText().toString().trim()));
         config.setOrgName(etOrg.getText().toString());

@@ -1,9 +1,12 @@
 package com.miaxis.face.view.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.miaxis.face.R;
 import com.miaxis.face.adapter.PreviewPageAdapter;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.app.OnFragmentInteractionListener;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.constant.CameraConfig;
 import com.miaxis.face.constant.CameraPreviewCallback;
@@ -80,10 +84,21 @@ public class HightFragment extends BaseFragment{
     private Disposable subscribe;
     private Config config;
     private EventBus eventbus;
+    private OnFragmentInteractionListener mListener;
 
     public HightFragment() {
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnFragmentInteractionListener){
+            mListener=(OnFragmentInteractionListener) context;
+        }else {
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
     @Override
     protected int initLayout() { return R.layout.fragment_high; }
 
@@ -131,9 +146,27 @@ public class HightFragment extends BaseFragment{
             @Override
             public void onClick(View v) {
                 if (pathList.size()>0){
-                    eventbus.post(new CmdSmDoneEvent(MyUtil.bitmapTo64(pathList.get(0).getBase64())));
+                    Bitmap bitmap =pathList.get(0).getBase64();
+                    Matrix matrix = new Matrix();
+                    matrix.setScale(0.5f, 0.5f);
+                    Bitmap bit = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                    eventbus.post(new CmdSmDoneEvent(MyUtil.bitmapTo64(bit)));
+                    CameraHelper.getInstance().free();
+                   Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
+                       @Override
+                       public void run() {
+                           mListener.showWaitDialog("正在上传中，请稍后");
+                           SystemClock.sleep(1000);
+                           mListener.dismissWaitDialog("上传成功");
+                           mListener.backToStack(null);
+                       }
+                   });
+//                    Toast.makeText(getActivity(), "上传完成", Toast.LENGTH_SHORT).show();
+//                    FragmentActivity activity = getActivity();
+//                    if (activity instanceof BaseActivity) {
+//                        ((BaseActivity) activity).getNvController().back();
+//                    }
                 }
-                CameraHelper.getInstance().free();
             }
         });
 

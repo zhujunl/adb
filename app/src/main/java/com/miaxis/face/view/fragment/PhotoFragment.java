@@ -12,10 +12,12 @@ import android.widget.TextView;
 import com.miaxis.face.R;
 import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.Config;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.CmdShutterPhotoEvent;
 import com.miaxis.face.event.CutDownEvent;
 import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.FaceManager;
+import com.miaxis.face.manager.SoundManager;
 import com.miaxis.face.util.MyUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -81,6 +83,7 @@ public class PhotoFragment extends BaseFragment{
                     matrix.setScale(0.5f, 0.5f);
                     Bitmap bmpFace = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                     eventBus.post(new CmdShutterPhotoEvent(MyUtil.bitmapTo64(bmpFace)));
+                    SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
                 }
             }
         }

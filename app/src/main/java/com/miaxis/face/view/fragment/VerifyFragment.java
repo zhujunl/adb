@@ -33,6 +33,7 @@ import com.miaxis.face.greendao.gen.RecordDao;
 import com.miaxis.face.manager.CameraManager;
 import com.miaxis.face.manager.FaceManager;
 import com.miaxis.face.manager.FingerManager;
+import com.miaxis.face.manager.SoundManager;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.custom.RectSurfaceView;
@@ -275,6 +276,7 @@ public class VerifyFragment extends BaseFragment{
 //            recordDao.insert(record);
             record.setDevsn(MyUtil.getSerialNumber());
             eventbus.post(new ResultEvent(result?ResultEvent.FACE_SUCCESS:ResultEvent.FACE_FAIL, record));
+            SoundManager.getInstance().playSound(result?Constants.SOUND_SUCCESS:Constants.SOUND_FAIL);
         }else {
             CameraManager.getInstance().nirClose();
             initFingerDevice();
@@ -369,7 +371,8 @@ public class VerifyFragment extends BaseFragment{
                 if(verifyMode==Config.MODE_FINGER_ONLY||verifyMode==Config.MODE_ONE_FINGER_FIRST||verifyMode==Config.MODE_TWO_FACE_FIRST){
 //                    recordDao.insert(record);
                     record.setDevsn(MyUtil.getSerialNumber());
-                    eventbus.post(new ResultEvent(state==0?ResultEvent.FINGER_SUCCESS:ResultEvent.FINGER_FAIL, record));
+                    eventbus.post(new ResultEvent(state==0?ResultEvent.FINGER_SUCCESS:ResultEvent.FINGER_FAIL, record));;
+                    SoundManager.getInstance().playSound(state==0?Constants.SOUND_SUCCESS:Constants.SOUND_FAIL);
                 }else {
                     CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),config.getLiveness());
                     FaceManager.getInstance().startLoop();
@@ -383,6 +386,7 @@ public class VerifyFragment extends BaseFragment{
             if (image != null) {
                 if (!comparFlag){
                     EventBus.getDefault().post(new CmdGetFingerDoneEvent(Base64.encodeToString(feature, Base64.DEFAULT)));
+                    SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
                     Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -407,6 +411,7 @@ public class VerifyFragment extends BaseFragment{
                         canvas.drawColor(Color.WHITE);
                         canvas.drawBitmap(bit, 0, 0, null);
                         EventBus.getDefault().post(new CmdFingerImgDoneEvent(MyUtil.bitmapTo64(bit)));
+                        SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
                     }
                 }
                 FingerManager.getInstance().releaseDevice();

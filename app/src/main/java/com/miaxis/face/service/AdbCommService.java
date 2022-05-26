@@ -21,6 +21,7 @@ import com.miaxis.face.event.CmdIdCardDoneEvent;
 import com.miaxis.face.event.CmdIdCardEvent;
 import com.miaxis.face.event.CmdScanDoneEvent;
 import com.miaxis.face.event.CmdScanEvent;
+import com.miaxis.face.event.CmdShowDoneEvent;
 import com.miaxis.face.event.CmdShowEvent;
 import com.miaxis.face.event.CmdShutterEvent;
 import com.miaxis.face.event.CmdShutterPhotoEvent;
@@ -374,6 +375,17 @@ public class AdbCommService extends Service {
             if (!TextUtils.isEmpty(e.getFinger64())) {
                 sendMsg(String.format("$finger=#=%s$end", e.getFinger64()));
             }
+        }
+
+        @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
+        public void onCmdShowDoneEvent(CmdShowDoneEvent e) {
+            StringBuffer sb=new StringBuffer();
+            sb.append("$ImgShow=#=").append(e.getState());
+            if (!TextUtils.isEmpty(e.getMessage())){
+              sb.append("$message=#= ").append(e.getMessage());
+             }
+            sb.append("$end");
+            sendMsg(sb.toString());
         }
 
         @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
