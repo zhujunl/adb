@@ -1,5 +1,6 @@
 package com.miaxis.face.view.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import com.miaxis.face.R;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.app.OnFragmentInteractionListener;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.MxRGBImage;
 import com.miaxis.face.bean.PhotoFaceFeature;
@@ -83,6 +85,7 @@ public class VerifyFragment extends BaseFragment{
     private boolean FingerImgFlag=false;
     private int verifyMode;
     private Config config;
+    private OnFragmentInteractionListener mListener;
 
     public static VerifyFragment getInstance(boolean comparFlag,boolean FingerImgFlag){
         VerifyFragment verifyFragment=new VerifyFragment();
@@ -97,6 +100,15 @@ public class VerifyFragment extends BaseFragment{
         return verifyFragment;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnFragmentInteractionListener){
+            mListener=(OnFragmentInteractionListener) context;
+        }else {
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
 
     public VerifyFragment() {
 
@@ -276,7 +288,9 @@ public class VerifyFragment extends BaseFragment{
 //            recordDao.insert(record);
             record.setDevsn(MyUtil.getSerialNumber());
             eventbus.post(new ResultEvent(result?ResultEvent.FACE_SUCCESS:ResultEvent.FACE_FAIL, record));
+
             SoundManager.getInstance().playSound(result?Constants.SOUND_SUCCESS:Constants.SOUND_FAIL);
+            mListener.backToStack(2);
         }else {
             CameraManager.getInstance().nirClose();
             initFingerDevice();
@@ -373,6 +387,7 @@ public class VerifyFragment extends BaseFragment{
                     record.setDevsn(MyUtil.getSerialNumber());
                     eventbus.post(new ResultEvent(state==0?ResultEvent.FINGER_SUCCESS:ResultEvent.FINGER_FAIL, record));;
                     SoundManager.getInstance().playSound(state==0?Constants.SOUND_SUCCESS:Constants.SOUND_FAIL);
+                    mListener.backToStack(2);
                 }else {
                     CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),config.getLiveness());
                     FaceManager.getInstance().startLoop();
@@ -394,6 +409,7 @@ public class VerifyFragment extends BaseFragment{
                             rv_result.showCameraImage(image);
                         }
                     });
+                    mListener.backToStack(2);
                 }else if (FingerImgFlag){
                     Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                         @Override
@@ -412,6 +428,7 @@ public class VerifyFragment extends BaseFragment{
                         canvas.drawBitmap(bit, 0, 0, null);
                         EventBus.getDefault().post(new CmdFingerImgDoneEvent(MyUtil.bitmapTo64(bit)));
                         SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
+                        mListener.backToStack(2);
                     }
                 }
                 FingerManager.getInstance().releaseDevice();

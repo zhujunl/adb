@@ -158,7 +158,7 @@ public class HightFragment extends BaseFragment{
                            mListener.showWaitDialog("正在上传中，请稍后");
                            SystemClock.sleep(1000);
                            mListener.dismissWaitDialog("上传成功");
-                           mListener.backToStack(null);
+                           mListener.backToStack(0);
                        }
                    });
 //                    Toast.makeText(getActivity(), "上传完成", Toast.LENGTH_SHORT).show();

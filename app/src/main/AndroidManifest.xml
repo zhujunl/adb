@@ -68,9 +68,9 @@
         <activity
             android:name=".view.activity.SettingActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".view.activity.MainActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+<!--        <activity-->
+<!--            android:name=".view.activity.MainActivity"-->
+<!--            android:windowSoftInputMode="adjustResize|stateHidden" />-->
         <activity android:name=".view.activity.TestActivity" />
 
         <service
@@ -89,9 +89,9 @@
         </receiver>
 
         <service android:name="com.amap.api.location.APSService" />
-        <service
-            android:name=".service.FingerService"
-            android:exported="false" />
+<!--        <service-->
+<!--            android:name=".service.FingerService"-->
+<!--            android:exported="false" />-->
         <service
             android:name=".service.DownVersionService"
             android:exported="false" />

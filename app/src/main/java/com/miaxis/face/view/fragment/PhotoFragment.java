@@ -1,5 +1,6 @@
 package com.miaxis.face.view.fragment;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.hardware.Camera;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.miaxis.face.R;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.app.OnFragmentInteractionListener;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.CmdShutterPhotoEvent;
@@ -44,7 +46,17 @@ public class PhotoFragment extends BaseFragment{
     EventBus eventBus;
     private byte[] buffer;
     private Config config;
+    private OnFragmentInteractionListener mListener;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnFragmentInteractionListener){
+            mListener=(OnFragmentInteractionListener) context;
+        }else {
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
     public PhotoFragment() {
     }
 
@@ -84,6 +96,7 @@ public class PhotoFragment extends BaseFragment{
                     Bitmap bmpFace = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                     eventBus.post(new CmdShutterPhotoEvent(MyUtil.bitmapTo64(bmpFace)));
                     SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
+                    mListener.backToStack(2);
                 }
             }
         }

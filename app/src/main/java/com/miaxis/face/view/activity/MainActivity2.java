@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -82,8 +81,6 @@ import org.reactivestreams.Subscription;
 import org.zz.api.MXFaceAPI;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -301,6 +298,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                         cutDownEvent.setTime(aLong);
                         eventBus.post(cutDownEvent);
                         if (aLong == 0) {
+                            ScanFlag=false;
                             isActive = false;
                             if (!imStateSaved)
                                 nvController.back();
@@ -576,9 +574,22 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         }
         record.setCreateDate(new Date());
         record.setBusEntity(config.getOrgName());
-        record.setLocation(location);
-        record.setLatitude(latitude + "");
-        record.setLongitude(longitude + "");
+//        record.setLocation(location);
+//        record.setLatitude(latitude + "");
+//        record.setLongitude(longitude + "");
+        List<Record> records = recordDao.loadAll();
+        int cout=records.size()-Constants.SQLSIZE;
+        if(cout>0){
+            for (int i = 0; i < cout; i++) {
+                String face=records.get(i).getFaceImg();
+                String card=records.get(i).getCardImg();
+                boolean b = FileUtil.deleteImg(face);
+                boolean b1 = FileUtil.deleteImg(card);
+                if (b&&b1){
+                    recordDao.delete(records.get(i));
+                }
+            }
+        }
         FileUtil.saveRecordImg(record, this);
         recordDao.insert(record);
         if (config.getNetFlag()) {
@@ -661,8 +672,12 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
         int action = event.getAction();
         if (ScanFlag) {
             if (action == KeyEvent.ACTION_DOWN) {
-                if (event.getKeyCode()==KeyEvent.KEYCODE_SHIFT_LEFT||event.getKeyCode()==KeyEvent.KEYCODE_SHIFT_RIGHT){
+                if (event.getKeyCode()==KeyEvent.KEYCODE_SHIFT_LEFT||event.getKeyCode()==KeyEvent.KEYCODE_SHIFT_RIGHT
+                ||event.getKeyCode()==KeyEvent.KEYCODE_VOLUME_UP||event.getKeyCode()==KeyEvent.KEYCODE_VOLUME_DOWN){
                     return super.dispatchKeyEvent(event);
+                }else if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
+                    readSecond(0);
+                    return true;
                 }
                 char unicodeChar = (char) event.getUnicodeChar();
                 sb.append(unicodeChar);
@@ -697,23 +712,14 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                 isScaning = false;
                 if (sb.length() > 0) {
                     String str=sb.toString();
-                    String str1 = null;
-                    try {
-//                        str1 = new String(str.getBytes(StandardCharsets.ISO_8859_1), "utf-8");
-                        byte[] ii=str.trim().getBytes("gb2312");
-                        str1 = new String(str.getBytes(StandardCharsets.ISO_8859_1), "gb2312");
-                        System.out.println(str1);
-                        Log.e(TAG,"扫码:" + str);
-                        eventBus.post(new CmdScanDoneEvent(str.trim()));
-                        counts=0;
-                        ScanFlag=false;
-                        showWaitDialog("正在上传中，请稍后");
-                        SystemClock.sleep(1000);
-                        dismissWaitDialog("上传成功");
-                        backToStack(null);
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                    Log.e(TAG,"扫码:" + str);
+                    eventBus.post(new CmdScanDoneEvent(str.trim()));
+                    counts=0;
+                    ScanFlag=false;
+                    showWaitDialog("正在上传中，请稍后");
+                    SystemClock.sleep(1000);
+                    dismissWaitDialog("上传成功");
+                    backToStack(0);
                     sb.setLength(0);
                 }
             }
@@ -721,8 +727,8 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     }
 
     @Override
-    public void backToStack(Class<? extends Fragment> fragment) {
-        nvController.back();
+    public void backToStack(int coutdown) {
+        readSecond(coutdown);
     }
 
     @Override

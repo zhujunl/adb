@@ -312,11 +312,18 @@ public class FileUtil {
         return (allBlocks * blockSize)/1024/1024; //单位MB
     }
 
-    public static void deleteImg(String path) {
-        File f = new File(path);
-        if (!f.delete()) {
-            LogUtil.writeLog("删除失败" + path);
-        }
+    public static boolean deleteImg(String path) {
+      try {
+          File f = new File(path);
+          if (!f.delete()) {
+              LogUtil.writeLog("删除失败" + path);
+              return false;
+          }
+          return true;
+      } catch (Exception e) {
+          e.printStackTrace();
+          return false;
+      }
     }
 
     public static void saveRecordImg(Record record, Context context) {
