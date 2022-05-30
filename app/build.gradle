@@ -12,6 +12,20 @@ android {
         versionName "1.0.1_adb_ST"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        debug {
+            keyAlias 'Chronaxia'
+            keyPassword 'qq972625961'
+            storeFile file('../chronaxia.jks')
+            storePassword 'qq972625961'
+        }
+        release {
+            keyAlias 'Chronaxia'
+            keyPassword 'qq972625961'
+            storeFile file('../chronaxia.jks')
+            storePassword 'qq972625961'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
