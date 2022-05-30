@@ -54,7 +54,7 @@ public class Constants {
     public static final String DEFAULT_BANNER = "";
     public static final String DEFAULT_PASSWORD = "666666";
     public static final boolean DEFAULT_ADVERTISE_FLAG = true;
-    public static final int DEFAULT_ADVERTISE_DELAY_TIME = 15;
+    public static final int DEFAULT_ADVERTISE_DELAY_TIME = 30;
 
     public static final String PROJECT_NAME = "faceid";
     public static final String CHECK_VERSION = "app/getAppInfo";
@@ -110,4 +110,5 @@ public class Constants {
     public static final int DEFAULTNIR=0;//默认近红外摄像头
     public static final int DEFAULTSM=2;//默认高拍仪摄像头
     public static final float QUALITY=50;
+    public static final int SQLSIZE=10000;
 }

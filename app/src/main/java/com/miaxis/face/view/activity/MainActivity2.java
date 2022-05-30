@@ -333,13 +333,11 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     public void onCmdShowEvent(CmdShowEvent e) {
         nvController.back();
         Log.e(TAG, "onCmdShowEvent" );
-//        String data = FileUtil.readFileToString(new File("/sdcard/imgShowData.txt"));
         try {
             String data=e.getData();
             String[] splits = data.split("\\$");
             String[] times = splits[2].split("=#=");
             String[] datas = splits[3].split("=#=");
-            //        Bitmap bitmap = MyUtil.base64ToBitmap(datas[1]);
             nvController.nvTo(ShowImgFragment.getIntent(datas[1]),false);
             readSecond(Integer.parseInt(times[1]));
             eventBus.post(new CmdShowDoneEvent("OK",""));

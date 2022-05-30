@@ -127,6 +127,7 @@ public class VerifyFragment extends BaseFragment{
         CameraManager.getInstance().open(sv_main,config.getRgb());
         powerControl(true);
         if (!comparFlag||FingerImgFlag){
+            tv_pass.setVisibility(View.INVISIBLE);
             rv_result.bringToFront();
             rv_result.clear();
             rv_result.setFingerMode(true);
@@ -192,6 +193,7 @@ public class VerifyFragment extends BaseFragment{
     @Subscribe(threadMode = ThreadMode.MAIN,priority = 1)
     public void onCardImgEvent(ReadCardEvent event){
         Log.e(TAG, "onCardImgEvent" +event.toString());
+        tv_pass.setVisibility(View.INVISIBLE);
         cardimg=event.getFace();
         record=event.getRecord();
         int v=event.getVerifyMode();
@@ -205,7 +207,7 @@ public class VerifyFragment extends BaseFragment{
 
                 setFaceView(true);
                 break;
-            case Config.MODE_FINGER_ONLY:;
+            case Config.MODE_FINGER_ONLY:
             case Config.MODE_ONE_FINGER_FIRST:
             case Config.MODE_TWO_FINGER_FIRST:
                 initFingerDevice();
