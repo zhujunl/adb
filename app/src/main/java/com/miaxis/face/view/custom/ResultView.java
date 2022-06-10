@@ -26,6 +26,10 @@ public class ResultView extends LinearLayout {
     ImageView ivResult;
     @BindView(R.id.iv_id_photo)
     ImageView ivIdPhoto;
+    @BindView((R.id.ll_card_img))
+    LinearLayout cardImg;
+    @BindView(R.id.img_txt)
+    TextView imgTxt;
 
     public ResultView(Context context) {
         super(context);
@@ -92,6 +96,16 @@ public class ResultView extends LinearLayout {
 
     public void setFingerResult(boolean result) {
         Glide.with(this).load(result ? R.drawable.finger_succes : R.drawable.finger_fail).into(ivFingerResult);
+    }
+
+    public void setImgHide(boolean b){
+        if (b){
+            cardImg.setVisibility(INVISIBLE);
+        }
+    }
+
+    public void setTxt(String s){
+        imgTxt.setText(s);
     }
 
     @Override

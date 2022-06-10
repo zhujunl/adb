@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -42,6 +43,7 @@ public class DrawTextView extends AppCompatEditText {
     }
 
     private void init() {
+        setInputType(InputType.TYPE_NULL);
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeCap(Paint.Cap.ROUND);

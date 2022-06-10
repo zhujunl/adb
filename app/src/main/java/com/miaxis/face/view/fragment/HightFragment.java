@@ -157,15 +157,12 @@ public class HightFragment extends BaseFragment{
                        public void run() {
                            mListener.showWaitDialog("正在上传中，请稍后");
                            SystemClock.sleep(1000);
+                           File file=new File(pathList.get(0).getPath());
+                           FileUtil.deleteDirWihtFile(file.getParentFile());
                            mListener.dismissWaitDialog("上传成功");
                            mListener.backToStack(0);
                        }
                    });
-//                    Toast.makeText(getActivity(), "上传完成", Toast.LENGTH_SHORT).show();
-//                    FragmentActivity activity = getActivity();
-//                    if (activity instanceof BaseActivity) {
-//                        ((BaseActivity) activity).getNvController().back();
-//                    }
                 }
             }
         });

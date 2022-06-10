@@ -1420,7 +1420,7 @@
                         android:textColor="@color/dark"
                         android:gravity="center"
                         android:textSize="20sp"
-                        android:text="显示时间（秒）"
+                        android:text="超时显示时间（秒）"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent" />

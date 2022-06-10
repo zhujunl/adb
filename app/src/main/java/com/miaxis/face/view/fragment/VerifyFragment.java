@@ -46,7 +46,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.zz.api.MXFaceInfoEx;
 
-import java.io.File;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -133,6 +132,8 @@ public class VerifyFragment extends BaseFragment{
             rv_result.setFingerMode(true);
             rv_result.setResultMessage("请按手指");
             rv_result.setVisibility(View.VISIBLE);
+            rv_result.setImgHide(true);
+            rv_result.setTxt("指纹图像");
             record=new Record();
             initFingerDevice();
         }
@@ -210,9 +211,9 @@ public class VerifyFragment extends BaseFragment{
             case Config.MODE_FINGER_ONLY:
             case Config.MODE_ONE_FINGER_FIRST:
             case Config.MODE_TWO_FINGER_FIRST:
+                setFingerView(true);
                 initFingerDevice();
 
-                setFingerView(true);
                 break;
 
             default:
@@ -272,7 +273,7 @@ public class VerifyFragment extends BaseFragment{
                 rsv_rect.clearDraw();
                 rv_result.setFaceResult(result);
                 rv_result.showCameraImage(rectBitmap);
-                rv_result.setResultMessage( result ? "人脸通过" : "人脸失败");
+                rv_result.setResultMessage( result ? "人脸核验通过" : "人脸核验失败");
             }
         });
         if (config.getScence()){
@@ -284,19 +285,30 @@ public class VerifyFragment extends BaseFragment{
         }
         record.setFaceImgData(MyUtil.getBytesByBitmap(bit));
         FileUtil.saveRecordImg(record, getActivity());
-//        record.setCreateDate(new Date());
-//        record.setStatus( result ? "人脸通过" : "人脸失败");
-        if (verifyMode==Config.MODE_FACE_ONLY||verifyMode==Config.MODE_TWO_FINGER_FIRST||verifyMode==Config.MODE_ONE_FACE_FIRST){
-//            recordDao.insert(record);
-            record.setDevsn(MyUtil.getSerialNumber());
-            eventbus.post(new ResultEvent(result?ResultEvent.FACE_SUCCESS:ResultEvent.FACE_FAIL, record));
 
-            SoundManager.getInstance().playSound(result?Constants.SOUND_SUCCESS:Constants.SOUND_FAIL);
-            mListener.backToStack(2);
+
+        if (result){
+            if (verifyMode==Config.MODE_TWO_FACE_FIRST){
+                CameraManager.getInstance().nirClose();
+                setFingerView(false);
+                initFingerDevice();
+            }else {
+                record.setDevsn(MyUtil.getSerialNumber());
+                eventbus.post(new ResultEvent(ResultEvent.FACE_SUCCESS, record));
+                SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
+                mListener.backToStack(2);
+            }
         }else {
-            CameraManager.getInstance().nirClose();
-            initFingerDevice();
-            setFingerView(false);
+            if (verifyMode==Config.MODE_FACE_ONLY||verifyMode==Config.MODE_TWO_FINGER_FIRST||verifyMode==Config.MODE_ONE_FINGER_FIRST){
+                record.setDevsn(MyUtil.getSerialNumber());
+                eventbus.post(new ResultEvent(ResultEvent.FACE_FAIL, record));
+                SoundManager.getInstance().playSound(Constants.SOUND_FAIL);
+                mListener.backToStack(2);
+            }else {
+                CameraManager.getInstance().nirClose();
+                setFingerView(false);
+                initFingerDevice();
+            }
         }
     }
 
@@ -306,6 +318,16 @@ public class VerifyFragment extends BaseFragment{
      * */
 
     public void initFingerDevice() {
+        if (TextUtils.equals("其他不确定指位",record.getFingerPosition0())&&TextUtils.equals("其他不确定指位",record.getFingerPosition1())){
+            Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    rv_result.setFingerResult(false);
+                    rv_result.setResultMessage("无指纹");
+                }
+            });
+            return;
+        }
         Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -379,22 +401,35 @@ public class VerifyFragment extends BaseFragment{
                     @Override
                     public void run() {
                         rv_result.setFingerResult(state==0);
-                        rv_result.setResultMessage(state==0 ? "指纹通过" : "指纹失败");
+                        rv_result.setResultMessage(state==0 ? "指纹核验通过" : "指纹核验失败");
                     }
                 });
-//                record.setCreateDate(new Date());
-//                record.setStatus( state==0 ? "指纹通过" : "指纹失败");
-                if(verifyMode==Config.MODE_FINGER_ONLY||verifyMode==Config.MODE_ONE_FINGER_FIRST||verifyMode==Config.MODE_TWO_FACE_FIRST){
-//                    recordDao.insert(record);
-                    record.setDevsn(MyUtil.getSerialNumber());
-                    eventbus.post(new ResultEvent(state==0?ResultEvent.FINGER_SUCCESS:ResultEvent.FINGER_FAIL, record));;
-                    SoundManager.getInstance().playSound(state==0?Constants.SOUND_SUCCESS:Constants.SOUND_FAIL);
-                    mListener.backToStack(2);
+
+
+                if (state==0){
+                    if(verifyMode==Config.MODE_TWO_FINGER_FIRST){
+                        CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),config.getLiveness());
+                        FaceManager.getInstance().startLoop();
+                        FaceManager.getInstance().setFaceHandleListener(faceListener);
+                        setFaceView(false);
+                    }else {
+                        record.setDevsn(MyUtil.getSerialNumber());
+                        eventbus.post(new ResultEvent(ResultEvent.FINGER_SUCCESS, record));
+                        SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
+                        mListener.backToStack(2);
+                    }
                 }else {
-                    CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),config.getLiveness());
-                    FaceManager.getInstance().startLoop();
-                    FaceManager.getInstance().setFaceHandleListener(faceListener);
-                    setFaceView(false);
+                    if (verifyMode==Config.MODE_FINGER_ONLY||verifyMode==Config.MODE_TWO_FACE_FIRST||verifyMode==Config.MODE_ONE_FACE_FIRST){
+                        record.setDevsn(MyUtil.getSerialNumber());
+                        eventbus.post(new ResultEvent(ResultEvent.FINGER_FAIL, record));
+                        SoundManager.getInstance().playSound(Constants.SOUND_FAIL);
+                        mListener.backToStack(2);
+                    }else {
+                        CameraManager.getInstance().nir_open(sv_preview_nir,config.getNir(),config.getLiveness());
+                        FaceManager.getInstance().startLoop();
+                        FaceManager.getInstance().setFaceHandleListener(faceListener);
+                        setFaceView(false);
+                    }
                 }
             }
         }
@@ -420,18 +455,14 @@ public class VerifyFragment extends BaseFragment{
                             rv_result.showCameraImage(image);
                         }
                     });
-                    String path=FileUtil.FACE_MAIN_PATH+ File.separator+FileUtil.FINGERIMG+File.separator+"FingImg"+System.currentTimeMillis()+".png";
-                    boolean save=FileUtil.saveBitmap(image,path);
-                    if (save){
-                        Bitmap bit = BitmapFactory.decodeFile(path);
-                        Bitmap newBitmap = Bitmap.createBitmap(bit.getWidth(), bit.getHeight(), Bitmap.Config.ARGB_8888);
-                        Canvas canvas = new Canvas(newBitmap);
-                        canvas.drawColor(Color.WHITE);
-                        canvas.drawBitmap(bit, 0, 0, null);
-                        EventBus.getDefault().post(new CmdFingerImgDoneEvent(MyUtil.bitmapTo64(bit)));
-                        SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
-                        mListener.backToStack(2);
-                    }
+                    Bitmap newBitmap = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(newBitmap);
+                    canvas.drawColor(Color.WHITE);
+                    canvas.drawBitmap(image, 0, 0, null);
+                    EventBus.getDefault().post(new CmdFingerImgDoneEvent(MyUtil.bitmapTo64(image)));
+                    SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
+                    mListener.backToStack(2);
+
                 }
                 FingerManager.getInstance().releaseDevice();
                 FingerManager.getInstance().setFingerListener(null);

@@ -8,8 +8,8 @@ android {
         applicationId "com.miaxis.faceid_cw"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0.1_adb_ST"
+        versionCode 2
+        versionName "1.0.2_adb_ST"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {

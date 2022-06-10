@@ -41,6 +41,7 @@
             android:layout_height="wrap_content" >
 
             <TextView
+                android:id="@+id/img_txt"
                 android:layout_gravity="center"
                 android:textColor="@color/white"
                 android:text="抓拍人脸"

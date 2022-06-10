@@ -2,7 +2,6 @@ package com.miaxis.face.view.fragment;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -16,7 +15,6 @@ import com.miaxis.face.app.Face_App;
 import com.miaxis.face.app.OnFragmentInteractionListener;
 import com.miaxis.face.event.CmdSignDoneEvent;
 import com.miaxis.face.event.CutDownEvent;
-import com.miaxis.face.util.BitmapUtils;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.MyUtil;
 import com.miaxis.face.view.custom.DrawTextView;
@@ -81,10 +79,10 @@ public class SignFragment extends BaseFragment{
                  layoutContent.buildDrawingCache();
 //                Bitmap bitmap =  layoutContent.getDrawingCache();
                 Bitmap bitmap=drvText.getDrawBitmap();
-                boolean saveBitmap = BitmapUtils.saveBitmap(bitmap, savePath = (BasePath + File.separator + "Sign_" + System.currentTimeMillis() + ".png"));
-                if(saveBitmap){
-                    Bitmap bit = BitmapFactory.decodeFile(savePath);
-                    eventBus.post(new CmdSignDoneEvent(MyUtil.bitmapTo64(bit)));
+//                boolean saveBitmap = BitmapUtils.saveBitmap(bitmap, savePath = (BasePath + File.separator + "Sign_" + System.currentTimeMillis() + ".png"));
+//                if(saveBitmap){
+//                    Bitmap bit = BitmapFactory.decodeFile(savePath);
+                    eventBus.post(new CmdSignDoneEvent(MyUtil.bitmapTo64(bitmap)));
                     Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
                         @Override
                         public void run() {
@@ -94,7 +92,7 @@ public class SignFragment extends BaseFragment{
                             mListener.backToStack(0);
                         }
                     });
-                }
+//                }
 //                AlertDialog.Builder builder = new AlertDialog.Builder(getContext()).setMessage("保存：" + (saveBitmap ? "成功" : "失败") + "  ，路径：" + savePath);
 //                if (saveBitmap) {
 //                    builder.setPositiveButton("预览", new DialogInterface.OnClickListener() {

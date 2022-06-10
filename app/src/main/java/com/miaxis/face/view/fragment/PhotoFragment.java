@@ -88,7 +88,7 @@ public class PhotoFragment extends BaseFragment{
         public void onPreviewFrame(byte[] bytes, Camera camera) {
             mCamera.addCallbackBuffer(buffer);
             if (!bit){
-                Bitmap bitmap=FaceManager.getInstance().takePicture(bytes);
+                Bitmap bitmap=FaceManager.getInstance().takePicture(bytes,config.getScence());
                 bit=bitmap!=null;
                 if (bit){
                     Matrix matrix = new Matrix();

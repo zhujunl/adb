@@ -233,7 +233,7 @@ public class FaceManager {
     }
 
 
-    public Bitmap takePicture(byte[] data){
+    public Bitmap takePicture(byte[] data,boolean scence){
         byte[] zoomedRgbData = cameraPreviewConvert(data,
                 Constants.PRE_WIDTH,
                 Constants.PRE_HEIGHT,
@@ -246,6 +246,17 @@ public class FaceManager {
         if (result){
             byte[] fileImage = FaceManager.getInstance().imageEncode(zoomedRgbData, zoomWidth, zoomHeight);
             Bitmap bitmap = BitmapFactory.decodeByteArray(fileImage, 0, fileImage.length);
+            if (!scence){
+                MXFaceInfoEx mxFaceInfoEx = sortMXFaceInfoEx(faceBuffer);
+                float fw = Constants.pam * mxFaceInfoEx.width;
+                float fh = Constants.pam * mxFaceInfoEx.height;
+                int x=(int) Math.max(0,mxFaceInfoEx.x-fw);
+                int y=(int) Math.max(0,mxFaceInfoEx.y-fh);
+                int width=(int) Math.min(mxFaceInfoEx.width*(1+2* Constants.pam),bitmap.getWidth());
+                int height=(int) Math.min(mxFaceInfoEx.height*(1+2*Constants.pam),bitmap.getHeight());
+                final Bitmap rectBitmap = Bitmap.createBitmap(bitmap, x, y,width, height);//截取
+                return rectBitmap;
+            }
             return bitmap;
         }
         return null;

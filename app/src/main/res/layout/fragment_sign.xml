@@ -71,7 +71,7 @@
         android:paddingStart="50dp"
         android:paddingEnd="50dp"
         android:background="@color/colorPrimary"
-        android:text="保存"
+        android:text="上传"
         android:textColor="@color/white"
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="@id/btn_resign"
