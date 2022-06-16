@@ -254,6 +254,12 @@ public class FaceManager {
                 int y=(int) Math.max(0,mxFaceInfoEx.y-fh);
                 int width=(int) Math.min(mxFaceInfoEx.width*(1+2* Constants.pam),bitmap.getWidth());
                 int height=(int) Math.min(mxFaceInfoEx.height*(1+2*Constants.pam),bitmap.getHeight());
+                if (y+height>bitmap.getHeight()){
+                    height=bitmap.getHeight()-y;
+                }
+                if (x+width>bitmap.getWidth()){
+                    width=bitmap.getWidth()-width;
+                }
                 final Bitmap rectBitmap = Bitmap.createBitmap(bitmap, x, y,width, height);//截取
                 return rectBitmap;
             }
