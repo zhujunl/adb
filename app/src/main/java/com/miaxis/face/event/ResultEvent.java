@@ -24,6 +24,7 @@ public class ResultEvent {
     private int result;
     private Record record;
     private MXFaceInfoEx faceInfo;
+    private String bitStr="";
 
     public ResultEvent(int result, Record record) {
         this.result = result;
@@ -34,6 +35,12 @@ public class ResultEvent {
         this.result = result;
         this.record = record;
         this.faceInfo = faceInfo;
+    }
+
+    public ResultEvent(int result, Record record, String bitStr) {
+        this.result = result;
+        this.record = record;
+        this.bitStr = bitStr;
     }
 
     public int getResult() {
@@ -58,5 +65,13 @@ public class ResultEvent {
 
     public void setFaceInfo(MXFaceInfoEx faceInfo) {
         this.faceInfo = faceInfo;
+    }
+
+    public String getBitStr() {
+        return bitStr;
+    }
+
+    public void setBitStr(String bitStr) {
+        this.bitStr = bitStr;
     }
 }

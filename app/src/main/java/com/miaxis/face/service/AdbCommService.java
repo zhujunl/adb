@@ -212,11 +212,10 @@ public class AdbCommService extends Service {
             try {
                 Config config = Face_App.getInstance().getDaoSession().getConfigDao().loadByRowId(1L);
                 Log.e("ResultLayout", "result = " + e.getResult());
-                Record record = e.getRecord();
-                if (record == null) {
+                if (e.getRecord() == null) {
                     return;
                 }
-                record.setBusEntity(config.getOrgName());
+                e.getRecord().setBusEntity(config.getOrgName());
                 StringBuilder sendMsgSb = new StringBuilder();
                 switch (e.getResult()) {
                     case ResultEvent.FACE_SUCCESS:
@@ -300,38 +299,67 @@ public class AdbCommService extends Service {
                     default:
                         return;
                 }
-                appendOtherMsg(sendMsgSb, record);
+
+                switch (config.getVerifyMode()) {
+                    case Config.MODE_FACE_ONLY:
+                        sendMsgSb.append("$mode=#=人脸模式");
+                        break;
+
+                    case Config.MODE_FINGER_ONLY:
+                        sendMsgSb.append("$mode=#=指纹模式");
+                        break;
+                    case Config.MODE_TWO_FACE_FIRST:
+                        sendMsgSb.append("$mode=#=人脸和指纹模式");
+                        break;
+                    case Config.MODE_TWO_FINGER_FIRST:
+                        sendMsgSb.append("$mode=#=人脸和指纹模式");
+                        break;
+                    case Config.MODE_ONE_FACE_FIRST:
+                        sendMsgSb.append("$mode=#=人脸或指纹模式");
+                        break;
+                    case Config.MODE_ONE_FINGER_FIRST:
+                        sendMsgSb.append("$mode=#=人脸或指纹模式");
+                        break;
+                }
+                appendOtherMsg(sendMsgSb, e);
                 sendMsg(sendMsgSb.toString().trim());
             } catch (Exception ex) {
                 LogUtil.writeLog("ADBService onResultEvent Exception " + ex.getMessage());
             }
         }
 
-        private void appendOtherMsg(StringBuilder sendMsgSb, Record record) throws Exception {
-            sendMsgSb.append("$name=#=").append(record.getName());
-            sendMsgSb.append("$sex=#=").append(record.getSex());
-            sendMsgSb.append("$cardNo=#=").append(record.getCardNo());
-            sendMsgSb.append("$address=#=").append(record.getAddress());
-            sendMsgSb.append("$birthday=#=").append(record.getBirthday());
-            if (!TextUtils.isEmpty(record.getDevsn())){
-                sendMsgSb.append("$deviceName=#=").append(record.getDevsn());
+        private void appendOtherMsg(StringBuilder sendMsgSb, ResultEvent e) throws Exception {
+            sendMsgSb.append("$name=#=").append(e.getRecord().getName());
+            sendMsgSb.append("$sex=#=").append(e.getRecord().getSex());
+            sendMsgSb.append("$cardNo=#=").append(e.getRecord().getCardNo());
+            sendMsgSb.append("$address=#=").append(e.getRecord().getAddress());
+            sendMsgSb.append("$birthday=#=").append(e.getRecord().getBirthday());
+            if (!TextUtils.isEmpty(e.getRecord().getDevsn())){
+                sendMsgSb.append("$deviceName=#=").append(e.getRecord().getDevsn());
             }
-            sendMsgSb.append("$busEntity=#=").append(record.getBusEntity());
-            if (null != record.getCardImgData()) {
-                sendMsgSb.append("$cardImg=#=").append(Base64.encodeToString(record.getCardImgData(), Base64.DEFAULT));
+            sendMsgSb.append("$busEntity=#=").append(e.getRecord().getBusEntity());
+            if (null != e.getRecord().getCardImgData()) {
+                sendMsgSb.append("$cardImg=#=").append(Base64.encodeToString(e.getRecord().getCardImgData(), Base64.DEFAULT));
             } else {
                 sendMsgSb.append("$cardImg=#=").append("");
             }
-            if (null != record.getFaceImgData()) {
-                sendMsgSb.append("$faceImg=#=").append(Base64.encodeToString(record.getFaceImgData(), Base64.DEFAULT));
+            if (null != e.getRecord().getFaceImgData()) {
+                sendMsgSb.append("$faceImg=#=").append(Base64.encodeToString(e.getRecord().getFaceImgData(), Base64.DEFAULT));
             } else {
                 sendMsgSb.append("$faceImg=#=").append("");
             }
-            sendMsgSb.append("$race=#=").append(record.getRace());
-            sendMsgSb.append("$regOrg=#=").append(record.getRegOrg());
-            sendMsgSb.append("$validTime=#=").append(record.getValidate());
-            sendMsgSb.append("$finger0=#=").append(record.getFinger0());
-            sendMsgSb.append("$finger1=#=").append(record.getFinger1());
+            if (!TextUtils.isEmpty(e.getBitStr())){
+                sendMsgSb.append("$fingerImg=#=").append(e.getBitStr());
+            }else {
+                sendMsgSb.append("$fingerImg=#=").append("");
+            }
+            sendMsgSb.append("$race=#=").append(e.getRecord().getRace());
+            sendMsgSb.append("$regOrg=#=").append(e.getRecord().getRegOrg());
+            sendMsgSb.append("$validTime=#=").append(e.getRecord().getValidate());
+            sendMsgSb.append("$fingerpos0=#=").append(e.getRecord().getFingerPosition0());
+            sendMsgSb.append("$finger0=#=").append(Base64.encodeToString(e.getRecord().getFinger0(), Base64.DEFAULT));
+            sendMsgSb.append("$fingerpos1=#=").append(e.getRecord().getFingerPosition1());
+            sendMsgSb.append("$finger1=#=").append(Base64.encodeToString(e.getRecord().getFinger1(), Base64.DEFAULT));
             sendMsgSb.append("$end");
         }
 
@@ -345,7 +373,11 @@ public class AdbCommService extends Service {
         @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
         public void onCmdFingerImgDoneEvent(CmdFingerImgDoneEvent e) {
             if (!TextUtils.isEmpty(e.getBase64())) {
-                sendMsg(String.format("$FingerImg=#=%s$end", e.getBase64()));
+                StringBuilder sb=new StringBuilder();
+                sb.append("$FingerImg=#=").append(e.getBase64());
+                sb.append("$finger=#=").append(e.getFinger());
+                sb.append("$end");
+                sendMsg(sb.toString());
             }
         }
 

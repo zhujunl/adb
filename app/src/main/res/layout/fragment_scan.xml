@@ -26,6 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
     <TextView
+        android:id="@+id/scanResult"
         android:text="请扫码"
         android:textSize="50dp"
         android:textColor="@color/black"

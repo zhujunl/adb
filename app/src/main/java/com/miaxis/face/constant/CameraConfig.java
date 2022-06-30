@@ -21,8 +21,8 @@ public enum CameraConfig {
             0,
             0),
     Camera_SM(2,
-            640,
-            480,
+            1280,
+            720,
             0,
             0);
 

@@ -38,6 +38,7 @@ import com.miaxis.face.bean.Record;
 import com.miaxis.face.bean.WhiteItem;
 import com.miaxis.face.constant.ApiResult;
 import com.miaxis.face.constant.Constants;
+import com.miaxis.face.constant.ScanResultLenster;
 import com.miaxis.face.event.BtReadCardEvent;
 import com.miaxis.face.event.CmdFingerImgEvent;
 import com.miaxis.face.event.CmdGetFingerEvent;
@@ -148,6 +149,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
     private boolean imStateSaved=false;
     private boolean ScanFlag=false;
     private MaterialDialog waitDialog;
+    private ScanResultLenster scanResultLenster;
 
 
     @Override
@@ -717,7 +719,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
                     showWaitDialog("正在上传中，请稍后");
                     SystemClock.sleep(1000);
                     dismissWaitDialog("上传成功");
-                    backToStack(0);
+                    backToStack(10);
                     sb.setLength(0);
                 }
             }

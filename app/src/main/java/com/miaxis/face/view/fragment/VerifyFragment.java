@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -276,13 +275,13 @@ public class VerifyFragment extends BaseFragment{
                 rv_result.setResultMessage( result ? "人脸核验通过" : "人脸核验失败");
             }
         });
-        if (config.getScence()){
-            Matrix matrix = new Matrix();
-            matrix.setScale(0.5f, 0.5f);
-            bit = Bitmap.createBitmap(faceBitmap, 0, 0, faceBitmap.getWidth(), faceBitmap.getHeight(), matrix, true);
-        }else {
+//        if (config.getScence()){
+//            Matrix matrix = new Matrix();
+//            matrix.setScale(0.5f, 0.5f);
+//            bit = Bitmap.createBitmap(faceBitmap, 0, 0, faceBitmap.getWidth(), faceBitmap.getHeight(), matrix, true);
+//        }else {
             bit=rectBitmap;
-        }
+//        }
         record.setFaceImgData(MyUtil.getBytesByBitmap(bit));
         FileUtil.saveRecordImg(record, getActivity());
 
@@ -414,14 +413,14 @@ public class VerifyFragment extends BaseFragment{
                         setFaceView(false);
                     }else {
                         record.setDevsn(MyUtil.getSerialNumber());
-                        eventbus.post(new ResultEvent(ResultEvent.FINGER_SUCCESS, record));
+                        eventbus.post(new ResultEvent(ResultEvent.FINGER_SUCCESS, record,MyUtil.bitmapTo64(image)));
                         SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
                         mListener.backToStack(2);
                     }
                 }else {
                     if (verifyMode==Config.MODE_FINGER_ONLY||verifyMode==Config.MODE_TWO_FACE_FIRST||verifyMode==Config.MODE_ONE_FACE_FIRST){
                         record.setDevsn(MyUtil.getSerialNumber());
-                        eventbus.post(new ResultEvent(ResultEvent.FINGER_FAIL, record));
+                        eventbus.post(new ResultEvent(ResultEvent.FINGER_FAIL, record,MyUtil.bitmapTo64(image)));
                         SoundManager.getInstance().playSound(Constants.SOUND_FAIL);
                         mListener.backToStack(2);
                     }else {
@@ -459,7 +458,7 @@ public class VerifyFragment extends BaseFragment{
                     Canvas canvas = new Canvas(newBitmap);
                     canvas.drawColor(Color.WHITE);
                     canvas.drawBitmap(image, 0, 0, null);
-                    EventBus.getDefault().post(new CmdFingerImgDoneEvent(MyUtil.bitmapTo64(image)));
+                    EventBus.getDefault().post(new CmdFingerImgDoneEvent(MyUtil.bitmapTo64(image),Base64.encodeToString(feature, Base64.DEFAULT)));
                     SoundManager.getInstance().playSound(Constants.SOUND_SUCCESS);
                     mListener.backToStack(2);
 

@@ -217,6 +217,7 @@ public class HightFragment extends BaseFragment{
                     mxCamera.getData().setPreviewCallback(new CameraPreviewCallback() {
                         @Override
                         public void onPreview(MXCamera camera, final MXFrame frame) {
+                            Log.e(TAG, "onPreview:" +camera.getCurrentFrame().length );
                             if (MXFrame.isNullCamera(frame)) {
                                 return;
                             }

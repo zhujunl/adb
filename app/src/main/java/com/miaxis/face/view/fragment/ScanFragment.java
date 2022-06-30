@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.miaxis.face.R;
+import com.miaxis.face.event.CmdScanDoneEvent;
 import com.miaxis.face.event.CutDownEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,6 +27,8 @@ public class ScanFragment extends BaseFragment {
 
     @BindView(R.id.tv_second)
     TextView tv_second;
+    @BindView(R.id.scanResult)
+    TextView scanResult;
 
     private EventBus eventBus;
 
@@ -53,4 +56,8 @@ public class ScanFragment extends BaseFragment {
         tv_second.setText(String.valueOf(event.getTime()));
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScanResult(CmdScanDoneEvent event){
+        scanResult.setText("扫码结果："+event.getContent());
+    }
 }
