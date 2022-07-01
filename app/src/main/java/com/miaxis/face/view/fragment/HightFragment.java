@@ -19,7 +19,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.miaxis.face.R;
 import com.miaxis.face.adapter.PreviewPageAdapter;
 import com.miaxis.face.app.Face_App;
@@ -47,12 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import top.zibin.luban.Luban;
 
 /**
  * @author ZJL
@@ -148,7 +143,7 @@ public class HightFragment extends BaseFragment{
                 if (pathList.size()>0){
                     Bitmap bitmap =pathList.get(0).getBase64();
                     Matrix matrix = new Matrix();
-                    matrix.setScale(0.5f, 0.5f);
+                    matrix.setScale(0.2f, 0.2f);
                     Bitmap bit = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                     eventbus.post(new CmdSmDoneEvent(MyUtil.bitmapTo64(bit)));
                     CameraHelper.getInstance().free();
@@ -171,7 +166,7 @@ public class HightFragment extends BaseFragment{
             @Override
             public void onClick(int position) {
                 PreviewPictureEntity str = mAdapter.getPathList().get(position);
-                showBigPicture(str.getPath());
+                showBigPicture(str.getBase64());
             }
 
             @Override
@@ -195,11 +190,12 @@ public class HightFragment extends BaseFragment{
     }
 
 
-    private void showBigPicture(String path) {
+    private void showBigPicture(Bitmap path) {
         android.support.v7.app.AlertDialog.Builder builder=new android.support.v7.app.AlertDialog.Builder(getActivity());
         View v= LayoutInflater.from(getActivity()).inflate(R.layout.dialog_to_view_big_picture,null,false);
         ZoomImageView img=v.findViewById(R.id.img);
-        Glide.with(getContext()).load(new File(path)).into(img);
+//        Glide.with(getContext()).load(new File(path)).into(img);
+        img.setImageBitmap(path);
         builder.setView(v);
         android.support.v7.app.AlertDialog alert=builder.create();
         alert.show();
@@ -227,39 +223,49 @@ public class HightFragment extends BaseFragment{
                                     String fileName = "sm" + System.currentTimeMillis() + ".jpg";
                                     File file = new File(mFilePath, fileName);
                                     //保存图片
-                                    boolean frameImage = frame.camera.saveFrameImage(file.getAbsolutePath());
-                                    if (frameImage) {
-                                        //再次进行压缩图片
-                                        subscribe = Flowable.just(file)
-                                                .observeOn(Schedulers.io())
-                                                .map(new Function<File, Object>() {
-                                                    @Override
-                                                    public Object apply(@android.support.annotation.NonNull File f) throws Exception {
-                                                        // 同步方法直接返回压缩后的文件
-                                                        List<File> files = Luban.with(getContext()).load(f).setTargetDir(mFilePath.getAbsolutePath()).get();
-                                                        if (files != null && files.size() != 0) {
-                                                            final String absolutePath = files.get(0).getAbsolutePath();
-                                                            final Bitmap base64Path = FileUtil.pathToBit(absolutePath);
-                                                            mHandler.post(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    if (pathList.size() >= 3) {
-                                                                        Toast.makeText(getActivity(), "最多只能拍摄3张照片", Toast.LENGTH_SHORT).show();
-                                                                        return;
-                                                                    }
-                                                                    Log.e(TAG, "获取图片 %s" + absolutePath);
-                                                                    PreviewPictureEntity entity = new PreviewPictureEntity(absolutePath,base64Path);
-                                                                    pathList.add(entity);
-//                                                                    mAdapter.addPathList(entity);
-                                                                    mAdapter.notifyDataSetChanged();
-                                                                }
-                                                            });
-                                                        }
-                                                        return files;
-                                                    }
-                                                })
-                                                .subscribe();
+                                    final Bitmap bit=frame.camera.saveFrameImage(file.getAbsolutePath());
+                                    if (bit!=null){
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                PreviewPictureEntity entity = new PreviewPictureEntity("",bit);
+                                                pathList.add(entity);
+                                                mAdapter.notifyDataSetChanged();
+                                            }
+                                        });
                                     }
+//                                    if (frameImage) {
+//                                        //再次进行压缩图片
+//                                        subscribe = Flowable.just(file)
+//                                                .observeOn(Schedulers.io())
+//                                                .map(new Function<File, Object>() {
+//                                                    @Override
+//                                                    public Object apply(@android.support.annotation.NonNull File f) throws Exception {
+//                                                        // 同步方法直接返回压缩后的文件
+//                                                        List<File> files = Luban.with(getContext()).load(f).setTargetDir(mFilePath.getAbsolutePath()).get();
+//                                                        if (files != null && files.size() != 0) {
+//                                                            final String absolutePath = files.get(0).getAbsolutePath();
+//                                                            final Bitmap base64Path = FileUtil.pathToBit(absolutePath);
+//                                                            mHandler.post(new Runnable() {
+//                                                                @Override
+//                                                                public void run() {
+//                                                                    if (pathList.size() >= 3) {
+//                                                                        Toast.makeText(getActivity(), "最多只能拍摄3张照片", Toast.LENGTH_SHORT).show();
+//                                                                        return;
+//                                                                    }
+//                                                                    Log.e(TAG, "获取图片 %s" + absolutePath);
+//                                                                    PreviewPictureEntity entity = new PreviewPictureEntity(absolutePath,base64Path);
+//                                                                    pathList.add(entity);
+////                                                                    mAdapter.addPathList(entity);
+//                                                                    mAdapter.notifyDataSetChanged();
+//                                                                }
+//                                                            });
+//                                                        }
+//                                                        return files;
+//                                                    }
+//                                                })
+//                                                .subscribe();
+//                                    }
                                 }
                             });
                         }

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.miaxis.face.R;
 import com.miaxis.face.view.custom.PreviewPictureEntity;
 
@@ -71,7 +70,7 @@ public class PreviewPageAdapter extends BaseAdapter {
       PreviewPictureEntity item = pathList.get(i);
       if (item != null) {
          final int pos=i;
-         Glide.with(context).load(pathList.get(i).getPath()).into(holder.img);
+         holder.img.setImageBitmap(pathList.get(i).getBase64());
          holder.img.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {

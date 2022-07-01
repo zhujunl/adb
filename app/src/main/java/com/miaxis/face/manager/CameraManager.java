@@ -20,6 +20,8 @@ import static com.miaxis.face.constant.Constants.PIC_HEIGHT;
 import static com.miaxis.face.constant.Constants.PIC_WIDTH;
 import static com.miaxis.face.constant.Constants.PRE_HEIGHT;
 import static com.miaxis.face.constant.Constants.PRE_WIDTH;
+import static com.miaxis.face.constant.Constants.SM_HEIGHT;
+import static com.miaxis.face.constant.Constants.SM_WIDTH;
 
 /**
  * @author ZJL
@@ -32,8 +34,10 @@ public class CameraManager {
 
     private Camera mCamera;
     private Camera mirCamera;
+    private Camera SmCamera;
     private byte[] buffer;
     private byte[] nirbuffer;
+    private byte[] smbuffuer;
     private final String TAG="CameraManager";
     private SurfaceHolder shMain;
     private long noActionSecond = 0;
@@ -59,15 +63,6 @@ public class CameraManager {
         try {
             mCamera = Camera.open(cameraId);
             Camera.Parameters parameters = mCamera.getParameters();
-//            List<Camera.Size> supportedPictureSizes = parameters.getSupportedPictureSizes();
-//            for (Camera.Size size  : supportedPictureSizes) {
-//            	Log.e(TAG, "supportedPictureSizes.width==" + size.width+"     h=="+size.height);
-//            }
-//            Log.e(TAG, "====================================");
-//            List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
-//            for (Camera.Size size  : supportedPreviewSizes) {
-//                Log.e(TAG, "supportedPreviewSizes.width==" + size.width+"     h=="+size.height);
-//            }
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
             parameters.setPictureSize(PRE_WIDTH, PRE_HEIGHT);
             buffer=new byte[((PRE_WIDTH * PRE_HEIGHT) * ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
@@ -111,15 +106,6 @@ public class CameraManager {
         try {
             mirCamera = Camera.open(cameraId);
             Camera.Parameters parameters = mirCamera.getParameters();
-//            List<Camera.Size> supportedPictureSizes = parameters.getSupportedPictureSizes();
-//            for (Camera.Size size  : supportedPictureSizes) {
-//                Log.e(TAG, "supportedPictureSizes.width==" + size.width+"     h=="+size.height);
-//            }
-//            Log.e(TAG, "====================================");
-//            List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
-//            for (Camera.Size size  : supportedPreviewSizes) {
-//                Log.e(TAG, "supportedPreviewSizes.width==" + size.width+"     h=="+size.height);
-//            }
             parameters.setPreviewSize(PIC_WIDTH, PIC_HEIGHT);
             parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
             mirCamera.setParameters(parameters);
@@ -224,12 +210,66 @@ public class CameraManager {
         }
     }
 
+    public void Sm_open(SurfaceView surfaceView,int cameraId) {
+        try {
+            SmCamera = Camera.open(cameraId);
+            Camera.Parameters parameters = SmCamera.getParameters();
+            parameters.setPreviewSize(SM_WIDTH, SM_HEIGHT);
+            parameters.setPictureSize(SM_WIDTH, SM_HEIGHT);
+            smbuffuer=new byte[((SM_WIDTH * SM_HEIGHT) * ImageFormat.getBitsPerPixel(ImageFormat.NV21)) / 8];
+            SmCamera.addCallbackBuffer(smbuffuer);
+            SmCamera.setParameters(parameters);
+            SmCamera.setPreviewCallbackWithBuffer(smPreView);
+            SmCamera.startPreview();
+            surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder surfaceHolder) {
+                    try {
+                        if (SmCamera!=null) {
+                            SmCamera.setPreviewDisplay(surfaceHolder);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+                    FaceManager.getInstance().stopLoop();
+                    close();
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void startPreview() {
+        if (SmCamera != null) {
+            SmCamera.setPreviewCallback(mPreviewCallback);
+            SmCamera.startPreview();
+        }
+    }
+
+    public void stopPreview() {
+        if (SmCamera != null) {
+            SmCamera.setPreviewCallback(null);
+            SmCamera.stopPreview();
+        }
+    }
+
     public int takePicture(Camera.PictureCallback jpeg) {
-        if (this.mCamera == null) {
+        if (this.SmCamera == null) {
             return -1;
         }
 
-        this.mCamera.takePicture(new Camera.ShutterCallback() {
+        this.SmCamera.takePicture(new Camera.ShutterCallback() {
             @Override
             public void onShutter() {
             }
@@ -254,6 +294,14 @@ public class CameraManager {
         @Override
         public void onPreviewFrame(byte[] bytes, Camera camera) {
             camera.addCallbackBuffer(nirbuffer);
+            FaceManager.getInstance().setNirVisiblePreviewData(bytes);
+        }
+    };
+
+    Camera.PreviewCallback smPreView=new Camera.PreviewCallback() {
+        @Override
+        public void onPreviewFrame(byte[] bytes, Camera camera) {
+            camera.addCallbackBuffer(smbuffuer);
             FaceManager.getInstance().setNirVisiblePreviewData(bytes);
         }
     };

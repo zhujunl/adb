@@ -20,6 +20,7 @@ public class ResultEvent {
     public static final int WHITE_LIST_FAIL = 6;        // 白名单校验失败  不在白名单内
     public static final int BLACK_LIST_FAIL = 7;        // 黑名单校验失败  在黑名单内
     public static final int VALIDATE_FAIL   = 8;
+    public static final int NOFINGER   = 10;
 
     private int result;
     private Record record;

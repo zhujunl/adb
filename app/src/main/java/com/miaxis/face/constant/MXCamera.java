@@ -12,8 +12,6 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.miaxis.face.util.BitmapUtils;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
@@ -93,10 +91,11 @@ public class MXCamera implements Camera.AutoFocusCallback, Camera.PreviewCallbac
                 if (w != 0 && h != 0) {
 //                    width = w;
 //                    height = h;
-                    width=1280;
-                    height=720;
+                    width=2048;
+                    height=1536;
                 }
             }
+//            Log.e("Camera.Size:", "setPreviewSize=="+width+"    setPreviewSize==="+height );
             parameters.setPreviewSize(width, height);
             parameters.setPictureSize(width, height);
             this.mCamera.setParameters(parameters);
@@ -295,7 +294,7 @@ public class MXCamera implements Camera.AutoFocusCallback, Camera.PreviewCallbac
      * @param savePath 保存文件路径
      * @return true:保存成功    false:失败
      */
-    public boolean saveFrameImage(String savePath) {
+    public Bitmap saveFrameImage(String savePath) {
         try {
             File file = new File(savePath);
             if (!file.exists()) {
@@ -310,9 +309,9 @@ public class MXCamera implements Camera.AutoFocusCallback, Camera.PreviewCallbac
             YuvImage image = new YuvImage(this.buffer, ImageFormat.NV21, this.width, this.height, null);
             //图像压缩
             boolean success = image.compressToJpeg(
-                    new Rect(0, 0, image.getWidth(), image.getHeight()), 90, fileOutputStream);
+                    new Rect(0, 0, image.getWidth(), image.getHeight()), 60, fileOutputStream);
             if (!success) {
-                return false;
+                return null;
             }
             //将得到的照片进行270°旋转，使其竖直
             Bitmap bitmap = BitmapFactory.decodeFile(savePath);
@@ -320,10 +319,11 @@ public class MXCamera implements Camera.AutoFocusCallback, Camera.PreviewCallbac
             //图片保存旋转尺寸 根据设备不同旋转不同
 //            matrix.preRotate(BuildConfig.ROTATION_SIZE);
             bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            return BitmapUtils.saveBitmap(bitmap, savePath);
+            file.delete();
+            return bitmap;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

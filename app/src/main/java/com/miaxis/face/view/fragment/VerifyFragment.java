@@ -317,7 +317,7 @@ public class VerifyFragment extends BaseFragment{
      * */
 
     public void initFingerDevice() {
-        if (TextUtils.equals("其他不确定指位",record.getFingerPosition0())&&TextUtils.equals("其他不确定指位",record.getFingerPosition1())){
+        if (TextUtils.equals("无指纹",record.getFingerPosition0())&&TextUtils.equals("无指纹",record.getFingerPosition1())){
             Objects.requireNonNull(getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -325,6 +325,9 @@ public class VerifyFragment extends BaseFragment{
                     rv_result.setResultMessage("无指纹");
                 }
             });
+            eventbus.post(new ResultEvent(ResultEvent.NOFINGER, record));
+            SoundManager.getInstance().playSound(Constants.SOUND_FAIL);
+            mListener.backToStack(2);
             return;
         }
         Face_App.getInstance().getThreadExecutor().execute(new Runnable() {

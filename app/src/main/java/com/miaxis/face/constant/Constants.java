@@ -9,6 +9,9 @@ public class Constants {
     public static final int PRE_WIDTH = 1280;
     public static final int PRE_HEIGHT = 720;
 
+    public static final int SM_WIDTH=2048;
+    public static final int SM_HEIGHT=1536;
+
     public static final int ZOOM_WIDTH = 320;
     public static final int ZOOM_HEIGHT = 240;
 

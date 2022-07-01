@@ -43,6 +43,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
         <SeekBar
+            android:visibility="invisible"
             android:id="@+id/sBar"
             android:layout_width="750px"
             android:layout_height="wrap_content"

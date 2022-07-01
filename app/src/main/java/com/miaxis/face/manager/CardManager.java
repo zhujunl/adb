@@ -312,9 +312,9 @@ public class CardManager {
             case 98:
                 return "左手不确定指位";
             case 99:
-                return "其他不确定指位";
+                return "无指纹";
             default:
-                return "其他不确定指位";
+                return "无指纹";
         }
     }
 

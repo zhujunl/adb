@@ -296,6 +296,9 @@ public class AdbCommService extends Service {
                     case ResultEvent.WHITE_LIST_FAIL:
                         sendMsgSb.append("$result=#=未通过");
                         break;
+                    case ResultEvent.NOFINGER:
+                        sendMsgSb.append("$result=#=无指纹");
+                        break;
                     default:
                         return;
                 }
