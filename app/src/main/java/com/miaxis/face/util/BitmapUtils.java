@@ -1,9 +1,11 @@
 package com.miaxis.face.util;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 
@@ -15,6 +17,16 @@ import java.nio.ByteBuffer;
  * @updateDes
  */
 public class BitmapUtils {
+
+    public static Bitmap getBitmap(String path) {
+        Bitmap bitmap = null;
+        try {
+            FileInputStream fis = new FileInputStream(path);
+            bitmap = BitmapFactory.decodeStream(fis);
+        } catch (Exception e) {
+        }
+        return bitmap;
+    }
 
     /**
      * 保存bitmap到本地

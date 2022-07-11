@@ -9,7 +9,7 @@ android {
         targetSdkVersion 28
         versionCode 2
         versionName '1.2.2.20200419'
-        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // "armeabi-v7a" can adapter most of the devices
         ndk {
@@ -41,5 +41,5 @@ dependencies {
 
     implementation "androidx.appcompat:appcompat:1.1.0"
 
-    implementation(name: 'libusbcommon_v4.1.1', ext: 'aar')
+    compile(name: 'libusbcommon_v4.1.1', ext: 'aar')
 }

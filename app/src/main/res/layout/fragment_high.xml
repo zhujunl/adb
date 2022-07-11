@@ -34,12 +34,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title">
-        <SurfaceView
-            android:id="@+id/sv"
+        <com.serenegiant.usb.widget.UVCCameraTextureView
+            android:id="@+id/uvc_view"
             android:layout_width="750px"
             android:layout_height="580px"
             android:layout_marginTop="100px"
             android:layout_marginLeft="50px"
+            android:layout_gravity="center"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
         <SeekBar
@@ -47,8 +48,8 @@
             android:id="@+id/sBar"
             android:layout_width="750px"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/sv"
-            app:layout_constraintStart_toStartOf="@id/sv"/>
+            app:layout_constraintTop_toBottomOf="@id/uvc_view"
+            app:layout_constraintStart_toStartOf="@id/uvc_view"/>
 
         <TextView
             android:id="@+id/tv_hint"
@@ -59,8 +60,8 @@
             android:text="请将纸质文件放置高拍仪指定位置进行拍摄扫描"
             android:textColor="#333"
             android:textSize="28px"
-            app:layout_constraintLeft_toRightOf="@id/sv"
-            app:layout_constraintTop_toTopOf="@id/sv" />
+            app:layout_constraintLeft_toRightOf="@id/uvc_view"
+            app:layout_constraintTop_toTopOf="@id/uvc_view" />
         <Button
             android:id="@+id/btn_screen"
             android:layout_width="200px"
@@ -69,7 +70,7 @@
             android:text="拍摄"
             android:layout_marginTop="80px"
             android:textSize="32px"
-            app:layout_constraintLeft_toRightOf="@id/sv"
+            app:layout_constraintLeft_toRightOf="@id/uvc_view"
             app:layout_constraintRight_toRightOf="@id/tv_hint"
             app:layout_constraintTop_toBottomOf="@id/tv_hint" />
         <Button
@@ -80,7 +81,7 @@
             android:gravity="center"
             android:text="完成"
             android:textSize="32px"
-            app:layout_constraintLeft_toRightOf="@id/sv"
+            app:layout_constraintLeft_toRightOf="@id/uvc_view"
             app:layout_constraintRight_toRightOf="@id/tv_hint"
             app:layout_constraintTop_toBottomOf="@id/btn_screen" />
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -89,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="@id/sv"
+            app:layout_constraintTop_toTopOf="@id/uvc_view"
             app:layout_constraintStart_toEndOf="@id/tv_hint"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -122,7 +123,7 @@
             android:layout_width="500px"
             android:layout_marginTop="50px"
             android:layout_height="500px"
-            app:layout_constraintBottom_toBottomOf="@id/sv"
+            app:layout_constraintBottom_toBottomOf="@id/uvc_view"
             app:layout_constraintTop_toBottomOf="@+id/ll_hint"
             app:layout_constraintStart_toStartOf="@id/ll_hint"
             app:layout_constraintEnd_toEndOf="@id/ll_hint"/>
