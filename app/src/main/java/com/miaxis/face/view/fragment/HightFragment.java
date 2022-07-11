@@ -1,5 +1,6 @@
 package com.miaxis.face.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -73,6 +74,7 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
     ListView rvContent;
     @BindView(R.id.tv_second)
     TextView tv_second;
+    private Activity mActivity;
 
     private final String TAG = "HightFragment";
     private List<PreviewPictureEntity> pathList = new ArrayList<>();
@@ -96,6 +98,7 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mActivity= (Activity) context;
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -129,7 +132,7 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
         mUVCCameraView.setCallback(this);
         mCameraHelper = UVCCameraHelper.getInstance(2048, 1536);
         mCameraHelper.setDefaultFrameFormat(UVCCameraHelper.FRAME_FORMAT_MJPEG);
-        mCameraHelper.initUSBMonitor(HightFragment.this.getActivity(), mUVCCameraView, listener);
+        mCameraHelper.initUSBMonitor(mActivity, mUVCCameraView, listener);
         sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -153,7 +156,7 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
             @Override
             public void onClick(View v) {
                 if (null != pathList && pathList.size() >= 3) {
-                    Toast.makeText(HightFragment.this.getActivity(), "最多只能拍摄3张照片", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "最多只能拍摄3张照片", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 String fileName = "sm" + System.currentTimeMillis() + ".jpg";
@@ -170,16 +173,19 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
 
                         final Bitmap bit = BitmapUtils.getBitmap(path);
                         if (bit != null) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    PreviewPictureEntity entity = new PreviewPictureEntity("", bit);
-                                    pathList.add(entity);
-                                    mAdapter.notifyDataSetChanged();
-                                }
-                            });
+                            if (mActivity != null) {
+                                mActivity.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        PreviewPictureEntity entity = new PreviewPictureEntity("", bit);
+                                        pathList.add(entity);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
                         }
-                    }
+                        }
+
                 });
             }
         });
@@ -215,7 +221,7 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
             }
         });
 
-        mAdapter = new PreviewPageAdapter(getActivity(), pathList, new PreviewPageAdapter.PreViewListner() {
+        mAdapter = new PreviewPageAdapter(mActivity, pathList, new PreviewPageAdapter.PreViewListner() {
             @Override
             public void onClick(int position) {
                 PreviewPictureEntity str = mAdapter.getPathList().get(position);
@@ -244,8 +250,8 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
 
 
     private void showBigPicture(Bitmap path) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_to_view_big_picture, null, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        View v = LayoutInflater.from(mActivity).inflate(R.layout.dialog_to_view_big_picture, null, false);
         ZoomImageView img = v.findViewById(R.id.img);
 //        Glide.with(getContext()).load(new File(path)).into(img);
         img.setImageBitmap(path);
