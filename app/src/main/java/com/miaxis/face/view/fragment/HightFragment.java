@@ -199,10 +199,16 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
                         public void run() {
                             mListener.showWaitDialog("正在上传中，请稍后");
                             SystemClock.sleep(1000);
-                            File file = new File(pathList.get(0).getPath());
-                            FileUtil.deleteDirWihtFile(file.getParentFile());
-                            mListener.dismissWaitDialog("上传成功");
-                            mListener.backToStack(0);
+                            try {
+                                if(pathList.size()>0) {
+                                    File file = new File(pathList.get(0).getPath());
+                                    FileUtil.deleteDirWihtFile(file.getParentFile());
+                                    mListener.dismissWaitDialog("上传成功");
+                                    mListener.backToStack(0);
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
                         }
                     });
                 }
