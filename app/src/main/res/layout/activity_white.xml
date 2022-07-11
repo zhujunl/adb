@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <TextView
+            android:paddingStart="10dp"
+            android:gravity="center_vertical"
+            android:textSize="40sp"
+            android:text="白名单配置"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <RadioGroup
+            android:id="@+id/rg_white"
+            android:layout_gravity="end"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/rb_white_on"
+                android:text="启用"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+            <RadioButton
+                android:id="@+id/rb_white_off"
+                android:text="禁用"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <Button
+            android:layout_marginEnd="10dp"
+            style="@style/stroke_button"
+            android:id="@+id/btn_import_u"
+            android:text="从U盘导入名单"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:layout_marginStart="10dp"
+            style="@style/stroke_button"
+            android:id="@+id/btn_delete_all"
+            android:text="删除所有"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:textColor="@color/red"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:visibility="gone"
+            style="@style/stroke_button"
+            android:id="@+id/btn_add"
+            android:text="新增"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:textStyle="bold"
+            android:text="身份证号码"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:gravity="center_vertical|start"
+            android:background="@color/blue_band_dark2"
+            android:textColor="@color/white"
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="#000"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:visibility="gone"
+            android:textStyle="bold"
+            android:text="姓名"
+            style="@style/record_item"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="#000"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <View
+            android:background="#000"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:visibility="gone"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <View
+        android:background="#000"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <ListView
+        android:background="@drawable/stroke_button_normal"
+        android:scrollbars="vertical"
+        android:id="@+id/lv_white"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:gravity="center"
+            android:textColor="@color/blue_band_dark2"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_back"
+            android:text="返回"
+            style="@style/stroke_button"
+            android:layout_marginTop="10dp"
+            android:layout_width="200dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

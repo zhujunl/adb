@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/title"
+        android:layout_marginTop="120dp"
+        android:text="高拍仪扫描"
+        android:textColor="#333"
+        android:textSize="50sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:id="@+id/tv_second"
+        android:text="15"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="40sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title">
+        <SurfaceView
+            android:id="@+id/sv"
+            android:layout_width="750px"
+            android:layout_height="580px"
+            android:layout_marginTop="100px"
+            android:layout_marginLeft="50px"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+        <SeekBar
+            android:visibility="invisible"
+            android:id="@+id/sBar"
+            android:layout_width="750px"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/sv"
+            app:layout_constraintStart_toStartOf="@id/sv"/>
+
+        <TextView
+            android:id="@+id/tv_hint"
+            android:layout_width="310px"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15px"
+            android:layout_marginEnd="10px"
+            android:text="请将纸质文件放置高拍仪指定位置进行拍摄扫描"
+            android:textColor="#333"
+            android:textSize="28px"
+            app:layout_constraintLeft_toRightOf="@id/sv"
+            app:layout_constraintTop_toTopOf="@id/sv" />
+        <Button
+            android:id="@+id/btn_screen"
+            android:layout_width="200px"
+            android:layout_height="90px"
+            android:gravity="center"
+            android:text="拍摄"
+            android:layout_marginTop="80px"
+            android:textSize="32px"
+            app:layout_constraintLeft_toRightOf="@id/sv"
+            app:layout_constraintRight_toRightOf="@id/tv_hint"
+            app:layout_constraintTop_toBottomOf="@id/tv_hint" />
+        <Button
+            android:id="@+id/btn_try_again"
+            android:layout_width="200px"
+            android:layout_height="90px"
+            android:layout_marginTop="100px"
+            android:gravity="center"
+            android:text="完成"
+            android:textSize="32px"
+            app:layout_constraintLeft_toRightOf="@id/sv"
+            app:layout_constraintRight_toRightOf="@id/tv_hint"
+            app:layout_constraintTop_toBottomOf="@id/btn_screen" />
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="@id/sv"
+            app:layout_constraintStart_toEndOf="@id/tv_hint"
+            app:layout_constraintEnd_toEndOf="parent">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="预览"
+                android:textColor="#333"
+                android:textSize="40px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(说明：单击：预览，长按：删除)"
+                android:textColor="#999999"
+                android:textSize="24px" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <View
+            android:layout_width="350dp"
+            android:layout_height="1px"
+            android:layout_marginTop="10px"
+            android:background="#D7D7D7"
+            app:layout_constraintTop_toBottomOf="@+id/ll_hint"
+            app:layout_constraintStart_toStartOf="@id/ll_hint"/>
+
+        <ListView
+            android:id="@+id/rv_content"
+            android:layout_width="500px"
+            android:layout_marginTop="50px"
+            android:layout_height="500px"
+            app:layout_constraintBottom_toBottomOf="@id/sv"
+            app:layout_constraintTop_toBottomOf="@+id/ll_hint"
+            app:layout_constraintStart_toStartOf="@id/ll_hint"
+            app:layout_constraintEnd_toEndOf="@id/ll_hint"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

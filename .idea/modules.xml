@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/faceadb_st.iml" filepath="$PROJECT_DIR$/faceadb_st.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/faceadb_st.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libusbcamera/faceadb_st.libusbcamera.iml" filepath="$PROJECT_DIR$/.idea/modules/libusbcamera/faceadb_st.libusbcamera.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libusbcamera/faceadb_st.libusbcamera.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/libusbcamera/faceadb_st.libusbcamera.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libusbcamera/faceadb_st.libusbcamera.main.iml" filepath="$PROJECT_DIR$/.idea/modules/libusbcamera/faceadb_st.libusbcamera.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libusbcamera/faceadb_st.libusbcamera.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/libusbcamera/faceadb_st.libusbcamera.unitTest.iml" />
+    </modules>
+  </component>
+</project>

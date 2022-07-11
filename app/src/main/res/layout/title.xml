@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_top"
+    android:translationZ="100dp"
+    android:layout_alignParentTop="true"
+    android:background="@color/black_aero"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="90dp">
+
+    <TextView
+        android:clickable="true"
+        android:longClickable="true"
+        android:id="@+id/tv_title"
+        android:text="@string/app_name"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <View
+        android:background="@color/white"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/iv_record"
+        android:tint="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:src="?android:attr/actionModePasteDrawable" />
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/iv_import_from_u"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@mipmap/import_img"
+        android:tint="@color/white" />
+
+    <EditText
+        android:gravity="center"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="5dp"
+        android:visibility="gone"
+        android:id="@+id/et_pwd"
+        android:maxLength="6"
+        android:digits="0123456789"
+        android:background="@color/white"
+        android:inputType="numberPassword"
+        android:layout_weight="1.8"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:visibility="gone"
+        android:id="@+id/btn_confirm"
+        android:text="确定"
+        android:background="@drawable/white_btn_bg"
+        android:textColor="@color/dark"
+        android:layout_weight="0.6"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="1dp"
+        android:visibility="gone"
+        android:id="@+id/btn_cancel"
+        android:text="取消"
+        android:background="@drawable/white_btn_bg"
+        android:textColor="@color/dark"
+        android:layout_weight="0.6"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_wel_msg"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:layout_weight="3"
+        android:layout_width="0dp"
+        android:maxLength="26"
+        android:singleLine="true"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" >
+
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_marginRight="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:text="日期"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_time"
+                android:text="时间"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/white"
+                android:textSize="45sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_weather"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:visibility="gone"
+                android:text="无天气信息"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

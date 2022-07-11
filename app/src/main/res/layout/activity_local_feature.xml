@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:paddingStart="10dp"
+        android:gravity="center_vertical"
+        android:textSize="40sp"
+        android:text="本地特征管理"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <LinearLayout
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <Button
+            android:layout_marginEnd="10dp"
+            style="@style/stroke_button"
+            android:id="@+id/btn_import_img"
+            android:text="从U盘导入图像"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:layout_marginStart="10dp"
+            android:id="@+id/btn_delete_all"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/stroke_button"
+            android:text="删除所有"
+            android:textColor="@color/red" />
+
+    </LinearLayout>
+
+    <View
+        android:background="#000"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:background="@color/blue_band_dark2"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:text="文件名"
+            android:gravity="center_vertical|start"
+            android:layout_weight="2.5"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <View
+            android:background="#000"
+            android:layout_width="1px"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:visibility="gone"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <View
+        android:background="#000"
+        android:layout_width="match_parent"
+        android:layout_height="1px"/>
+
+    <ListView
+        android:background="@drawable/stroke_button_normal"
+        android:scrollbars="vertical"
+        android:id="@+id/lv_local_feature"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:gravity="center"
+            android:textColor="@color/blue_band_dark2"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_back"
+            android:text="返回"
+            style="@style/stroke_button"
+            android:layout_marginTop="10dp"
+            android:layout_width="200dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</LinearLayout>

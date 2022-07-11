@@ -1,0 +1,1547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:paddingStart="50dp"
+            android:text="设置"
+            android:textSize="40sp"
+            android:gravity="center_vertical|start"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+        <ScrollView
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:orientation="vertical"
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="版本号"
+                        android:layout_weight="3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:id="@+id/tv_version"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <Button
+                        android:background="@drawable/white_btn_bg"
+                        android:textColor="@color/orange"
+                        android:id="@+id/btn_update"
+                        android:text="检查更新"
+                        android:layout_weight="1"
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="IP"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:digits="0123456789."
+                        android:inputType="numberDecimal"
+                        android:background="@color/white"
+                        android:singleLine="true"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:id="@+id/et_ip"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="端口号"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:digits="0123456789"
+                        android:inputType="number"
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:singleLine="true"
+                        android:id="@+id/et_port"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="机构名称"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:singleLine="true"
+                        android:id="@+id/et_org"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="指纹图像"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_finger"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="原始图像"
+                            android:tag="0"
+                            android:id="@+id/rb_finger_ori"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="黑色底图"
+                            android:tag="1"
+                            android:id="@+id/rb_finger_dark"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="红色底图"
+                            android:tag="2"
+                            android:id="@+id/rb_finger_red"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="抓拍图像"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_img"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="现场图像"
+                            android:id="@+id/rb_scene"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="人脸图像"
+                            android:id="@+id/rb_face"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="活体监测"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_live"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="开启"
+                            android:id="@+id/rb_live_on"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="关闭"
+                            android:id="@+id/rb_live_off"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="比对阈值"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:inputType="numberDecimal"
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:singleLine="true"
+                        android:id="@+id/et_pass_score"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="质量阈值"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:inputType="numberDecimal"
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:singleLine="true"
+                        android:id="@+id/et_quality_score"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="验证模式"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <Spinner
+                        android:id="@+id/s_verify_mode"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"/>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="网络开关"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_net"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="联网"
+                            android:id="@+id/rb_net_on"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="单机"
+                            android:id="@+id/rb_net_off"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="查询记录"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_query"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="允许"
+                            android:id="@+id/rb_query_on"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="不允许"
+                            android:id="@+id/rb_query_off"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="续传时间"
+                        android:layout_weight="3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:hint="点击选择时间"
+                        android:id="@+id/tv_select_time"
+                        android:layout_weight="2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"/>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <Button
+                        android:background="@drawable/white_btn_bg"
+                        android:id="@+id/btn_clear_now"
+                        android:text="立即续传"
+                        android:layout_weight="1"
+                        android:textSize="20sp"
+                        android:textColor="@color/orange"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="比对数目 （未上传数目 / 总数）"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textSize="20sp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:hint="正在计算..."
+                        android:id="@+id/tv_result_count"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"/>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="可见光摄像头"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_rgb"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="0"
+                            android:tag="0"
+                            android:id="@+id/rb_rgb0"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="1"
+                            android:tag="1"
+                            android:id="@+id/rb_rgb1"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="2"
+                            android:tag="2"
+                            android:id="@+id/rb_rgb2"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="近红外摄像头"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_nir"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="0"
+                            android:tag="0"
+                            android:id="@+id/rb_nir0"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="1"
+                            android:tag="1"
+                            android:id="@+id/rb_nir1"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="2"
+                            android:tag="2"
+                            android:id="@+id/rb_nir2"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="高拍仪摄像头"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_sm"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="0"
+                            android:tag="0"
+                            android:id="@+id/rb_sm0"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="1"
+                            android:tag="1"
+                            android:id="@+id/rb_sm1"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="2"
+                            android:tag="2"
+                            android:id="@+id/rb_sm2"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="监控间隔"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:inputType="numberDecimal"
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:singleLine="true"
+                        android:id="@+id/et_monitor_interval"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="提示文字"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:singleLine="true"
+                        android:id="@+id/et_banner"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="密码"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:digits="0123456789"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:singleLine="true"
+                        android:id="@+id/et_pwd"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="广告开关"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <RadioGroup
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:background="@color/white"
+                        android:id="@+id/rg_advertise"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" >
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="开启"
+                            android:id="@+id/rb_advertise_on"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                        <RadioButton
+                            android:gravity="center"
+                            android:textColor="@color/dark"
+                            android:text="关闭"
+                            android:id="@+id/rb_advertise_off"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent" />
+
+                        <View
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"/>
+
+                    </RadioGroup>
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="超时显示时间（秒）"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                    <EditText
+                        android:digits="0123456789"
+                        android:inputType="number"
+                        android:background="@color/white"
+                        android:textColor="@color/dark"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:singleLine="true"
+                        android:id="@+id/et_advertise_delay_time"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:background="@color/gray_dark"
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:background="@color/gray_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_marginTop="5sp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_marginEnd="5dp"
+                android:id="@+id/btn_white_manage"
+                android:text="白名单配置"
+                android:layout_weight="1"
+                style="@style/setting_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+            <Button
+                android:layout_marginEnd="5dp"
+                android:visibility="invisible"
+                android:id="@+id/btn_black_manage"
+                android:text="黑名单配置"
+                android:layout_weight="1"
+                style="@style/setting_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+            <Button
+                android:visibility="invisible"
+                android:id="@+id/btn_local_feature_manage"
+                android:text="本地特征库"
+                android:layout_weight="1"
+                style="@style/setting_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+            <!--<Button-->
+                <!--android:id="@+id/btn_advertisement_manage"-->
+                <!--android:text="广告展示"-->
+                <!--android:layout_weight="1"-->
+                <!--style="@style/setting_button"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="50dp" />-->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_marginEnd="5dp"
+                android:id="@+id/btn_save_config"
+                android:text="保存设置"
+                android:layout_weight="1"
+                style="@style/stroke_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+            <Button
+                android:layout_marginEnd="5dp"
+                android:id="@+id/btn_cancel_config"
+                android:text="返回"
+                android:layout_weight="1"
+                style="@style/stroke_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+            <Button
+                android:id="@+id/btn_exit"
+                android:text="退出程序"
+                android:textColor="@color/red"
+                android:layout_weight="1"
+                style="@style/stroke_button"
+                android:layout_width="0dp"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

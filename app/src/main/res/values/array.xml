@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="verifyMode">
+        <item>只验证人脸</item>
+        <item>只验证指纹</item>
+        <item>双重验证，人脸优先</item>
+        <item>双重验证，指纹优先</item>
+        <item>单项验证，人脸优先</item>
+        <item>单项验证，指纹优先</item>
+    </string-array>
+
+    <string-array name="sex">
+        <item>-- 性别 --</item>
+        <item>男</item>
+        <item>女</item>
+    </string-array>
+
+    <string-array name="result">
+        <item>-- 比对结果 --</item>
+        <item>成功</item>
+        <item>失败</item>
+    </string-array>
+
+</resources>

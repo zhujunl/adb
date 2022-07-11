@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#33CCFF</color>
+    <color name="colorPrimaryDark">#35a5e7</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="white">#fff</color>
+    <color name="gray_bg">#f0eff5</color>
+    <color name="gray_dark">#969696</color>
+    <color name="gray_light">#bababa</color>
+    <color name="dark">#333</color>
+    <color name="black">#000</color>
+    <color name="black_aero">#a8000000</color>
+    <color name="qing">#00ba96</color>
+    <color name="qing_aero">#41d7fff7</color>
+
+    <color name="blue_band_dark">#12283d</color>
+    <color name="blue_band_light">#86ecef</color>
+    <color name="blue_band_light2">#61b9bc</color>
+    <color name="blue_band_dark2">#4d5d6d</color>
+    <color name="blue_band_dark3">#9688939e</color>
+
+    <color name="blue_light">#92d4e4</color>
+    <color name="green_dark">#007e00</color>
+    <color name="green_light">#7bc274</color>
+
+    <color name="red">#f00</color>
+    <color name="orange">#ffa453</color>
+    <color name="orange_dark">#ff8d28</color>
+
+    <color name="light_red">#df8484</color>
+    <color name="aero_gray">#34000000</color>
+    <color name="aero">#00ffffff</color>
+
+
+
+
+</resources>

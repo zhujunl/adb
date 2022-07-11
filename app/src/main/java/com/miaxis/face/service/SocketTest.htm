@@ -1,0 +1,296 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>MR860测试</title>
+
+<script type="text/javascript" src="usbocx.js"></script>
+<script type="text/javascript" src="Base64.js"></script>
+<script language="javascript" type="text/javascript">
+
+var successCount = 0;
+var totalCount = 0;
+var failCount=0;
+var TimoOutCount=0;
+var timer;
+function startOneVerify() 
+{
+	DisEnableButton();
+	document.getElementById("MulTestresult").value ="";
+	document.getElementById("result").value ="测试中...";
+	document.getElementById("name").value = "";
+	document.getElementById("sex").value = "";
+	document.getElementById("cardNo").value = "";
+	document.getElementById("address").value = "";
+	document.getElementById("birthday").value = "";
+	document.getElementById("deviceName").value = "";
+	document.getElementById("getFingerData").value = "";
+	document.getElementById("idPhoto").src = "id.png";
+	document.getElementById("cameraPhoto").src = "match.png";
+	document.getElementById("shutterPhoto").src = "shutterPhoto.png";
+	var svrip = document.getElementById("svrip").value;
+	var svrport = document.getElementById("svrport").value;
+	var senddata = document.getElementById("action").value;
+	SendDataToADB(svrip, svrport, senddata,function(result, data)
+	{
+		if(result!=0)
+		{
+			document.getElementById("result").value =result;
+			EnableButton();
+		}
+		else
+        {
+		   var deData=utf8to16(base64decode(data))
+		   analysisResult(deData);
+		   EnableButton();
+        }	
+	});	
+}
+
+function startMulVerify() 
+{
+	DisEnableButton();
+	document.getElementById("MulTestresult").value ="";
+	document.getElementById("result").value ="循环测试中,请等待...";
+	document.getElementById("name").value = "";
+	document.getElementById("sex").value = "";
+	document.getElementById("cardNo").value = "";
+	document.getElementById("address").value = "";
+	document.getElementById("birthday").value = "";
+	document.getElementById("deviceName").value = "";
+	document.getElementById("getFingerData").value = "";
+	document.getElementById("idPhoto").src = "id.png";
+	document.getElementById("cameraPhoto").src = "match.png";
+	document.getElementById("shutterPhoto").src = "shutterPhoto.png";
+	var svrip = document.getElementById("svrip").value;
+	var svrport = document.getElementById("svrport").value;
+	var senddata = document.getElementById("action").value;
+	timer=window.setInterval(MulTest, 40000);
+}
+function CancelMulVerify() 
+{
+	clearInterval(timer);
+	EnableButton();
+}
+
+function MulTest()
+{
+	
+	document.getElementById("name").value = "";
+	document.getElementById("sex").value = "";
+	document.getElementById("cardNo").value = "";
+	document.getElementById("address").value = "";
+	document.getElementById("birthday").value = "";
+	document.getElementById("deviceName").value = "";
+	document.getElementById("getFingerData").value = "";
+	document.getElementById("idPhoto").src = "id.png";
+	document.getElementById("cameraPhoto").src = "match.png";
+	document.getElementById("shutterPhoto").src = "shutterPhoto.png";
+	var svrip = document.getElementById("svrip").value;
+	var svrport = document.getElementById("svrport").value;
+	var senddata = document.getElementById("action").value;
+	SendDataToADB(svrip, svrport, senddata,function(result, data)
+	{
+		totalCount=totalCount+1;
+		if(result!=0)
+		{
+			if(result==-5)
+			{
+				TimoOutCount=TimoOutCount+1;
+			}
+			else
+			{
+				failCount=failCount+1;
+			}
+		}
+		else
+        {
+		   var deData=utf8to16(base64decode(data))
+		   analysisResult(deData);
+		   successCount=successCount+1;
+        }
+		document.getElementById("getFingerData").value = "循环测试中,请等待...";
+		document.getElementById("MulTestresult").value ="总测试次数:"+totalCount+","+"成功次数:"+successCount+","+"失败次数:"+failCount+","+"超时次数:"+TimoOutCount;	
+	});	
+}
+
+function takePhoto()
+{
+	DisEnableButton();
+	document.getElementById("result").value ="";
+	document.getElementById("name").value = "";
+	document.getElementById("sex").value = "";
+	document.getElementById("cardNo").value = "";
+	document.getElementById("address").value = "";
+	document.getElementById("birthday").value = "";
+	document.getElementById("deviceName").value = "";
+	document.getElementById("getFingerData").value = "";
+	document.getElementById("idPhoto").src = "id.png";
+	document.getElementById("cameraPhoto").src = "match.png";
+	document.getElementById("shutterPhoto").src = "shutterPhoto.png";
+	var svrip = document.getElementById("svrip").value;
+	var svrport = document.getElementById("svrport").value;
+	var senddata = document.getElementById("shutter").value;
+	SendDataToADB(svrip, svrport, senddata,function(result, data)
+	{
+		if(result!=0)
+		{
+			EnableButton();
+			alert(result);
+		}
+		else
+        {
+		   var deData=utf8to16(base64decode(data))
+		   analysisShutterResult(deData);
+		   EnableButton();
+        }			 	       
+	});	
+
+}
+
+function getFinger() 
+{
+	DisEnableButton();
+	document.getElementById("result").value ="";
+	document.getElementById("name").value = "";
+	document.getElementById("sex").value = "";
+	document.getElementById("cardNo").value = "";
+	document.getElementById("address").value = "";
+	document.getElementById("birthday").value = "";
+	document.getElementById("deviceName").value = "";
+	document.getElementById("getFingerData").value = "";
+	document.getElementById("idPhoto").src = "id.png";
+	document.getElementById("cameraPhoto").src = "match.png";
+	document.getElementById("shutterPhoto").src = "shutterPhoto.png";
+	var svrip = document.getElementById("svrip").value;
+	var svrport = document.getElementById("svrport").value;
+	var senddata = document.getElementById("getFinger").value;
+	SendDataToADB(svrip, svrport, senddata,function(result, data)
+	{
+		if(result!=0)
+		{
+			EnableButton();
+			alert(result);
+		}
+		else
+        {
+		   var deData=utf8to16(base64decode(data))
+		   analysisGetFingerResult(deData);
+		   EnableButton();
+        }			 	       
+	});	
+
+}
+
+function getDriverVersion() 
+{
+	mxGetDriverVersion(function(result, data)
+	{
+		if(result!=0)
+		{
+			alert(result);
+		}
+		else
+        {
+			alert(data);
+		}	       
+	});
+}
+
+function EnableButton()
+{
+	document.getElementById("btnStartOne").disabled=false;
+	document.getElementById("btnShutter").disabled=false;
+	document.getElementById("btnGetFinger").disabled=false;
+	document.getElementById("btnGetDriverVer").disabled=false;
+	document.getElementById("btnStartMul").disabled=false;
+}
+
+function DisEnableButton()
+{
+	document.getElementById("btnStartOne").disabled=true;
+	document.getElementById("btnShutter").disabled=true;
+	document.getElementById("btnGetFinger").disabled=true;
+	document.getElementById("btnGetDriverVer").disabled=true;
+	document.getElementById("btnStartMul").disabled=true;
+}
+
+
+
+
+function analysisResult(result) {
+
+	var reStrs = result.split("\$");
+	
+	document.getElementById("result").value = reStrs[1].split("=#=")[1];
+	document.getElementById("name").value = reStrs[2].split("=#=")[1];
+	document.getElementById("sex").value = reStrs[3].split("=#=")[1];
+	document.getElementById("cardNo").value = reStrs[4].split("=#=")[1];
+	document.getElementById("address").value = reStrs[5].split("=#=")[1];
+	document.getElementById("birthday").value = reStrs[6].split("=#=")[1];
+	document.getElementById("deviceName").value = reStrs[7].split("=#=")[1];
+
+	document.getElementById("idPhoto").src = "data:image/png;base64," + reStrs[8].split("=#=")[1];
+	document.getElementById("cameraPhoto").src = "data:image/png;base64," + reStrs[9].split("=#=")[1];
+}
+
+function analysisShutterResult(result) {
+	var reStrs = result.split("\$");
+	document.getElementById("shutterPhoto").src = "data:image/png;base64," + reStrs[1].split("=#=")[1];
+
+}
+
+function analysisGetFingerResult(result) {
+	var reStrs = result.split("\$");
+	document.getElementById("getFingerData").value = reStrs[1].split("=#=")[1];
+
+}
+
+</script>
+</head>
+<body> 
+  <div id="mask" class="mask" style="display:none;text-align:center">
+ 
+  </div>
+  <div id="mydiv">
+    <object classid="CLSID:904044B7-6DE1-4B90-B7CA-E458D832D73C" codebase="ADB_OCX(1).ocx" id="obj" height=0 width=0></object>
+    <h2>浙江中正MR860测试页面v1.0.1</h2>
+
+	<div>
+	服务器IP：<input name="svrip" id="svrip" type="text" size=50 value="127.0.0.1">
+	服务器端口：<input name="svrport" id="svrport" type="text" size=20 value="1352"><br/><br/> 
+    发送比对命令：<input name="action" id="action" type="text" size=150 value="$=Action"><br/><br/>  
+	接收比对结果数据：<input name="recvActionData" id="recvActionData" type="text" size=150><br/><br/>
+
+	发送拍照命令：<input name="shutter" id="shutter" type="text" size=150 value="$=Shutter"><br/><br/>
+	发送采集指纹命令：<input name="getFinger" id="getFinger" type="text" size=150 value="$=GetFinger"><br/><br/>    
+	接收拍照结果数据：<input name="recvShutterData" id="recvShutterData" type="text" size=150><br/><br/> 
+
+</div>
+	<input id="btnStartOne" type="button" value="开始单次验证" onclick="return startOneVerify()" />
+	<input id="btnStartMul" type="button" value="开始多次验证" onclick="return startMulVerify()" />
+	<input id="btnCancel" type="button" value="取消多次验证" onclick="return CancelMulVerify()" />
+	<input id="btnShutter"  type="button" value="开始拍照" onclick="return takePhoto()" />
+	<input id="btnGetFinger"  type="button" value="开始采集指纹" onclick="return getFinger()" />
+	<input id="btnGetDriverVer"  type="button" value="获取驱动版本" onclick="return getDriverVersion()" /> <br/><br/> 
+	多次测试结果：	<input name="MulTestresult"	id="MulTestresult"		type="text" size=100 ><br/>
+	验证结果：	<input name="result"	id="result"		type="text" size=100 ><br/>
+	姓名：		<input name="name"		id="name"		type="text" size=100><br/> 
+	性别：		<input name="sex"		id="sex"		type="text" size=100><br/>
+	身份证号码：<input name="cardNo"	id="cardNo"		type="text" size=100><br/>
+    住址：		<input name="address"	id="address"	type="address" size=100><br/>
+	生日：		<input name="birthday"	id="birthday"	type="text" size=100><br/>
+	设备名称：	<input name="deviceName"id="deviceName" type="text" size=100><br/>
+    采集指纹：<input name="getFingerData" id="getFingerData"size=100"></input><br/><br/>
+	身份证照片：<br/>
+	<img id="idPhoto"  class="img" src="id.png"/><br/><br/>
+
+	比对照片：<br/>
+	<img id="cameraPhoto" class="img" src="match.png"/><br/><br/>
+	
+	拍照命令照片：<br/>
+	<img id="shutterPhoto" class="img" src="shutterPhoto.png"/><br/>
+
+	
+  </div>
+</body>
+</html>

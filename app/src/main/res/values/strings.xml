@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">人证核验</string>
+    <string name="result_success">成 功</string>
+    <string name="result_failure">失 败</string>
+    <string name="result_press">请按指纹</string>
+    <string name="confirm">确      定</string>
+    <string name="cancel">取      消</string>
+    <string name="loading">正在加载…</string>
+</resources>
