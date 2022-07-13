@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
@@ -170,8 +171,12 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
                         if (TextUtils.isEmpty(path)) {
                             return;
                         }
-
-                        final Bitmap bit = BitmapUtils.getBitmap(path);
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inPreferredConfig = Bitmap.Config.RGB_565; //图片颜色配置
+                        options.inSampleSize = 2;
+                        Bitmap bit = BitmapFactory.decodeFile(path,options);
+                        //final Bitmap bit = BitmapUtils.getBitmap(path);
+                        //Bitmap bit = MyUtil.compressBitmap(bit2,50);
                         if (bit != null) {
                             if (mActivity != null) {
                                 mActivity.runOnUiThread(new Runnable() {
@@ -196,7 +201,7 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
                 if (pathList.size() > 0) {
                     Bitmap bitmap = pathList.get(0).getBase64();
                     Matrix matrix = new Matrix();
-                    matrix.setScale(0.2f, 0.2f);
+                    matrix.setScale(0.99f, 0.99f);
                     Bitmap bit = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                     eventbus.post(new CmdSmDoneEvent(MyUtil.bitmapTo64(bit)));
                     CameraHelper.getInstance().free();
