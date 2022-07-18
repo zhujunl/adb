@@ -10,8 +10,8 @@
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 4,
-      "versionName": "1.0.4_adb_ST",
+      "versionCode": 5,
+      "versionName": "1.0.5_adb_ST",
       "outputFile": "app-release.apk"
     }
   ]

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.miaxis.face">
 
-    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-feature android:name="android.hardware.usb.host" android:required="true"/>
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -41,6 +41,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+
 
     <application
         android:name=".app.Face_App"
@@ -117,6 +118,8 @@
             android:name=".service.AdbCommService"
             android:enabled="true"
             android:exported="true" />
+
+        <service android:name="com.wsm.hidlib.service.HIDService"/>
     </application>
 
 </manifest>

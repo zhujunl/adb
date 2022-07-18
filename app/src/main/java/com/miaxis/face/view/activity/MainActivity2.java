@@ -660,71 +660,7 @@ public class MainActivity2  extends BaseActivity implements AMapLocationListener
 
     private StringBuilder sb = new StringBuilder();
 
-    boolean isScaning = false;
-    int len = 0;
-    int oldLen = 0;
-    int counts=0;
 
-    //二维码扫码
-    @SuppressLint("RestrictedApi")
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        int action = event.getAction();
-        if (ScanFlag) {
-            if (action == KeyEvent.ACTION_DOWN) {
-                if (event.getKeyCode()==KeyEvent.KEYCODE_SHIFT_LEFT||event.getKeyCode()==KeyEvent.KEYCODE_SHIFT_RIGHT
-                ||event.getKeyCode()==KeyEvent.KEYCODE_VOLUME_UP||event.getKeyCode()==KeyEvent.KEYCODE_VOLUME_DOWN){
-                    return super.dispatchKeyEvent(event);
-                }else if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
-                    readSecond(0);
-                    return true;
-                }
-                char unicodeChar = (char) event.getUnicodeChar();
-                sb.append(unicodeChar);
-                len++;
-                startScan();
-                return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
-    }
-
-    private void startScan() {
-        counts++;
-        if (isScaning) {
-            return;
-        }
-        isScaning = true;
-        timerScanCal();
-    }
-
-    private void timerScanCal() {
-        Log.e(TAG, "timerScanCal"  );
-        oldLen = len;
-        Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                SystemClock.sleep(1000);
-                if (oldLen != len) {
-                    timerScanCal();
-                    return;
-                }
-                isScaning = false;
-                if (sb.length() > 0) {
-                    String str=sb.toString();
-                    Log.e(TAG,"扫码:" + str);
-                    eventBus.post(new CmdScanDoneEvent(str.trim()));
-                    counts=0;
-                    ScanFlag=false;
-                    showWaitDialog("正在上传中，请稍后");
-                    SystemClock.sleep(1000);
-                    dismissWaitDialog("上传成功");
-                    backToStack(10);
-                    sb.setLength(0);
-                }
-            }
-        });
-    }
 
     @Override
     public void backToStack(int coutdown) {
