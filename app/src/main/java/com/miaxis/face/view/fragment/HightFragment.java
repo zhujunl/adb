@@ -201,7 +201,7 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
                 if (pathList.size() > 0) {
                     Bitmap bitmap = pathList.get(0).getBase64();
                     Matrix matrix = new Matrix();
-                    matrix.setScale(0.99f, 0.99f);
+                    matrix.setScale(0.9f, 0.9f);
                     Bitmap bit = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                     eventbus.post(new CmdSmDoneEvent(MyUtil.bitmapTo64(bit)));
                     CameraHelper.getInstance().free();
