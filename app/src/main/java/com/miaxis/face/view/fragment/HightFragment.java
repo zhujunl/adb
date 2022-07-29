@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -67,6 +68,8 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
     public View uvcTextureView;
     @BindView(R.id.sBar)
     SeekBar sBar;
+    @BindView(R.id.sBar_contrast)
+    SeekBar contrastBar;
     @BindView(R.id.btn_screen)
     Button btnScreen;
     @BindView(R.id.btn_try_again)
@@ -134,12 +137,31 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
         mCameraHelper = UVCCameraHelper.getInstance(2048, 1536);
         mCameraHelper.setDefaultFrameFormat(UVCCameraHelper.FRAME_FORMAT_MJPEG);
         mCameraHelper.initUSBMonitor(mActivity, mUVCCameraView, listener);
+        sBar.setMax(100);
         sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                ZZResponse<MXCamera> mxCamera = CameraHelper.getInstance().find(config.getSm());
-                if (ZZResponse.isSuccess(mxCamera)) {
-                    mxCamera.getData().setZoom(progress);
+                if(mCameraHelper != null && mCameraHelper.isCameraOpened()) {
+                    mCameraHelper.setModelValue(UVCCameraHelper.MODE_BRIGHTNESS,progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        contrastBar.setMax(100);
+        contrastBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(mCameraHelper != null && mCameraHelper.isCameraOpened()) {
+                    mCameraHelper.setModelValue(UVCCameraHelper.MODE_CONTRAST,progress);
                 }
             }
 
@@ -171,11 +193,11 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
                         if (TextUtils.isEmpty(path)) {
                             return;
                         }
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inPreferredConfig = Bitmap.Config.RGB_565; //图片颜色配置
-                        options.inSampleSize = 2;
-                        Bitmap bit = BitmapFactory.decodeFile(path,options);
-                        //final Bitmap bit = BitmapUtils.getBitmap(path);
+//                        BitmapFactory.Options options = new BitmapFactory.Options();
+//                        options.inPreferredConfig = Bitmap.Config.RGB_565; //图片颜色配置
+//                        options.inSampleSize = 1;
+                        //Bitmap bit = BitmapFactory.decodeFile(path,options);
+                        final Bitmap bit = BitmapUtils.getBitmap(path);
                         //Bitmap bit = MyUtil.compressBitmap(bit2,50);
                         if (bit != null) {
                             if (mActivity != null) {
@@ -199,16 +221,17 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
             @Override
             public void onClick(View v) {
                 if (pathList.size() > 0) {
-                    Bitmap bitmap = pathList.get(0).getBase64();
-                    Matrix matrix = new Matrix();
-                    matrix.setScale(0.9f, 0.9f);
-                    Bitmap bit = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                    eventbus.post(new CmdSmDoneEvent(MyUtil.bitmapTo64(bit)));
-                    CameraHelper.getInstance().free();
+                    mListener.showWaitDialog("正在上传中，请稍后");
                     Face_App.getInstance().getThreadExecutor().execute(new Runnable() {
                         @Override
                         public void run() {
-                            mListener.showWaitDialog("正在上传中，请稍后");
+                            //mListener.showWaitDialog("正在上传中，请稍后");
+                            Bitmap bitmap = pathList.get(0).getBase64();
+                            Matrix matrix = new Matrix();
+                            matrix.setScale(0.6f, 0.6f);
+                            Bitmap bit = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                            eventbus.post(new CmdSmDoneEvent(MyUtil.bitmapTo64(bit)));
+                            CameraHelper.getInstance().free();
                             SystemClock.sleep(1000);
                             try {
                                 if(pathList.size()>0) {
@@ -394,7 +417,22 @@ public class HightFragment extends BaseFragment implements CameraDialog.CameraDi
             } else {
                 isPreview = true;
                 //showShortMsg("connecting");
-
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(2500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Looper.prepare();
+                        if(mCameraHelper != null && mCameraHelper.isCameraOpened()) {
+                            sBar.setProgress(mCameraHelper.getModelValue(UVCCameraHelper.MODE_BRIGHTNESS));
+                            contrastBar.setProgress(mCameraHelper.getModelValue(UVCCameraHelper.MODE_CONTRAST));
+                        }
+                        Looper.loop();
+                    }
+                }).start();
             }
         }
 

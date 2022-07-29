@@ -43,13 +43,60 @@
             android:layout_gravity="center"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
-        <SeekBar
-            android:visibility="invisible"
-            android:id="@+id/sBar"
+
+        <LinearLayout
+            android:layout_marginTop="15px"
+            android:id="@+id/llayout_brightness"
             android:layout_width="750px"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/uvc_view"
-            app:layout_constraintStart_toStartOf="@id/uvc_view"/>
+            app:layout_constraintStart_toStartOf="@id/uvc_view"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp"
+                android:text="亮度"
+                android:textColor="#000000" />
+
+            <SeekBar
+                android:id="@+id/sBar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="10" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="15px"
+            android:id="@+id/llayout_contrast"
+            android:layout_width="750px"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/llayout_brightness"
+            app:layout_constraintStart_toStartOf="@id/llayout_brightness"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp"
+                android:text="对比度"
+                android:textColor="#000000" />
+
+            <SeekBar
+                android:id="@+id/sBar_contrast"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="10" />
+        </LinearLayout>
+
+
 
         <TextView
             android:id="@+id/tv_hint"
