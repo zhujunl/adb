@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -24,18 +25,15 @@ import com.miaxis.face.greendao.gen.DaoSession;
 import com.miaxis.face.greendao.gen.RecordDao;
 import com.miaxis.face.service.AdbCommService;
 import com.miaxis.face.service.ClearService;
-import com.miaxis.face.service.GPIOService;
 import com.miaxis.face.service.UpLoadRecordService;
 import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.view.fragment.AdvertiseDialog;
-import com.miaxis.gpioaidl.IGPIOControl;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.zz.faceapi.MXFaceAPI;
+import org.zz.api.MXFaceAPI;
 import org.zz.mxhidfingerdriver.MXFingerDriver;
-
 
 import java.io.File;
 import java.util.Date;
@@ -110,13 +108,17 @@ public class Face_App extends Application implements ServiceConnection {
 
     private void initCW() {
         final String sLicence = FileUtil.readLicence();
-        if (TextUtils.isEmpty(sLicence)) {
+        if (TextUtils.isEmpty(sLicence)&&Constants.VERSION) {
             eventBus.postSticky(new InitCWEvent(InitCWEvent.ERR_LICENCE));
             return;
         }
         int re = initFaceModel();
         if (re == 0) {
-            re = mxAPI.mxInitAlg(getApplicationContext(), FileUtil.getFaceModelPath(), sLicence);
+            if (Constants.VERSION){
+                re = mxAPI.mxInitAlg(getApplicationContext(), FileUtil.getFaceModelPath(), sLicence);
+            }else {
+                re = mxAPI.mxInitAlg(getApplicationContext(), FileUtil.getFaceModelPath(), "");
+            }
         }
         eventBus.postSticky(new InitCWEvent(re));
     }
@@ -205,6 +207,13 @@ public class Face_App extends Application implements ServiceConnection {
 
     private void initGPIO() {
         Log.e("initGPIO", "initGPIO");
+        if (!Constants.VERSION){
+            SystemClock.sleep(2000);
+            sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_ID_FP,true);
+            sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_CAMERA,true);
+            SystemClock.sleep(2000);
+            return;
+        }
         try {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
                 smdtManager.smdtSetGpioDirection(1, 0);         // value  0 读 1 写
@@ -390,6 +399,9 @@ public class Face_App extends Application implements ServiceConnection {
     }
 
     public void enableDog() {
+        if (!Constants.VERSION){
+            return;
+        }
         char c = 1;
         feedFlag = true;
         smdtManager.smdtWatchDogEnable(c);
@@ -400,6 +412,9 @@ public class Face_App extends Application implements ServiceConnection {
     }
 
     public void unableDog() {
+        if (!Constants.VERSION){
+            return;
+        }
         char c = 0;
         feedFlag = false;
         smdtManager.smdtWatchDogEnable(c);
@@ -408,5 +423,10 @@ public class Face_App extends Application implements ServiceConnection {
             tFeedDog = null;
         }
     }
-
+    public void sendBroadcast(String mold,int type,boolean value){
+        Intent intent = new Intent(mold);
+        if(type!=-1)intent.putExtra("type",type);
+        intent.putExtra("value",value);
+        getInstance().sendBroadcast(intent);
+    }
 }

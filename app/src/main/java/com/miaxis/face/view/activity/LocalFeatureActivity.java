@@ -3,8 +3,6 @@ package com.miaxis.face.view.activity;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -14,7 +12,6 @@ import com.miaxis.face.R;
 import com.miaxis.face.adapter.LocalFeatureItemAdapter;
 import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.LocalFeature;
-import com.miaxis.face.bean.WhiteItem;
 import com.miaxis.face.event.LoadProgressEvent;
 import com.miaxis.face.greendao.gen.LocalFeatureDao;
 import com.miaxis.face.util.FileUtil;
@@ -27,12 +24,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-import org.zz.faceapi.MXFaceAPI;
-import org.zz.faceapi.MXFaceInfo;
+import org.zz.api.MXFaceAPI;
+import org.zz.api.MXFaceInfo;
 import org.zz.jni.mxImageLoad;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -48,7 +44,6 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import top.zibin.luban.Luban;
 
 public class LocalFeatureActivity extends BaseActivity {
 
@@ -127,7 +122,7 @@ public class LocalFeatureActivity extends BaseActivity {
                 .create(new FlowableOnSubscribe<LocalFeature>() {
                     @Override
                     public void subscribe(FlowableEmitter<LocalFeature> e) throws Exception {
-                        File imgDir = new File(FileUtil.getUSBPath(LocalFeatureActivity.this), "白名单");
+                        File imgDir = new File(FileUtil.getUSBPath(LocalFeatureActivity.this,"白名单") );
                         if (!imgDir.exists() || !imgDir.isDirectory()) {
                             imgDir = FileUtil.searchFileFromU(LocalFeatureActivity.this, "白名单");
                         }

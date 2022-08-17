@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,20 +20,16 @@ import com.miaxis.face.event.CmdIdCardDoneEvent;
 import com.miaxis.face.event.NoCardEvent;
 import com.miaxis.face.event.ResultEvent;
 import com.miaxis.face.service.FingerService;
-import com.miaxis.face.util.FileUtil;
 import com.miaxis.face.util.LogUtil;
-import com.miaxis.face.view.activity.MainActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.zz.faceapi.MXFaceInfo;
+import org.zz.api.MXFaceInfo;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.miaxis.face.constant.Constants.PRE_WIDTH;
 
 /**
  * Created by Administrator on 2017/5/22 0022.

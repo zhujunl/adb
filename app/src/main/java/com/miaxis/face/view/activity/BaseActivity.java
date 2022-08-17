@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,13 +20,15 @@ import android.view.inputmethod.InputMethodManager;
 public class BaseActivity extends Activity {
 
     private MyBaseActiviyBroadcastReceiver myBaseActivityBroad;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        localBroadcastManager=LocalBroadcastManager.getInstance(this);
         myBaseActivityBroad = new MyBaseActiviyBroadcastReceiver();
         IntentFilter intentFilter = new IntentFilter("com.miaxis.face.view.activity");
-        registerReceiver(myBaseActivityBroad, intentFilter);
+        localBroadcastManager.registerReceiver(myBaseActivityBroad, intentFilter);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class BaseActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(myBaseActivityBroad);//注销广播
+        localBroadcastManager.unregisterReceiver(myBaseActivityBroad);//注销广播
     }
 
     /**

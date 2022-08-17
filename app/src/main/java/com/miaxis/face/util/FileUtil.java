@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.util.Base64;
 import android.util.Log;
 
@@ -26,6 +28,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/5/21 0021.
@@ -157,6 +161,9 @@ public class FileUtil {
     }
 
     public static String getAvailablePath(Context context) {
+        if (!Constants.VERSION){
+            return FACE_MAIN_PATH;
+        }
         File saveDir = new File(new SmdtManager(context).smdtGetSDcardPath(context));
         if (!saveDir.exists() || !saveDir.canWrite()) {
             return FACE_MAIN_PATH;
@@ -445,8 +452,8 @@ public class FileUtil {
     }
 
     public static String readFromUSBPath(Context context, String fileName) {
-        String usbPath = getUSBPath(context);
-        File file = new File(usbPath, fileName);
+        String usbPath = getUSBPath(context,fileName);
+        File file = new File(usbPath);
         if (file.exists()) {
             return readFileToString(file);
         } else {
@@ -454,21 +461,25 @@ public class FileUtil {
         }
     }
 
-    public static String getUSBPath(Context context) {
-        SmdtManager smdtManager = SmdtManager.create(context);
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
-            return smdtManager.smdtGetUSBPath(context, 1);
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            return smdtManager.smdtGetUSBPath(context, 2);
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1) {
-            return smdtManager.smdtGetUSBPath(context, 2);
-        } else {
-            return null;
+    public static String getUSBPath(Context context, String fileName) {
+        if(Constants.VERSION) {
+            SmdtManager smdtManager = SmdtManager.create(context);
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
+                return smdtManager.smdtGetUSBPath(context, 1);
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                return smdtManager.smdtGetUSBPath(context, 2);
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1) {
+                return smdtManager.smdtGetUSBPath(context, 2);
+            } else {
+                return null;
+            }
+        }else {
+            return findStorageVolume(context,fileName);
         }
     }
 
     public static File searchFileFromU(Context context, String fileName) {
-        String usbPath = getUSBPath(context);
+        String usbPath = getUSBPath(context,fileName);
         if (usbPath == null) {
             return null;
         }
@@ -502,4 +513,54 @@ public class FileUtil {
         return null;
     }
 
+    private static String  findStorageVolume(Context context, String fileName) {
+        StorageManager mStorageManager;
+        mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        List<StorageVolume> volumes = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            volumes = mStorageManager.getStorageVolumes();
+        }
+        try {
+            Class<?> storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+            Method getPath;
+            if (Build.VERSION.SDK_INT > 29) {
+                getPath = storageVolumeClazz.getMethod("getDirectory");
+            } else {
+                getPath = storageVolumeClazz.getMethod("getPath");
+            }
+            Method isRemovable = storageVolumeClazz.getMethod("isRemovable");
+            for (int i = 0; i < volumes.size(); i++) {
+                StorageVolume storageVolume = volumes.get(i);//获取每个挂载的StorageVolume
+                boolean isRemovableResult = (boolean) isRemovable.invoke(storageVolume);//是否可移除
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                    String description = storageVolume.getDescription(context);
+                }
+
+                File fileDir;
+                String storageStr;
+                if (Build.VERSION.SDK_INT > 29) {
+                    fileDir = (File) getPath.invoke(storageVolume);
+                } else {
+                    storageStr = (String) getPath.invoke(storageVolume);
+                    fileDir = new File(storageStr);
+                }
+                File[] files = fileDir.listFiles();
+                for (File file : files) {
+                    if (file.exists()){
+                        if (!file.isDirectory()){
+                            String path = file.getPath();
+                            if (path.contains(fileName)){
+                                return path;
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Log.d("jason", " e:" + e);
+            return "";
+        }
+        return "";
+    }
 }

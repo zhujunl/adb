@@ -1,6 +1,7 @@
 package com.miaxis.face.event;
 
-import org.zz.faceapi.MXFaceInfo;
+
+import org.zz.api.MXFaceInfo;
 
 /**
  * Created by xu.nan on 2017/5/23.

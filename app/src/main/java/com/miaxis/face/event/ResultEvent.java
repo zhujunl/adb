@@ -2,7 +2,8 @@ package com.miaxis.face.event;
 
 import com.miaxis.face.bean.Record;
 
-import org.zz.faceapi.MXFaceInfo;
+import org.zz.api.MXFaceInfo;
+
 
 /**
  * Created by Administrator on 2017/5/22 0022.

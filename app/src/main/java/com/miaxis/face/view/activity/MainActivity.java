@@ -15,12 +15,14 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -85,12 +87,13 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
-import org.zz.faceapi.MXFaceAPI;
-import org.zz.faceapi.MXFaceInfo;
+import org.zz.api.MXFaceAPI;
+import org.zz.api.MXFaceInfo;
 import org.zz.idcard_hid_driver.IdCardDriver;
 import org.zz.jni.mxImageLoad;
 import org.zz.jni.mxImageTool;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -247,6 +250,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
 	private boolean advertiseLock = true;
     private ProgressDialog progressDialog;
     private ReadSecondThread readSecondThread;
+    private int ORIENTATION=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,7 +326,12 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
         svRect.setZOrderOnTop(true);
         rvResult.bringToFront();
         tvSecond.bringToFront();
-        smdtManager.smdtSetStatusBar(this, false);
+        if (Constants.VERSION){
+            smdtManager.smdtSetStatusBar(this, false);
+        }else {
+            Face_App.getInstance().sendBroadcast(Constants.MOLD_STATUS,-1,false);
+            Face_App.getInstance().sendBroadcast(Constants.MOLD_NAV,-1,false);
+        }
     }
 
     private void initSurface() {
@@ -352,7 +361,11 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
 	
 	private void restartCamera() {
         synchronized (cameraLock) {
-            smdtManager.smdtSetGpioValue(2, true);
+            if (Constants.VERSION) {
+                smdtManager.smdtSetGpioValue(2, true);
+            }else {
+                Face_App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_CAMERA, true);
+            }
             try {
                 Thread.sleep(800);
             } catch (InterruptedException e) {
@@ -372,12 +385,34 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
 
     private void openCamera() {
         try {
-            mCamera = Camera.open();
+            for (int i = 0; i < 5; i++) {
+                if (mCamera==null){
+                    try {
+                        mCamera = Camera.open(0);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    if (mCamera!=null){
+                        break;
+                    }
+                    SystemClock.sleep(500);
+                }
+            }
             Camera.Parameters parameters = mCamera.getParameters();
+            //            List<Camera.Size> sizeList = parameters.getSupportedPreviewSizes();
+            List<Camera.Size> supportedPreviewSizes = parameters.getSupportedPreviewSizes();
+            int maxWidth = 0;
+            int maxHeight = 0;
+            for (Camera.Size size : supportedPreviewSizes) {
+                maxWidth = Math.max(size.width, maxWidth);
+                maxHeight = Math.max(size.height, maxHeight);
+            }
+            ORIENTATION = maxWidth * maxHeight >= (200 * 10000) ? 0 : (Constants.VERSION?180:0);//处理摄像头，500W不需要旋转
+
             parameters.setPreviewSize(PRE_WIDTH, PRE_HEIGHT);
             parameters.setPictureSize(PIC_WIDTH, PIC_HEIGHT);
             mCamera.setParameters(parameters);
-            mCamera.setDisplayOrientation(180);
+            mCamera.setDisplayOrientation(ORIENTATION);
             mCamera.setPreviewDisplay(shMain);
             mCamera.setPreviewCallback(this);
             mCamera.startPreview();
@@ -438,6 +473,22 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         lastCameraCallBackTime = System.currentTimeMillis();
+        if (picFlag){
+            picFlag=false;
+            Camera.Parameters parameters = camera.getParameters();
+            int width = parameters.getPreviewSize().width;
+            int height = parameters.getPreviewSize().height;
+            YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            yuv.compressToJpeg(new Rect(0, 0, width, height), 100, out);
+            byte[] bytes = out.toByteArray();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Matrix matrix = new Matrix();
+            matrix.postRotate(ORIENTATION);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            eventBus.post(new CmdShutterPhotoEvent(MyUtil.bitmapTo64(bitmap)));
+            return;
+        }
         if (!detectFlag) {
             return;
         }
@@ -447,7 +498,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
         for (int i = 0; i < MAX_FACE_NUM; i++) {
             pFaceBuffer[i] = new MXFaceInfo();
         }
-        byte[] rotateData = YuvUtil.rotateYUV420Degree180(data, PRE_WIDTH, PRE_HEIGHT);
+        byte[] rotateData =ORIENTATION==180? YuvUtil.rotateYUV420Degree180(data, PRE_WIDTH, PRE_HEIGHT):data;
         byte[] rgbData = new byte[PRE_WIDTH * PRE_HEIGHT * 3];
         mxImageTool.YUV2RGB(rotateData, PRE_WIDTH, PRE_HEIGHT, rgbData);
         int re;
@@ -459,7 +510,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
         }
         synchronized (lock2) {
             long t1 = System.currentTimeMillis();
-//            re = mxFaceAPI.mxDetectFaceYUV(rotateData, PRE_WIDTH, PRE_HEIGHT, pFaceNum, pFaceBuffer);
+            //            re = mxFaceAPI.mxDetectFaceYUV(rotateData, PRE_WIDTH, PRE_HEIGHT, pFaceNum, pFaceBuffer);
             re = mxFaceAPI.mxDetectFace(zoomedRgbData, ZOOM_WIDTH, ZOOM_HEIGHT, pFaceNum, pFaceBuffer);
             Log.e(TAG, "mxDetectFace 耗时：" + (System.currentTimeMillis() - t1));
         }
@@ -693,11 +744,20 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
         float[] startArrayY = new float[len];
         float[] stopArrayX = new float[len];
         float[] stopArrayY = new float[len];
-        for (int i = 0; i < len; i++) {
-            startArrayX[i] = (CP_WIDTH - faceInfos[i].x * zoomRate);
-            startArrayY[i] = (faceInfos[i].y * zoomRate);
-            stopArrayX[i] = (CP_WIDTH - faceInfos[i].x * zoomRate - faceInfos[i].width * zoomRate);
-            stopArrayY[i] = (faceInfos[i].y * zoomRate + faceInfos[i].height * zoomRate);
+        if(ORIENTATION==180){
+            for (int i = 0; i < len; i++) {
+                startArrayX[i] = (CP_WIDTH - faceInfos[i].x * zoomRate);
+                startArrayY[i] = (faceInfos[i].y * zoomRate);
+                stopArrayX[i] = (CP_WIDTH - faceInfos[i].x * zoomRate - faceInfos[i].width * zoomRate);
+                stopArrayY[i] = (faceInfos[i].y * zoomRate + faceInfos[i].height * zoomRate);
+            }
+        }else {
+            for (int i = 0; i < len; i++) {
+                startArrayX[i] = faceInfos[i].x * zoomRate*1.2F;
+                startArrayY[i] = faceInfos[i].y * zoomRate;
+                stopArrayX[i] =  faceInfos[i].x * zoomRate + faceInfos[i].width * zoomRate*1.6F;
+                stopArrayY[i] =  faceInfos[i].y * zoomRate + faceInfos[i].height * zoomRate*1.5F;
+            }
         }
         canvasDrawLine(canvas, len, startArrayX, startArrayY, stopArrayX, stopArrayY);
     }
@@ -714,14 +774,26 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
             stopX = stopArrayX[i];
             stopY = stopArrayY[i];
             mPaint.setStrokeWidth(6);// 设置画笔粗细
-            canvas.drawLine(startX, startY, startX - iLen, startY, mPaint);
-            canvas.drawLine(stopX + iLen, startY, stopX, startY, mPaint);
-            canvas.drawLine(startX, startY, startX, startY + iLen, mPaint);
-            canvas.drawLine(startX, stopY - iLen, startX, stopY, mPaint);
-            canvas.drawLine(stopX, stopY, stopX, stopY - iLen, mPaint);
-            canvas.drawLine(stopX, startY + iLen, stopX, startY, mPaint);
-            canvas.drawLine(stopX, stopY, stopX + iLen, stopY, mPaint);
-            canvas.drawLine(startX - iLen, stopY, startX, stopY, mPaint);
+            if (ORIENTATION==180){
+                canvas.drawLine(startX, startY, startX - iLen, startY, mPaint);
+                canvas.drawLine(stopX + iLen, startY, stopX, startY, mPaint);
+                canvas.drawLine(startX, startY, startX, startY + iLen, mPaint);
+                canvas.drawLine(startX, stopY - iLen, startX, stopY, mPaint);
+                canvas.drawLine(stopX, stopY, stopX, stopY - iLen, mPaint);
+                canvas.drawLine(stopX, startY + iLen, stopX, startY, mPaint);
+                canvas.drawLine(stopX, stopY, stopX + iLen, stopY, mPaint);
+                canvas.drawLine(startX - iLen, stopY, startX, stopY, mPaint);
+            }else {
+                canvas.drawLine(startX, startY, startX + iLen, startY, mPaint);
+                canvas.drawLine(stopX - iLen, startY, stopX, startY, mPaint);
+                canvas.drawLine(startX, startY, startX, startY + iLen, mPaint);
+                canvas.drawLine(startX, stopY - iLen, startX, stopY, mPaint);
+                canvas.drawLine(stopX, stopY, stopX, stopY - iLen, mPaint);
+                canvas.drawLine(stopX, startY + iLen, stopX, startY, mPaint);
+                canvas.drawLine(stopX, stopY, stopX - iLen, stopY, mPaint);
+                canvas.drawLine(startX + iLen, stopY, startX, stopY, mPaint);
+
+            }
         }
     }
 
@@ -766,6 +838,10 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     }
 
     private void openLed() {
+        if (!Constants.VERSION){
+            Face_App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_LED,true);
+            return;
+        }
         try {
             Thread.sleep(GPIO_INTERVAL);
             smdtManager.smdtSetGpioValue(3,true);
@@ -775,6 +851,10 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     }
 
     private void closeLed() {
+        if (!Constants.VERSION){
+            Face_App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_LED,false);
+            return;
+        }
         try {
             Thread.sleep(GPIO_INTERVAL);
             smdtManager.smdtSetGpioValue(3,false);
@@ -1112,7 +1192,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
         synchronized (lock1) {
             byte[] feature = new byte[mxFaceAPI.mxGetFeatureSize()];
             detectFlag = false;
-            int re = mxFaceAPI.mxFeatureExtractYUV(pImage, width, height, 1, new MXFaceInfo[]{faceInfo}, feature);
+            int re = mxFaceAPI.mxFeatureExtract(pImage, width, height, 1, new MXFaceInfo[]{faceInfo}, feature);
             detectFlag = true;
             if (re == 0) {
                 return feature;
@@ -1690,10 +1770,19 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
                         if ((cur - lastCameraCallBackTime) >= config.getIntervalTime() * 1000) {
                             LogUtil.writeLog("开始修复视频卡顿");
                             closeCamera();
-                            int re = smdtManager.smdtSetGpioValue(2, false);
+                            int re=0;
+                            if (Constants.VERSION) {
+                                re = smdtManager.smdtSetGpioValue(2, false);
+                            }else {
+                                Face_App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_CAMERA, false);
+                            }
                             LogUtil.writeLog("下电 re = " + re);
                             Thread.sleep(1000);
-                            re = smdtManager.smdtSetGpioValue(2, true);
+                            if (Constants.VERSION) {
+                                re = smdtManager.smdtSetGpioValue(2, true);
+                            }else {
+                                Face_App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_CAMERA, true);
+                            }
                             LogUtil.writeLog("上电 re = " + re);
                             Thread.sleep(1000);
                             openCamera();
@@ -1713,7 +1802,11 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
                                     }
                                     shMain.addCallback(MainActivity.this);
                                     closeCamera();
-                                    smdtManager.smdtSetGpioValue(2, false);
+                                    if (Constants.VERSION) {
+                                        smdtManager.smdtSetGpioValue(2, false);
+                                    }else {
+                                        Face_App.getInstance().sendBroadcast(Constants.MOLD_POWER,Constants.TYPE_CAMERA, false);
+                                    }
                                     monitorFlag = false;
                                 }
                             }
@@ -1920,7 +2013,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
             advertiseDialog.dismiss();
         }
     }
-
+    private boolean picFlag=false;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCmdShutterEvent(CmdShutterEvent e) {
         if (advertiseDialog.isAdded()) {
@@ -1929,26 +2022,27 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
             advertiseDialog.dismiss();
         }
         if (mCamera != null) {
-            mCamera.takePicture(
-                    new Camera.ShutterCallback() {
-                        @Override
-                        public void onShutter() {
-
-                        }
-                    },
-                    null
-                    ,
-                    new Camera.PictureCallback() {
-                        @Override
-                        public void onPictureTaken(byte[] bytes, Camera camera) {
-                            Matrix matrix = new Matrix();
-                            matrix.postRotate(180);
-                            Bitmap bmpFace = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            bmpFace = Bitmap.createBitmap(bmpFace, 0, 0, bmpFace.getWidth(), bmpFace.getHeight(), matrix, true);
-                            eventBus.post(new CmdShutterPhotoEvent(MyUtil.bitmapTo64(bmpFace)));
-                        }
-                    }
-            );
+            picFlag=true;
+//            mCamera.takePicture(
+//                    new Camera.ShutterCallback() {
+//                        @Override
+//                        public void onShutter() {
+//
+//                        }
+//                    },
+//                    null
+//                    ,
+//                    new Camera.PictureCallback() {
+//                        @Override
+//                        public void onPictureTaken(byte[] bytes, Camera camera) {
+//                            Matrix matrix = new Matrix();
+//                            matrix.postRotate(ORIENTATION);
+//                            Bitmap bmpFace = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                            bmpFace = Bitmap.createBitmap(bmpFace, 0, 0, bmpFace.getWidth(), bmpFace.getHeight(), matrix, true);
+//                            eventBus.post(new CmdShutterPhotoEvent(MyUtil.bitmapTo64(bmpFace)));
+//                        }
+//                    }
+//            );
         }
     }
 

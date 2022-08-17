@@ -4,6 +4,8 @@ import android.app.TimePickerDialog;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +25,7 @@ import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.AjaxResponse;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.Version;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.CountRecordEvent;
 import com.miaxis.face.event.TimerResetEvent;
 import com.miaxis.face.greendao.gen.ConfigDao;
@@ -120,7 +123,12 @@ public class SettingActivity extends BaseActivity {
         initData();
         initModeSpinner();
         initView();
-        smdtManager.smdtSetGpioValue(3, false);
+        if (Constants.VERSION) {
+            smdtManager.smdtSetGpioValue(3, false);
+        }else {
+            Face_App.getInstance().sendBroadcast(Constants.MOLD_STATUS,-1,false);
+            Face_App.getInstance().sendBroadcast(Constants.MOLD_NAV,-1,false);
+        }
     }
 
     void initModeSpinner() {
@@ -240,6 +248,19 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.btn_save_config)
     void save() {
+        if(!TextUtils.isEmpty(etPort.getText().toString())){
+            config.setPort(Integer.parseInt(etPort.getText().toString()));
+        }else {
+            config.setPort(0);
+        }
+        if (TextUtils.isEmpty(etPassScore.getText().toString())){
+            Toast.makeText(this, "请输入比对阈值", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (Float.parseFloat(etPassScore.getText().toString())>1.0f||Float.parseFloat(etPassScore.getText().toString())<0){
+            Toast.makeText(this, "阈值应大于0小于1", Toast.LENGTH_SHORT).show();
+            return;
+        }
         config.setIp(etIp.getText().toString());
         config.setPort(Integer.valueOf(etPort.getText().toString()));
         config.setOrgName(etOrg.getText().toString());
@@ -247,10 +268,18 @@ public class SettingActivity extends BaseActivity {
         config.setNetFlag(rbNetOn.isChecked());
         config.setQueryFlag(rbQueryOn.isChecked());
         config.setUpTime(tvSelectTime.getText().toString());
-        config.setIntervalTime(Integer.valueOf(etMonitorInterval.getText().toString()));
+        if(!TextUtils.isEmpty(etMonitorInterval.getText().toString())){
+            config.setIntervalTime(Integer.parseInt(etMonitorInterval.getText().toString()));
+        }else {
+            config.setIntervalTime(Constants.DEFAULT_INTERVAL);
+        }
         config.setBanner(etBanner.getText().toString());
         config.setAdvertiseFlag(rbAdvertiseOn.isChecked());
-        config.setAdvertiseDelayTime(Integer.parseInt(etAdvertiseDelayTime.getText().toString()));
+        if(!TextUtils.isEmpty(etAdvertiseDelayTime.getText().toString())){
+            config.setAdvertiseDelayTime(Integer.valueOf(etAdvertiseDelayTime.getText().toString()));
+        }else {
+            config.setAdvertiseDelayTime(Constants.DEFAULT_ADVERTISE_DELAY_TIME);
+        }
         if (etPwd.getText().length() != 6) {
             Toast.makeText(this, "请填写6位数字密码", Toast.LENGTH_SHORT).show();
             return;
@@ -321,14 +350,17 @@ public class SettingActivity extends BaseActivity {
     @OnClick(R.id.btn_exit)
     void singOut() {
         Face_App.getInstance().unableDog();
-        smdtManager.smdtSetStatusBar(this, true);
-        smdtManager.smdtSetGpioValue(2, false);
-        smdtManager.smdtSetGpioValue(3, false);
-//        finish();
-//        throw new RuntimeException();
+        if (Constants.VERSION) {
+            smdtManager.smdtSetStatusBar(this, true);
+            smdtManager.smdtSetGpioValue(2, false);
+            smdtManager.smdtSetGpioValue(3, false);
+        }else {
+            Face_App.getInstance().sendBroadcast(Constants.MOLD_STATUS,-1,true);
+            Face_App.getInstance().sendBroadcast(Constants.MOLD_NAV,-1,true);
+        }
         Intent intent = new Intent("com.miaxis.face.view.activity");
         intent.putExtra("closeAll", 1);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     @OnClick(R.id.btn_white_manage)
