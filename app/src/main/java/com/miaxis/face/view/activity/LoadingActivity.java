@@ -2,7 +2,10 @@ package com.miaxis.face.view.activity;
 
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 
 import com.miaxis.face.R;
 import com.miaxis.face.app.Face_App;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.InitCWEvent;
 import com.miaxis.face.event.ReInitEvent;
 import com.miaxis.face.util.LogUtil;
@@ -54,6 +58,14 @@ public class LoadingActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
+        if (!Constants.VERSION&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if ( !Settings.canDrawOverlays(this)) {
+                //若未授权则请求权限
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, 0);
+            }
+        }
         ButterKnife.bind(this);
         initWindow();
         initTitle();
