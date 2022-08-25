@@ -1,18 +1,15 @@
 package com.miaxis.face.view.fragment;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Process;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,33 +22,18 @@ import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.Config;
 import com.miaxis.face.bean.Version;
 import com.miaxis.face.constant.Constants;
-import com.miaxis.face.net.UpdateVersion;
-import com.miaxis.face.service.DownVersionService;
 import com.miaxis.face.util.FileUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by xu.nan on 2016/9/12.
@@ -134,7 +116,7 @@ public class UpdateDialog extends BaseDialogFragment {
         llUdBottom.setVisibility(View.GONE);
         setCancelable(false);
 //        DownVersionService.startActionFoo(getActivity());
-        final String filepath = Environment.getExternalStorageDirectory().getPath()+"/ " + getResources().getString(R.string.app_name) + "_" + lastVersion.getVersion()+".apk";
+        final String filepath = FileUtil.FACE_MAIN_PATH +"/" + lastVersion.getVersion()+".apk";
         final String url = "http://"+ config.getIp() + ":" + config.getPort() + "/" + Constants.PROJECT_NAME + "/" + Constants.DOWN_VERSION;
         new Thread(new Runnable() {
             @Override
@@ -146,13 +128,22 @@ public class UpdateDialog extends BaseDialogFragment {
     }
 
     protected void installApk(File file) {
-        Intent intent = new Intent();
-        intent.setAction("android.intent.action.VIEW");
-        intent.addCategory("android.intent.category.DEFAULT");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        startActivity(intent);//
-        Process.killProcess(Process.myPid());
+        if (Constants.VERSION) {
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.VIEW");
+            intent.addCategory("android.intent.category.DEFAULT");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            startActivity(intent);//
+            Process.killProcess(Process.myPid());
+        }else {
+            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file);
+            Intent intent = new Intent(Constants.MOLD_INSTALL);
+            intent.putExtra("uri",uri);//需要安装的APK URI，APK需具备访问权限
+            intent.putExtra("auto",true);//true 安装完成后⾃动打开，false 仅安装
+            intent.putExtra("delay",0);//更新安装后自动打开延迟时间（0~7）
+            context.sendBroadcast(intent);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

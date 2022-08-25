@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.miaxis.face.R;
 import com.miaxis.face.bean.WhiteItem;
-import com.miaxis.face.util.DateUtil;
+import com.miaxis.face.constant.Constants;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class WhiteItemAdapter extends BaseAdapter {
     public View getView(final int i, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_white, null);
+            convertView = LayoutInflater.from(context).inflate(Constants.VERSION?R.layout.item_white:R.layout.item_white_860s, null);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {

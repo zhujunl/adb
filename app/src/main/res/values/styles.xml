@@ -42,4 +42,89 @@
         <item name="android:focusable">true</item>
     </style>
 
+    <style name="record_item_860s">
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:textColor">@color/dark</item>
+    </style>
+
+    <style name="stroke_button_860s">
+        <item name="android:background">@drawable/stroke_button_bg</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/blue_band_dark</item>
+        <item name="android:gravity">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="setting_button_860s">
+        <item name="android:background">@drawable/dark_bg_light_ripple</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="SettingItem_860s">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">30sp</item>
+        <item name="android:background">@drawable/stroke_shape</item>
+    </style>
+
+    <style name="SettingName_860s">
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <style name="SettingRadioItem_860s">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/dark</item>
+    </style>
+
+    <style name="SettingRadioGroup_860s">
+        <item name="android:background">@color/white</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <style name="SettingEditItem_860s">
+        <item name="android:background">@color/white</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">1dp</item>
+    </style>
+
+    <style name="VerticalLine">
+        <item name="android:background">@color/gray_dark</item>
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="SpaceBody">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+
+
 </resources>

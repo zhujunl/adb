@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.miaxis.face.R;
 import com.miaxis.face.adapter.RecordAdapter;
 import com.miaxis.face.bean.Record;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.SearchDoneEvent;
 import com.miaxis.face.service.QueryRecordService;
 import com.miaxis.face.view.fragment.RecordDialog;
@@ -80,7 +81,11 @@ public class RecordActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_record);
+        if(Constants.VERSION){
+            setContentView(R.layout.activity_record);
+        }else {
+            setContentView(R.layout.activity_record_860s);
+        }
         ButterKnife.bind(this);
         initWindow();
         EventBus.getDefault().register(this);

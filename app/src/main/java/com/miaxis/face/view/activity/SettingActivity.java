@@ -116,7 +116,11 @@ public class SettingActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+        if(Constants.VERSION){
+            setContentView(R.layout.activity_setting);
+        }else {
+            setContentView(R.layout.activity_setting_860s);
+        }
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         initWindow();
@@ -140,7 +144,7 @@ public class SettingActivity extends BaseActivity {
             verifyModeList.add(faceOnly);
 //            verifyModeList.add(local);
         }
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<>(this, R.layout.spinner_style_display, R.id.tvDisplay, verifyModeList);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<>(this,Constants.VERSION?R.layout.spinner_style_display:R.layout.spinner_style_display_860s, R.id.tvDisplay, verifyModeList);
         sVerifyMode.setAdapter(myAdapter);
         sVerifyMode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -262,9 +266,9 @@ public class SettingActivity extends BaseActivity {
             return;
         }
         config.setIp(etIp.getText().toString());
-        config.setPort(Integer.valueOf(etPort.getText().toString()));
+        config.setPort(Integer.parseInt(etPort.getText().toString()));
         config.setOrgName(etOrg.getText().toString());
-        config.setPassScore(Float.valueOf(etPassScore.getText().toString()));
+        config.setPassScore(Float.parseFloat(etPassScore.getText().toString()));
         config.setNetFlag(rbNetOn.isChecked());
         config.setQueryFlag(rbQueryOn.isChecked());
         config.setUpTime(tvSelectTime.getText().toString());
@@ -308,6 +312,9 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.btn_update)
     void update() {
+        if(updateDialog.isAdded()){
+            return;
+        }
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://" + config.getIp() + ":" + config.getPort() + "/")
                 .addConverterFactory(GsonConverterFactory.create())

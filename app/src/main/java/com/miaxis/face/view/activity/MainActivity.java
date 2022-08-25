@@ -255,7 +255,11 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        if (Constants.VERSION) {
+            setContentView(R.layout.activity_main);
+        } else {
+            setContentView(R.layout.activity_verify_860s);
+        }
         ButterKnife.bind(this);
         initWindow();
         initData();
@@ -267,7 +271,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     }
 
     private void initData() {
-        whiteItemDao = Face_App.getInstance().getDaoSession().getWhiteItemDao();
+
         mxFaceAPI = Face_App.getMxAPI();
         idCardDriver = new IdCardDriver(this);
         smdtManager = SmdtManager.create(this);
@@ -275,7 +279,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
         mxImageTool = new mxImageTool();
         eventBus = EventBus.getDefault();
         eventBus.register(this);
-        recordDao = Face_App.getInstance().getDaoSession().getRecordDao();
+
 
         soundPool = new SoundPool(21, AudioManager.STREAM_MUSIC, 0);
         soundMap = new HashMap<>();
@@ -542,6 +546,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     @SuppressLint("CheckResult")
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
     public void onResultEvent(ResultEvent e) {
+        recordDao = Face_App.getInstance().getDaoSession().getRecordDao();
         if (noCardFlag && !localFlag) {
             eventBus.cancelEventDelivery(e);
             return;
@@ -739,7 +744,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     }
 
     /* 画人脸框 */
-    private void drawFaceRect(MXFaceInfo[] faceInfos, Canvas canvas, int len) {
+    private void    drawFaceRect(MXFaceInfo[] faceInfos, Canvas canvas, int len) {
         float[] startArrayX = new float[len];
         float[] startArrayY = new float[len];
         float[] stopArrayX = new float[len];
@@ -753,10 +758,10 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
             }
         }else {
             for (int i = 0; i < len; i++) {
-                startArrayX[i] = faceInfos[i].x * zoomRate*1.2F;
-                startArrayY[i] = faceInfos[i].y * zoomRate;
-                stopArrayX[i] =  faceInfos[i].x * zoomRate + faceInfos[i].width * zoomRate*1.6F;
-                stopArrayY[i] =  faceInfos[i].y * zoomRate + faceInfos[i].height * zoomRate*1.5F;
+                startArrayX[i] = faceInfos[i].x * zoomRate;
+                startArrayY[i] = faceInfos[i].y * zoomRate*0.6F;
+                stopArrayX[i] =  faceInfos[i].x * zoomRate + faceInfos[i].width * zoomRate;
+                stopArrayY[i] =  faceInfos[i].y * zoomRate*0.6F + faceInfos[i].height * zoomRate;
             }
         }
         canvasDrawLine(canvas, len, startArrayX, startArrayY, stopArrayX, stopArrayY);
@@ -1321,6 +1326,9 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
 
     @OnClick(R.id.btn_cancel)
     void onCancel() {
+        if (mState > 4){
+            mState=0;
+        }
         etPwd.setText(null);
         etPwd.setVisibility(View.GONE);
 		noActionSecond = 0;
@@ -1482,6 +1490,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
 
     @OnClick(R.id.iv_import_from_u)
     void onImportClicked() {
+        whiteItemDao = Face_App.getInstance().getDaoSession().getWhiteItemDao();
         Flowable
                 .create(new FlowableOnSubscribe<WhiteItem>() {
                     @Override

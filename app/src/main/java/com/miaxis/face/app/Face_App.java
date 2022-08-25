@@ -3,12 +3,14 @@ package com.miaxis.face.app;
 import android.app.Application;
 import android.app.smdt.SmdtManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -73,6 +75,12 @@ public class Face_App extends Application implements ServiceConnection {
 //            igpioControlDemo = null;
 //        }
 //    };
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
