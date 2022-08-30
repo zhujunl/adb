@@ -26,8 +26,8 @@
 
         <SurfaceView
             android:id="@+id/sv_main"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="1280px"
+            android:layout_height="960px" />
 
         <SurfaceView
             android:id="@+id/sv_rect"

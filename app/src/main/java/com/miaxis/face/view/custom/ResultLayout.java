@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.miaxis.face.R;
 import com.miaxis.face.bean.Record;
+import com.miaxis.face.constant.Constants;
 import com.miaxis.face.event.CmdGetFingerDoneEvent;
 import com.miaxis.face.event.CmdGetFingerEvent;
 import com.miaxis.face.event.CmdIdCardDoneEvent;
@@ -85,7 +86,7 @@ public class ResultLayout extends LinearLayout {
     }
 
     private void init() {
-        View v = inflate(getContext(), R.layout.view_result, this);
+        View v = Constants.VERSION? inflate(getContext(), R.layout.view_result, this): inflate(getContext(), R.layout.view_result_860s, this);
         ButterKnife.bind(this, v);
 
         bringToFront();

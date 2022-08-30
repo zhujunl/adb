@@ -758,10 +758,10 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
             }
         }else {
             for (int i = 0; i < len; i++) {
-                startArrayX[i] = faceInfos[i].x * zoomRate;
-                startArrayY[i] = faceInfos[i].y * zoomRate*0.6F;
-                stopArrayX[i] =  faceInfos[i].x * zoomRate + faceInfos[i].width * zoomRate;
-                stopArrayY[i] =  faceInfos[i].y * zoomRate*0.6F + faceInfos[i].height * zoomRate;
+                startArrayX[i] = (faceInfos[i].x * zoomRate);
+                startArrayY[i] = (faceInfos[i].y * zoomRate);
+                stopArrayX[i] = (faceInfos[i].x * zoomRate + faceInfos[i].width * zoomRate);
+                stopArrayY[i] = (faceInfos[i].y * zoomRate + faceInfos[i].height * zoomRate);
             }
         }
         canvasDrawLine(canvas, len, startArrayX, startArrayY, stopArrayX, stopArrayY);

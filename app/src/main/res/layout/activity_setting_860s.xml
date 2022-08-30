@@ -223,7 +223,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/white_btn_bg"
                     android:gravity="center"
-                    android:text="立即执行"
+                    android:text="立即续传"
                     android:textColor="@color/orange"
                     android:textSize="15sp" />
 

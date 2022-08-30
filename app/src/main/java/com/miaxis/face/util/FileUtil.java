@@ -182,6 +182,7 @@ public class FileUtil {
     }
 
     public static int getAvailablePathType(Context context) {
+        if(!Constants.VERSION) return Constants.PATH_LOCAL;
         File saveDir = new File(new SmdtManager(context).smdtGetSDcardPath(context));
         if (!saveDir.exists() || !saveDir.canWrite()) {
             return Constants.PATH_LOCAL;

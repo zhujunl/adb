@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/result_bg"
+    android:layout_width="280sp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_margin="16sp"
+        android:text="@string/result_failure"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/iv_finger_result"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/iv_finger_result"
+        android:layout_margin="16sp"
+        android:layout_width="80sp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/gif_finger"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.miaxis.face.view.custom.GifView
+        android:id="@+id/gif_finger"
+        android:layout_margin="16sp"
+        android:layout_gravity="center"
+        android:layout_width="80sp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/linear"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:text="抓拍人脸"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="40sp" />
+
+            <ImageView
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:layout_margin="15sp"
+                android:scaleType="centerCrop"
+                android:id="@+id/iv_camera_photo"
+                android:layout_width="80sp"
+                android:layout_height="100dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:minWidth="40sp"
+            android:id="@+id/iv_result"
+            android:layout_gravity="center"
+            android:layout_width="40sp"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/ll_card_img"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:text="证件照片"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="40sp" />
+
+            <ImageView
+                android:background="@color/white"
+                android:scaleType="fitCenter"
+                android:layout_margin="15sp"
+                android:id="@+id/iv_id_photo"
+                android:layout_width="80sp"
+                android:layout_height="100dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

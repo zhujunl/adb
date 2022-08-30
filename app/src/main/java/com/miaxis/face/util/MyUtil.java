@@ -118,7 +118,8 @@ public class MyUtil {
     public static void alert(FragmentManager manager, String content) {
         AlertDialog dialog = new AlertDialog();
         dialog.setAdContent(content);
-        dialog.show(manager, "ALERT");
+        if (!manager.isDestroyed())
+            dialog.show(manager, "ALERT");
     }
 
     /**

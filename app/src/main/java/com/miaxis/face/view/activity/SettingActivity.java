@@ -302,12 +302,16 @@ public class SettingActivity extends BaseActivity {
 
     @OnClick(R.id.btn_clear_now)
     void upLoad() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Face_App.timerTask.run();
-            }
-        }).start();
+        if (config.getNetFlag()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Face_App.timerTask.run();
+                }
+            }).start();
+        }else {
+            Toast.makeText(this, "请保存为联网模式", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.btn_update)

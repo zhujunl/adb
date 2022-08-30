@@ -1,13 +1,10 @@
 package com.miaxis.face.service;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.content.Intent;
 import android.util.Base64;
-import android.util.Log;
 
-import com.google.gson.Gson;
 import com.miaxis.face.app.Face_App;
 import com.miaxis.face.bean.AjaxResponse;
 import com.miaxis.face.bean.Config;
@@ -16,7 +13,6 @@ import com.miaxis.face.greendao.gen.RecordDao;
 import com.miaxis.face.net.UpLoadRecord;
 import com.miaxis.face.util.DateUtil;
 import com.miaxis.face.util.FileUtil;
-import com.miaxis.face.util.LogUtil;
 
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -137,14 +133,27 @@ public class UpLoadRecordService extends IntentService {
         sendMsgSb.append("$address=#=").append(record.getAddress());
         sendMsgSb.append("$birthday=#=").append(record.getBirthday());
         sendMsgSb.append("$busEntity=#=").append(record.getBusEntity());
-        sendMsgSb.append("$cardImg=#=").append(Base64.encodeToString(record.getCardImgData(), Base64.DEFAULT));
-        sendMsgSb.append("$faceImg=#=").append(Base64.encodeToString(record.getFaceImgData(), Base64.DEFAULT));
+        try {
+            byte[] bytes = FileUtil.toByteArray(record.getCardImg());
+            sendMsgSb.append("$cardImg=#=").append(Base64.encodeToString(bytes , Base64.DEFAULT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            byte[] bytes = FileUtil.toByteArray(record.getFaceImg());
+            sendMsgSb.append("$faceImg=#=").append(Base64.encodeToString(bytes, Base64.DEFAULT));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         sendMsgSb.append("$race=#=").append(record.getRace());
         sendMsgSb.append("$regOrg=#=").append(record.getRegOrg());
         sendMsgSb.append("$validTime=#=").append(record.getValidate());
         sendMsgSb.append("$finger0=#=").append(record.getFinger0());
         sendMsgSb.append("$finger1=#=").append(record.getFinger1());
         sendMsgSb.append("$end");
+        recordDao = Face_App.getInstance().getDaoSession().getRecordDao();
+        record.setHasUp(true);
+        recordDao.update(record);
         return sendMsgSb.toString();
     }
 }
