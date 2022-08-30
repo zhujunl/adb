@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.jakewharton.butterknife'
@@ -8,13 +10,38 @@ android {
         applicationId "com.miaxis.faceid_cw"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 7
+        versionCode 6
         versionName "1.0.6_adb_ST"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
         ndk {
             abiFilters 'armeabi-v7a'//, 'arm64-v8a' 'armeabi-v7a', 'x86', 'x86_64', 'mips', 'mips64'
+        }
+    }
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                //在这里修改apk文件名
+                outputFileName = "人证核验-V${variant.versionName}-${releaseTime()}-${variant.name}.apk"
+            }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    signingConfigs {
+        debug {
+            keyAlias 'Chronaxia'
+            keyPassword 'qq972625961'
+            storeFile file('../chronaxia.jks')
+            storePassword 'qq972625961'
+        }
+        release {
+            keyAlias 'Chronaxia'
+            keyPassword 'qq972625961'
+            storeFile file('../chronaxia.jks')
+            storePassword 'qq972625961'
         }
     }
     buildTypes {
@@ -63,4 +90,9 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
 
+}
+def releaseTime() {
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+    Date curDate = new Date(System.currentTimeMillis());
+    return formatter.format(curDate);
 }
