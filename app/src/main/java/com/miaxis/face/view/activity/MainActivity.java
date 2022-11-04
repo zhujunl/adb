@@ -69,6 +69,7 @@ import com.miaxis.face.event.TimeChangeEvent;
 import com.miaxis.face.event.ToastEvent;
 import com.miaxis.face.greendao.gen.RecordDao;
 import com.miaxis.face.greendao.gen.WhiteItemDao;
+import com.miaxis.face.manager.MyActivityManager;
 import com.miaxis.face.receiver.TimeReceiver;
 import com.miaxis.face.service.UpLoadRecordService;
 import com.miaxis.face.util.FileUtil;
@@ -251,7 +252,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     private ProgressDialog progressDialog;
     private ReadSecondThread readSecondThread;
     private int ORIENTATION=0;
-
+    private boolean usbActive=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -744,7 +745,7 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
     }
 
     /* 画人脸框 */
-    private void    drawFaceRect(MXFaceInfo[] faceInfos, Canvas canvas, int len) {
+    private void drawFaceRect(MXFaceInfo[] faceInfos, Canvas canvas, int len) {
         float[] startArrayX = new float[len];
         float[] startArrayY = new float[len];
         float[] stopArrayX = new float[len];
@@ -1637,6 +1638,9 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
                         }
                         noCardFlag = true;
                         lastCardId = null;
+                        if (!usbActive) {
+                            usbActive=idCardDriver.mxGetDevNum()!=-1000;
+                        }
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -2006,6 +2010,9 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBtReadCardEvent(BtReadCardEvent e) {
+        if (!MyActivityManager.getInstance().isCurrent(this)){
+            return;
+        }
         onNoCardEvent(null);
         if (readSecondThread == null || !readSecondThread.isAlive()) {
             readSecondThread = new ReadSecondThread();
@@ -2023,14 +2030,18 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
         }
     }
     private boolean picFlag=false;
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.POSTING )
     public void onCmdShutterEvent(CmdShutterEvent e) {
+        if (!MyActivityManager.getInstance().isCurrent(this)){
+            return;
+        }
         if (advertiseDialog.isAdded()) {
             noActionSecond = 0;
             restartCamera();
             advertiseDialog.dismiss();
         }
         if (mCamera != null) {
+            SystemClock.sleep(1000);
             picFlag=true;
 //            mCamera.takePicture(
 //                    new Camera.ShutterCallback() {
@@ -2057,6 +2068,9 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
     public void onCmdGetFingerEvent(CmdGetFingerEvent e) {
+        if (!MyActivityManager.getInstance().isCurrent(this)){
+            return;
+        }
         playSound(Constants.SOUND_OTHER_FINGER);
         if (advertiseDialog.isAdded()) {
             noActionSecond = 0;
@@ -2067,6 +2081,9 @@ public class MainActivity extends BaseActivity implements SurfaceHolder.Callback
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = 2)
     public void onCmdIdCardEvent(CmdIdCardEvent e) {
+        if (!MyActivityManager.getInstance().isCurrent(this)){
+            return;
+        }
         onNoCardEvent(null);
         if (readSecondThread == null || !readSecondThread.isAlive()) {
             readSecondThread = new ReadSecondThread();

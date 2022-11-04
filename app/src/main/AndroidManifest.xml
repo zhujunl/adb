@@ -51,6 +51,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.miaxis.faceid_cw.fileprovider"
@@ -60,6 +64,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="e1084e8961b30f3d93d543ff2e40e311" />
@@ -89,6 +94,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
@@ -113,16 +119,15 @@
             android:exported="false" />
 
         <activity android:name=".view.activity.WhiteActivity" />
-        <activity android:name=".view.activity.LocalFeatureActivity" />
-        <!--<service-->
-            <!--android:name=".service.GPIOService"-->
-            <!--android:enabled="true"-->
-            <!--android:exported="true"-->
-            <!--android:process=":aidl"/>-->
+        <activity android:name=".view.activity.LocalFeatureActivity" /> <!-- <service -->
+        <!-- android:name=".service.GPIOService" -->
+        <!-- android:enabled="true" -->
+        <!-- android:exported="true" -->
+        <!-- android:process=":aidl"/> -->
         <service
             android:name=".service.AdbCommService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
     </application>
 
 </manifest>

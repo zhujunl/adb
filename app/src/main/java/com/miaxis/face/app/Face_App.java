@@ -1,5 +1,6 @@
 package com.miaxis.face.app;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.smdt.SmdtManager;
 import android.content.ComponentName;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.multidex.MultiDex;
@@ -25,6 +27,7 @@ import com.miaxis.face.greendao.gen.ConfigDao;
 import com.miaxis.face.greendao.gen.DaoMaster;
 import com.miaxis.face.greendao.gen.DaoSession;
 import com.miaxis.face.greendao.gen.RecordDao;
+import com.miaxis.face.manager.MyActivityManager;
 import com.miaxis.face.service.AdbCommService;
 import com.miaxis.face.service.ClearService;
 import com.miaxis.face.service.UpLoadRecordService;
@@ -103,7 +106,42 @@ public class Face_App extends Application implements ServiceConnection {
                 enableDog();
             }
         }).start();
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                MyActivityManager.getInstance().setCurrentActivity(activity);
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
     }
 
     private void initData() {
